@@ -1,0 +1,443 @@
+<title>Evidence Lag in Parliament</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: one reading column. Sans carries our coding; serif carries the words of the record. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #141a22; --ink-2: #48525f; --muted: #6f7986;
+  --rule: #dde2e8; --axis: #b9c1cb; --accent: #1c5cab; --wash: #eaf0f7;
+  --uk: #2a78d6; --au: #eb6834;
+  --o1: #0d366b; --o2: #1c5cab; --o3: #3987e5; --o4: #86b6ef; --o1-ink: #ffffff; --o4-ink: #0b0b0b;
+  --bar: #2a78d6; --track: #dbe7f6;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+    --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --wash: #1d2631;
+    --uk: #3987e5; --au: #d95926;
+    --o1: #b7d3f6; --o2: #6da7ec; --o3: #2a78d6; --o4: #184f95; --o1-ink: #0b0b0b; --o4-ink: #ffffff;
+    --bar: #3987e5; --track: #1c3350;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+  --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --wash: #1d2631;
+  --uk: #3987e5; --au: #d95926;
+  --o1: #b7d3f6; --o2: #6da7ec; --o3: #2a78d6; --o4: #184f95; --o1-ink: #0b0b0b; --o4-ink: #ffffff;
+  --bar: #3987e5; --track: #1c3350;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--sans); }
+.page { max-width: 62rem; margin: 0 auto; padding-block: 2rem 4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 2.75rem; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+h1, h2, h3, p { margin: 0; }
+h1 { font: 600 clamp(1.9rem, 5vw, 2.7rem)/1.12 var(--serif); text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font: 600 1.3rem/1.25 var(--serif); text-wrap: balance; }
+h3 { font: 600 0.95rem/1.3 var(--sans); }
+.eyebrow { font: 500 0.78rem/1.3 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.lead { font-size: 1.1rem; color: var(--ink-2); max-width: 44rem; }
+.lead strong { color: var(--ink); font-weight: 600; }
+header { display: flex; flex-direction: column; gap: 0.9rem; }
+.pilot { align-self: flex-start; font: 500 0.8rem/1 var(--sans); padding: 0.4rem 0.6rem; border: 1px solid var(--axis); border-radius: 999px; color: var(--ink-2); }
+section { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.sub { color: var(--ink-2); max-width: 44rem; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 44rem; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.tile { background: var(--surface); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.tile .v { font: 600 2rem/1.1 var(--sans); }
+.tile .l { font-size: 0.9rem; color: var(--ink-2); }
+.tile .d { font-size: 0.8rem; color: var(--muted); }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
+
+/* meter list */
+.meters { display: grid; grid-template-columns: max-content 1fr max-content; gap: 0.55rem 0.8rem; align-items: center; font-size: 0.9rem; }
+.meters .name { color: var(--ink-2); }
+.meters .track { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; min-width: 3rem; }
+.meters .fill { height: 100%; background: var(--bar); border-radius: 5px; }
+.meters .fig { font-variant-numeric: tabular-nums; color: var(--ink); text-align: right; }
+.meters .fig small { color: var(--muted); font-size: 0.82rem; }
+
+/* segmented bars */
+.seg-row { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.6rem; align-items: center; font-size: 0.9rem; }
+.seg { display: flex; gap: 2px; height: 28px; }
+.seg span { display: flex; align-items: center; padding-left: 6px; border-radius: 4px; font: 500 0.8rem/1 var(--sans); min-width: 0; white-space: nowrap; }
+.seg .s1 { background: var(--o1); color: var(--o1-ink); } .seg .s2 { background: var(--o2); color: #fff; }
+.seg .s3 { background: var(--o3); color: #fff; } .seg .s4 { background: var(--o4); color: var(--o4-ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: 0.84rem; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.35rem; vertical-align: baseline; }
+.legend svg { vertical-align: -2px; margin-right: 0.3rem; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--rule); }
+th { font-weight: 500; color: var(--muted); font-size: 0.8rem; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+@media (max-width: 600px) {
+  .cases tr { display: block; padding: 0.5rem 0; border-bottom: 1px solid var(--rule); }
+  .cases tr:first-child { display: none; }
+  .cases td { display: block; border: 0; padding: 0.1rem 0; }
+  .cases td:first-child { font-weight: 500; }
+  .cases td:last-child { color: var(--muted); font-size: 0.86rem; }
+}
+
+/* dot strip */
+.strip { position: relative; }
+.strip svg { display: block; width: 100%; height: auto; overflow: visible; }
+.strip text { font: 400 12px var(--sans); fill: var(--muted); }
+.strip .lane { font-weight: 500; fill: var(--ink-2); }
+.strip .dot { stroke: var(--surface); stroke-width: 2; cursor: pointer; }
+.strip .dot.on { stroke: var(--ink); }
+.tip { position: absolute; pointer-events: none; z-index: 5; max-width: 17rem; background: var(--surface); color: var(--ink); border: 1px solid var(--axis); border-radius: 8px; padding: 0.55rem 0.7rem; font-size: 0.84rem; line-height: 1.4; box-shadow: 0 6px 20px rgba(0,0,0,0.14); }
+.tip b { display: block; font-size: 0.98rem; }
+.tip span { color: var(--ink-2); }
+
+/* browser */
+.filters { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: end; }
+.filters label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; color: var(--muted); }
+.filters select, .filters input { font: 400 0.92rem var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--axis); border-radius: 7px; padding: 0.45rem 0.55rem; min-width: 0; max-width: 100%; }
+.filters input { width: 13rem; }
+.filters button { font: 500 0.88rem var(--sans); color: var(--accent); background: none; border: 0; padding: 0.5rem 0.2rem; cursor: pointer; }
+.count { font-size: 0.86rem; color: var(--muted); }
+.claims { display: flex; flex-direction: column; gap: 0.9rem; }
+.claim { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; scroll-margin-top: 1rem; }
+.claim.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--wash); }
+.cite { font-size: 0.82rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
+.cite .cc { color: var(--ink-2); font-weight: 500; }
+.cc i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.35rem; }
+blockquote { margin: 0; font: 400 1.08rem/1.5 var(--serif); overflow-wrap: anywhere; }
+blockquote b { font-weight: 600; }
+.para { color: var(--ink-2); font-size: 0.94rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip { font: 500 0.76rem/1 var(--sans); padding: 0.32rem 0.5rem; border-radius: 999px; background: var(--wash); color: var(--ink-2); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.8rem 1.4rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; font-size: 0.9rem; }
+.facts > div { min-width: 0; overflow-wrap: anywhere; }
+.facts h3 { font-size: 0.76rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+.facts .big { font-weight: 600; }
+.facts p { color: var(--ink-2); }
+.empty { color: var(--muted); padding: 1rem 0; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.2rem 2rem; font-size: 0.93rem; color: var(--ink-2); }
+.method div { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.method h3 { color: var(--ink); }
+footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (prefers-reduced-motion: no-preference) { .claim { transition: box-shadow 0.25s, border-color 0.25s; } }
+</style>
+
+<div class="page">
+  <header>
+    <span class="pilot" id="pilot-badge">Pilot</span>
+    <h1>How stale is the AI evidence parliamentarians cite?</h1>
+    <p class="lead" id="lead"></p>
+  </header>
+
+  <section aria-label="Headline figures">
+    <div class="tiles" id="tiles"></div>
+    <p class="note" id="tiles-note"></p>
+  </section>
+
+  <section>
+    <h2>Most speeches that mention AI say nothing about what it can do</h2>
+    <p class="sub" id="yield-sub"></p>
+    <div class="panel">
+      <h3>Share of sampled speeches containing a capability claim, by number of AI terms in the speech</h3>
+      <div class="meters" id="yield"></div>
+      <p class="note" id="yield-note"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>When speakers point to evidence, it is recent</h2>
+    <p class="sub" id="strip-sub"></p>
+    <div class="panel">
+      <div class="legend" id="strip-legend"></div>
+      <div class="strip" id="strip"></div>
+      <p class="note" id="strip-note"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What the claims rest on</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Evidence offered for each claim</h3>
+        <div id="basis"></div>
+        <div class="legend" id="basis-legend"></div>
+        <div class="scroll"><table id="basis-table"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Is the description of AI still current?</h3>
+        <div class="scroll"><table id="vintage-table"></table></div>
+        <p class="note">"Current" means current at the coder's knowledge horizon, mid-2026. Later developments are only caught when a search surfaced them.</p>
+        <p class="note" id="age-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Older evidence turned up outside the definition</h2>
+    <p class="sub" id="scope-sub"></p>
+    <div class="panel">
+      <div class="scroll"><table class="cases">
+        <tr><th>Speaker and debate</th><th>What was cited</th><th>Why it was not coded</th></tr>
+        <tr><td>Lord Leong, HL Deb 29 October 2026</td><td>"The 2024 study found that SMEs make up 96% of UK AI firms"</td><td>Market figure</td></tr>
+        <tr><td>James Frith, HC Deb 8 July 2026 (Westminster Hall)</td><td>An IMF estimate that around 70% of UK workers are in exposed occupations</td><td>Labour-market estimate</td></tr>
+        <tr><td>Adam Thompson, HC Deb 12 November 2026</td><td>"Fake news spreads six times faster than truthful content online"</td><td>Not about AI capability. The coder thought it resembled a 2018 study.</td></tr>
+        <tr><td>Kate Chaney, House of Representatives, 17 September 2026</td><td>"Elon Musk wrote that AI is potentially more dangerous than nukes"</td><td>Risk comparison. The coder traced the wording to a 2014 post.</td></tr>
+      </table></div>
+      <p class="note">These datings are the coders' notes. They have not been verified.</p>
+    </div>
+  </section>
+
+  <section id="browser">
+    <h2>Every coded claim</h2>
+    <div class="filters">
+      <label>Country<select id="f-country"><option value="">All</option></select></label>
+      <label>Evidence<select id="f-basis"><option value="">All</option></select></label>
+      <label>Currency<select id="f-vintage"><option value="">All</option></select></label>
+      <label>Claim type<select id="f-type"><option value="">All</option></select></label>
+      <label>Search<input id="f-q" type="search" placeholder="Speaker, source, words"></label>
+      <button id="f-reset" type="button">Clear filters</button>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="claims" id="claims"></div>
+  </section>
+
+  <section>
+    <h2>Method and limits</h2>
+    <div class="method" id="method"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script type="application/json" id="data">/*__DATA__*/</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const S = D.summary, ALL = S.summary.all, claims = D.claims;
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const svgEl = (tag, attrs) => { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const LABEL = {
+    cited_source: 'Named source', vague_attribution: 'Vague attribution', personal_experience: 'Personal experience', none: 'None',
+    current: 'Still current', outdated: 'Outdated', dated_event: 'Dated incident', forecast: 'Forecast', never_accurate: 'Never accurate', unclear: 'Unclear',
+    capability: 'Capability', limitation: 'Limitation', trajectory: 'Trajectory', incident: 'Incident',
+    stated_in_speech: 'stated in the speech', web_verified: 'confirmed on the web', coder_recall: 'coder recall, unverified', unknown: 'unknown',
+    UK: 'United Kingdom', AU: 'Australia',
+  };
+  const lab = (k) => LABEL[k] || (k || '').replace(/_/g, ' ');
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const fmtDate = (iso) => { if (!iso) return ''; const p = iso.split('-').map(Number); return (p[2] ? p[2] + ' ' : '') + (p[1] ? MONTHS[p[1] - 1] + ' ' : '') + p[0]; };
+  const fmtLag = (m) => { if (m == null) return ''; if (m < 1) return Math.round(m * 30.4375) + ' days'; if (m < 24) return (Math.round(m * 10) / 10) + ' months'; return (Math.round(m / 12 * 10) / 10) + ' years'; };
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+
+  // Hansard citation in each parliament's own convention.
+  function citation(c) {
+    const gid = c.speech_id.split(':')[1], col = gid.split('.')[1], d = fmtDate(c.date);
+    if (c.speech_id.startsWith('uk-commons')) return 'HC Deb ' + d + ', col ' + col;
+    if (c.speech_id.startsWith('uk-westminsterhall')) return 'HC Deb ' + d + ', col ' + col + 'WH';
+    if (c.speech_id.startsWith('uk-lords')) return 'HL Deb ' + d + ', col ' + col;
+    return c.chamber_label + ' Hansard, ' + d;
+  }
+  // One evidence age per claim: the named source if dated, else the incident or vintage date.
+  function evidence(c) {
+    if (c.cited_lag_months != null) return { m: c.cited_lag_months, kind: 'source', date: c.source_date, what: c.source_name };
+    if ((c.vintage_status === 'dated_event' || c.vintage_status === 'outdated') && c.implied_lag_months != null)
+      return { m: c.implied_lag_months, kind: c.vintage_status === 'outdated' ? 'vintage' : 'event', date: c.vintage_date, what: c.vintage_status === 'outdated' ? 'Last current' : 'Incident' };
+    return null;
+  }
+
+  // ---- header ----
+  const corpus = S.corpus, totalAI = Object.values(corpus).reduce((a, v) => a + v.ai_speeches, 0);
+  const lastDay = Object.values(corpus).map(v => v.last_day).sort().pop();
+  $('pilot-badge').textContent = 'Pilot: ' + S.coded_speeches + ' of ' + totalAI.toLocaleString('en-GB') + ' speeches · 1 July to ' + fmtDate(lastDay);
+  const withEv = claims.filter(evidence), named = claims.filter(c => c.cited_lag_months != null);
+  const lead = $('lead');
+  const noEv = ALL.evidence_basis.none || 0, oldest = ALL.cited_lag_months ? ALL.cited_lag_months.max : null;
+  lead.append(el('strong', null, 'On this small sample, not stale. Mostly it is not cited at all.'), ' ' + S.coded_speeches + ' sampled speeches held ' + plural(ALL.claims, 'claim') + ' about what AI can do. ' + noEv + ' came with no evidence. The ' + named.length + ' that named a source pointed to something ' + (oldest != null ? 'under ' + Math.ceil(oldest) + ' months old' : 'undated') + '. No claim described an AI that had already been surpassed.');
+
+  // ---- tiles ----
+  const tile = (v, l, d) => { const t = el('div', 'tile'); t.append(el('div', 'v', v), el('div', 'l', l)); if (d) t.append(el('div', 'd', d)); return t; };
+  $('tiles').append(
+    tile(ALL.speeches_with_claims + ' of ' + S.coded_speeches, 'speeches make a capability claim', S.summary.UK.speeches_with_claims + ' UK, ' + S.summary.AU.speeches_with_claims + ' Australia'),
+    tile(String(ALL.claims), 'capability claims', S.summary.UK.claims + ' UK, ' + S.summary.AU.claims + ' Australia'),
+    tile(String(noEv), 'offer no evidence', 'bare assertion'),
+    tile(String(named.length), 'name a source that can be dated', oldest != null ? 'oldest was ' + fmtLag(oldest) + ' old' : ''),
+  );
+  $('tiles-note').textContent = 'Counts are from a sample of 50 speeches per country. They are too small to compare the two parliaments.';
+
+  // ---- yield ----
+  const Y = S.yield, yb = Y.by_mentions, hi = Y.by_heading.ai_in_heading, lo = Y.by_heading.other;
+  const few = yb.filter(b => ['1', '2'].includes(b.band)).reduce((a, b) => ({ s: a.s + b.speeches, w: a.w + b.with_claims }), { s: 0, w: 0 });
+  $('yield-sub').textContent = 'The corpus is every speech containing an AI term. ' + few.s + ' of the ' + S.coded_speeches + ' sampled speeches use such a term only once or twice, and ' + (few.w === 0 ? 'none of those makes' : few.w + ' of those make') + ' a claim about capability. Claims sit in speeches that dwell on AI.';
+  yb.forEach(b => {
+    const pct = b.speeches ? b.with_claims / b.speeches : 0;
+    const track = el('div', 'track'), fill = el('div', 'fill'); fill.style.width = (pct * 100) + '%'; track.append(fill);
+    track.setAttribute('role', 'img'); track.setAttribute('aria-label', b.with_claims + ' of ' + b.speeches + ' speeches');
+    const fig = el('div', 'fig', b.speeches ? Math.round(pct * 100) + '% ' : '– '); fig.append(el('small', null, b.with_claims + ' of ' + b.speeches));
+    $('yield').append(el('div', 'name', b.band.replace('-', '–') + (b.band === '1' ? ' term' : ' terms')), track, fig);
+  });
+  $('yield-note').textContent = 'Debates with AI in the title: ' + hi.with_claims + ' of ' + hi.speeches + ' speeches contain a claim. Other debates: ' + lo.with_claims + ' of ' + lo.speeches + '.';
+
+  $('scope-sub').textContent = 'Coders logged ' + S.near_misses + ' statements that came close but fell outside "what AI can do": market figures, labour forecasts, opinion polls, risk comparisons. Several carried dated sources, some of them old. Whether to widen the definition is the main open design question.';
+
+  // ---- dot strip ----
+  const SHAPE = { source: 'Named source, by publication date', event: 'Incident, by date it happened', vintage: 'Outdated description, by date last current' };
+  function mark(kind, x, y, r, fill) {
+    if (kind === 'source') return svgEl('circle', { cx: x, cy: y, r: r, fill: fill });
+    if (kind === 'event') return svgEl('rect', { x: x - r + 0.5, y: y - r + 0.5, width: 2 * r - 1, height: 2 * r - 1, fill: fill, transform: 'rotate(45 ' + x + ' ' + y + ')' });
+    return svgEl('path', { d: 'M' + x + ' ' + (y - r - 1) + 'L' + (x + r + 1) + ' ' + (y + r) + 'L' + (x - r - 1) + ' ' + (y + r) + 'Z', fill: fill });
+  }
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const legend = $('strip-legend');
+  ['UK', 'AU'].forEach(k => { const s = el('span'); const i = el('i'); i.style.background = 'var(--' + k.toLowerCase() + ')'; i.style.borderRadius = '50%'; s.append(i, lab(k)); legend.append(s); });
+  const kindsUsed = [...new Set(withEv.map(c => evidence(c).kind))];
+  Object.keys(SHAPE).filter(k => kindsUsed.includes(k)).forEach(k => { const s = el('span'); const g = svgEl('svg', { width: 14, height: 14, viewBox: '0 0 14 14', 'aria-hidden': 'true' }); const m = mark(k, 7, 7, 4.5, 'currentColor'); g.append(m); s.append(g, SHAPE[k]); legend.append(s); });
+
+  const strip = $('strip'), tip = el('div', 'tip'); tip.hidden = true; strip.append(tip);
+  function drawStrip() {
+    strip.querySelectorAll('svg').forEach(n => n.remove());
+    if (!withEv.length) { strip.append(el('p', 'empty', 'No claim in this sample has a datable basis.')); return; }
+    const W = Math.max(280, strip.clientWidth), padL = 34, padR = 14, laneH = 62, top = 8, axisH = 34;
+    const lanes = ['UK', 'AU'], H = top + laneH * lanes.length + axisH;
+    const maxM = Math.max(...withEv.map(c => evidence(c).m));
+    const narrow = W < 520, step = (maxM <= 12 ? 3 : maxM <= 36 ? 6 : 12) * (narrow ? 2 : 1), hiM = Math.max(step, Math.ceil(maxM / step) * step);
+    const x = (m) => padL + (m / hiM) * (W - padL - padR);
+    const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Age of evidence for each claim, in months before the debate' });
+    for (let m = 0; m <= hiM; m += step) {
+      svg.append(svgEl('line', { x1: x(m), x2: x(m), y1: top, y2: top + laneH * lanes.length, stroke: css('--rule'), 'stroke-width': 1 }));
+      const t = svgEl('text', { x: x(m), y: top + laneH * lanes.length + 16, 'text-anchor': m === 0 ? 'start' : m === hiM ? 'end' : 'middle' });
+      t.textContent = m === 0 ? (narrow ? '0' : 'Debate day') : (m % 12 === 0 && m >= 24 ? (m / 12) + ' yr' : m + ' mo'); svg.append(t);
+    }
+    const cap = svgEl('text', { x: W - padR, y: H - 2, 'text-anchor': 'end' }); cap.textContent = 'age of evidence when cited →'; svg.append(cap);
+    const dots = [];
+    lanes.forEach((cc, li) => {
+      const cy = top + laneH * li + laneH / 2;
+      svg.append(svgEl('line', { x1: padL, x2: W - padR, y1: cy, y2: cy, stroke: css('--axis'), 'stroke-width': 1 }));
+      const t = svgEl('text', { x: 0, y: cy + 4, class: 'lane' }); t.textContent = cc; svg.append(t);
+      const placed = [];
+      withEv.filter(c => c.country === cc).sort((a, b) => evidence(a).m - evidence(b).m).forEach(c => {
+        const ev = evidence(c), px = x(ev.m); let off = 0, n = 0;
+        // stack marks that would overlap: 0, -1, +1, -2, +2 rows
+        while (placed.some(p => Math.abs(p.x - px) < 13 && p.off === off)) { n++; off = (n % 2 ? -1 : 1) * Math.ceil(n / 2); }
+        placed.push({ x: px, off });
+        const py = cy + off * 13, m = mark(ev.kind, px, py, 5, css(cc === 'UK' ? '--uk' : '--au'));
+        m.classList.add('dot'); m.setAttribute('tabindex', '0'); m.setAttribute('role', 'button');
+        m.setAttribute('aria-label', c.speaker + ', ' + ev.what + ', ' + fmtLag(ev.m) + ' old. Open claim.');
+        svg.append(m); dots.push({ c, ev, px, py, node: m });
+      });
+    });
+    strip.append(svg);
+    const show = (d) => {
+      dots.forEach(o => o.node.classList.toggle('on', o === d));
+      if (!d) { tip.hidden = true; return; }
+      tip.replaceChildren(); tip.append(el('b', null, fmtLag(d.ev.m) + ' old'), el('span', null, (d.ev.kind === 'source' ? d.ev.what : SHAPE[d.ev.kind].split(',')[0]) + ' · ' + fmtDate(d.ev.date)), el('div', null, d.c.speaker + ', ' + fmtDate(d.c.date)));
+      tip.hidden = false;
+      const k = svg.getBoundingClientRect().width / W, tw = tip.offsetWidth;
+      tip.style.left = Math.max(0, Math.min(strip.clientWidth - tw, d.px * k - tw / 2)) + 'px';
+      tip.style.top = (d.py * k + 14) + 'px';
+    };
+    const nearest = (e) => { const r = svg.getBoundingClientRect(), k = W / r.width, mx = (e.clientX - r.left) * k, my = (e.clientY - r.top) * k; let best = null, bd = 26; dots.forEach(d => { const dist = Math.hypot(d.px - mx, d.py - my); if (dist < bd) { bd = dist; best = d; } }); return best; };
+    svg.addEventListener('pointermove', (e) => show(nearest(e)));
+    svg.addEventListener('pointerleave', () => show(null));
+    svg.addEventListener('click', (e) => { const d = nearest(e); if (d) openClaim(d.c.claim_id); });
+    dots.forEach(d => { d.node.addEventListener('focus', () => show(d)); d.node.addEventListener('blur', () => show(null)); d.node.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openClaim(d.c.claim_id); } }); });
+  }
+  const evs = withEv.filter(c => evidence(c).kind === 'event').map(c => evidence(c).m).sort((a, b) => a - b);
+  $('strip-sub').textContent = 'Each mark is one claim with a datable basis: a named source, or an incident the speaker described. ' + (evs.length ? 'Incidents ran from ' + fmtLag(evs[0]) + ' to ' + fmtLag(evs[evs.length - 1]) + ' before the debate. ' : '') + 'Select a mark to read the claim.';
+  $('strip-note').textContent = plural(claims.length - withEv.length, 'claim') + ' of ' + claims.length + ' cannot be placed: no dated source, and no dated incident or expiry. Every value is in the claim list below.';
+
+  // ---- basis + vintage ----
+  const BASIS = ['cited_source', 'vague_attribution', 'personal_experience', 'none'];
+  const basisBox = $('basis');
+  ['UK', 'AU'].forEach(cc => {
+    const b = S.summary[cc].evidence_basis, n = S.summary[cc].claims, row = el('div', 'seg-row'); row.style.marginBottom = '0.5rem';
+    row.append(el('div', null, cc));
+    if (!n) { row.append(el('div', 'note', 'No claims')); basisBox.append(row); return; }
+    const seg = el('div', 'seg'); seg.setAttribute('role', 'img');
+    seg.setAttribute('aria-label', cc + ': ' + BASIS.map(k => lab(k) + ' ' + (b[k] || 0)).join(', '));
+    BASIS.forEach((k, i) => { const v = b[k] || 0; if (!v) return; const s = el('span', 's' + (i + 1), String(v)); s.style.flex = v + ' 0 0'; s.title = lab(k) + ': ' + v + ' of ' + n; seg.append(s); });
+    row.append(seg); basisBox.append(row);
+  });
+  BASIS.forEach((k, i) => { const s = el('span'); const sw = el('i'); sw.style.background = 'var(--o' + (i + 1) + ')'; s.append(sw, lab(k)); $('basis-legend').append(s); });
+  function countTable(table, keys, field, first) {
+    const head = el('tr'); [first, 'UK', 'Australia', 'Both'].forEach((h, i) => head.append(el('th', i ? 'n' : null, h))); table.append(head);
+    keys.forEach(k => { const u = S.summary.UK[field][k] || 0, a = S.summary.AU[field][k] || 0; if (!u && !a) return; const tr = el('tr'); tr.append(el('td', null, lab(k)), el('td', 'n', String(u)), el('td', 'n', String(a)), el('td', 'n', String(u + a))); table.append(tr); });
+  }
+  countTable($('basis-table'), BASIS, 'evidence_basis', 'Evidence');
+  countTable($('vintage-table'), ['current', 'outdated', 'dated_event', 'forecast', 'never_accurate', 'unclear'], 'vintage_status', 'Assessment');
+
+  const age = ALL.capability_age_months;
+  if (age) $('age-note').textContent = 'Current is not the same as new. For ' + age.n + ' of these claims the coder estimated when the capability first existed: a median of ' + fmtLag(age.median) + ' before the debate. These dates are from coder recall and are exploratory.';
+
+  // ---- claim browser ----
+  const F = { country: $('f-country'), basis: $('f-basis'), vintage: $('f-vintage'), type: $('f-type'), q: $('f-q') };
+  const fill = (sel, field) => [...new Set(claims.map(c => c[field]))].sort().forEach(v => { const o = el('option', null, lab(v)); o.value = v; sel.append(o); });
+  fill(F.country, 'country'); fill(F.basis, 'evidence_basis'); fill(F.vintage, 'vintage_status'); fill(F.type, 'claim_type');
+  const fact = (title) => { const d = el('div'); d.append(el('h3', null, title)); return d; };
+  function card(c) {
+    const a = el('article', 'claim'); a.id = 'c-' + c.claim_id.replace(/[^a-z0-9]/gi, '-');
+    const cite = el('div', 'cite'), cc = el('span', 'cc'), dot = el('i'); dot.style.background = 'var(--' + c.country.toLowerCase() + ')'; cc.append(dot, lab(c.country));
+    const link = el('a', null, citation(c)); link.href = c.url; link.target = '_blank'; link.rel = 'noopener';
+    cite.append(cc, link, el('span', null, [c.heading, c.subheading].filter(Boolean).join(' · ')));
+    const q = el('blockquote'); q.append(el('b', null, c.speaker + ': '), '“' + c.quote + '”');
+    const chips = el('div', 'chips'); [lab(c.claim_type), (c.domain || '').replace(/_/g, ' '), c.named_system].filter(Boolean).forEach(t => chips.append(el('span', 'chip', t)));
+    const facts = el('div', 'facts');
+    const ev = fact('Evidence offered');
+    ev.append(el('div', 'big', lab(c.evidence_basis)));
+    if (c.source_name) {
+      const p = el('p'); if (c.source_url) { const s = el('a', null, c.source_name); s.href = c.source_url; s.target = '_blank'; s.rel = 'noopener'; p.append(s); } else p.append(c.source_name);
+      if (c.source_org) p.append(', ' + c.source_org); ev.append(p);
+      ev.append(el('p', null, c.source_date ? 'Dated ' + fmtDate(c.source_date) + ' (' + lab(c.source_date_basis) + ').' : 'Could not be dated.'));
+      if (c.source_identified_by === 'inferred_by_coder') ev.append(el('p', 'note', 'The speaker named no source. The coder found this reference, so it gets no cited lag.'));
+      if (c.cited_lag_months != null) ev.append(el('p', 'big', fmtLag(c.cited_lag_months) + ' old when cited'));
+    }
+    const vi = fact('Is it still current?');
+    vi.append(el('div', 'big', lab(c.vintage_status) + (c.vintage_date ? ' · ' + fmtDate(c.vintage_date) : '')));
+    if (c.implied_lag_months != null && c.vintage_status !== 'current') vi.append(el('p', 'big', fmtLag(c.implied_lag_months) + ' before the debate'));
+    if (c.vintage_rationale) vi.append(el('p', null, c.vintage_rationale));
+    vi.append(el('p', 'note', 'Coder confidence: ' + c.vintage_confidence + (c.adjudicated ? '. Changed on review: ' + c.adjudication_reason : '')));
+    facts.append(ev, vi);
+    a.append(cite, q, el('p', 'para', c.claim), chips, facts);
+    return a;
+  }
+  function render() {
+    const q = F.q.value.trim().toLowerCase();
+    const rows = claims.filter(c => (!F.country.value || c.country === F.country.value) && (!F.basis.value || c.evidence_basis === F.basis.value) && (!F.vintage.value || c.vintage_status === F.vintage.value) && (!F.type.value || c.claim_type === F.type.value) && (!q || [c.speaker, c.quote, c.claim, c.source_name, c.source_org, c.heading, c.subheading, c.named_system, c.vintage_rationale].join(' ').toLowerCase().includes(q)));
+    $('count').textContent = 'Showing ' + rows.length + ' of ' + plural(claims.length, 'claim');
+    const box = $('claims'); box.replaceChildren();
+    if (!rows.length) box.append(el('p', 'empty', 'No claims match these filters. Clear a filter to see more.'));
+    rows.forEach(c => box.append(card(c)));
+  }
+  function reset() { Object.values(F).forEach(f => { f.value = ''; }); render(); }
+  function openClaim(id) { reset(); const n = document.getElementById('c-' + id.replace(/[^a-z0-9]/gi, '-')); if (!n) return; n.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); n.classList.add('flash'); setTimeout(() => n.classList.remove('flash'), 2200); }
+  Object.values(F).forEach(f => f.addEventListener('input', render));
+  $('f-reset').addEventListener('click', reset);
+
+  // ---- method ----
+  const R = S.reliability, mf = (R.matched_fields || {});
+  const block = (title, paras) => { const d = el('div'); d.append(el('h3', null, title)); paras.forEach(p => d.append(el('p', null, p))); return d; };
+  $('method').append(
+    block('Corpus', ['Hansard for the Commons, Westminster Hall, Lords, House of Representatives and Senate, from the bulk XML published by TheyWorkForYou and OpenAustralia.', totalAI.toLocaleString('en-GB') + ' speeches since 1 July 2026 contain an AI term. Australian coverage ends ' + fmtDate(corpus['au-senate'].last_day) + ' (Senate) and ' + fmtDate(corpus['au-representatives'].last_day) + ' (House).']),
+    block('Sample', [S.coded_speeches + ' speeches: 50 per country, spread across chambers in proportion to their AI speeches, drawn at random with a fixed seed.']),
+    block('Coding', ['AI coders read each speech against a written codebook. They recorded every claim about what AI can or cannot do, the evidence offered, and when that evidence dates from.', 'Named sources were dated by web search. A reviewer checked every claim; ' + plural(S.adjudication.overrides, 'change') + ' are logged.']),
+    block('Second coding', R.speeches ? [R.speeches + ' speeches were coded twice, independently. The coders agreed on whether a speech contains any claim in ' + Math.round(R.any_claim_agreement * 100) + '% of them.', 'They found ' + R.claims_first_coder + ' and ' + R.claims_second_coder + ' claims; ' + R.claims_matched + ' matched.' + (R.claims_matched ? ' On matched claims, agreement on currency was ' + Math.round((mf.vintage_status.agreement || 0) * 100) + '%.' : '')] : ['Not yet run.']),
+    block('What "lag" means', ['Cited lag: debate date minus the publication date of the source the speaker named.', 'Implied lag: debate date minus the date an incident happened, or the last month an outdated description was still fair.']),
+    block('Limits', ['No human coder has checked these labels.', 'The coders’ own knowledge stops around mid-2026, before most of these debates. A claim marked current may already have been stale.', 'The sample is too small for rates, medians or country comparisons.']),
+  );
+  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + ' · Hansard text from TheyWorkForYou and OpenAustralia.';
+
+  render(); drawStrip();
+  let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(drawStrip, 120); }).observe(strip);
+  new MutationObserver(drawStrip).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawStrip);
+})();
+</script>

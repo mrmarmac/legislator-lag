@@ -146,8 +146,12 @@ models, reports, and events the coder has never seen.
 
 Computed in `legislag/build.py`, not by coders.
 
-- **Cited lag** = debate date − `source_date`. Month-precision dates use the
-  15th; year-precision dates use 1 July. Negative values are set to zero.
+- **Cited lag** = debate date − `source_date`, for sources with
+  `source_identified_by` = `named_in_speech` only. A source the coder
+  identified for an unsourced claim is kept as a reference and gets no lag. A month- or year-precision date
+  is placed at the middle of its period. If the debate falls inside that
+  period, the middle of the part before the debate is used. A source is never
+  dated after the speech that cites it.
 - **Implied lag** = debate date − `vintage_date` for `outdated` and
   `dated_event` claims. `current` claims have lag zero. This is a floor: a
   claim can be current at the coder's horizon yet stale by the debate.
@@ -193,3 +197,48 @@ One JSON object per line, one line per speech, including speeches with no claims
 ```
 
 The example values illustrate the format only. They are not findings.
+
+## 6. Open questions from the pilot
+
+Raised by the coders on the 100-speech pilot. None is settled. Each needs a
+ruling before the full run.
+
+1. **Scope of the unit.** The definition admits only claims about what AI can
+   do. Coders logged 127 near misses. Several carried dated sources: a 2024
+   sector study, an IMF exposure estimate, opinion polls, a re-shared 2014
+   quotation. Decide whether the unit should widen to any empirical claim
+   about AI that rests on a source.
+2. **Incident date.** "Occurred or first reported" is ambiguous. One incident
+   occurred on 18 June 2026 and was disclosed on 24 September. Coders used
+   the occurrence date. The disclosure date is arguably the right one for
+   evidence age, since nobody could cite it earlier.
+3. **Sources for unsourced incidents.** Coders disagreed on whether to fill
+   the source fields when a speaker describes a well-known incident without
+   naming a source. The pilot keeps such sources as references and gives them
+   no cited lag.
+4. **Hedged and presupposed claims.** "AI could help…", "there is an
+   opportunity to use AI…", and capabilities presupposed inside a policy
+   sentence were mostly excluded. The codebook is silent.
+5. **Risk estimates.** Statements about what people believe ("a 10 per cent
+   risk", "builders think it could kill us all") were coded as trajectory
+   claims. They describe opinion, not systems.
+6. **Generic rate-of-progress remarks.** "This technology is evolving fast"
+   was excluded as rhetoric. The trajectory definition could admit it.
+7. **What counts as AI.** Recommender algorithms and rules-based assessment
+   tools were excluded unless the speaker called them AI.
+8. **Old news that is still true.** A claim such as "some AI systems already
+   exceed human abilities, such as AlphaFold" is `current` under the rules.
+   `capability_since` captures its age, but has no threshold and rests on
+   coder recall.
+9. **Contested claims.** There is no status for "broadly true but overstated".
+   One such claim was coded `unclear`.
+10. **Two sources, one claim.** The single `source_date` field holds the later
+    source.
+11. **Incident accuracy.** There is no field for an incident that is alleged
+    rather than established, or described loosely by the speaker.
+12. **Quote length.** The 60-word contiguous limit is tight for narrated
+    incidents, where the system name and the date sit in earlier sentences.
+13. **`ai_relevance`.** Needs a value for procedural speeches under an AI
+    heading, and a clearer line between `substantive` and `passing`.
+14. **Text read into the record.** Motions, letters, and reports read out by a
+    speaker are not clearly "made or endorsed by the speaker".
