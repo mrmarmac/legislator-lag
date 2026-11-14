@@ -1,0 +1,42 @@
+{
+  "uk-commons": {
+    "sitting_days": 40,
+    "speeches": 17566,
+    "ai_speeches": 247,
+    "ai_words": 90522,
+    "first_day": "2026-07-01",
+    "last_day": "2026-11-12"
+  },
+  "uk-westminsterhall": {
+    "sitting_days": 37,
+    "speeches": 4210,
+    "ai_speeches": 119,
+    "ai_words": 65450,
+    "first_day": "2026-07-01",
+    "last_day": "2026-11-12"
+  },
+  "uk-lords": {
+    "sitting_days": 49,
+    "speeches": 8244,
+    "ai_speeches": 452,
+    "ai_words": 244565,
+    "first_day": "2026-07-01",
+    "last_day": "2026-11-12"
+  },
+  "au-representatives": {
+    "sitting_days": 25,
+    "speeches": 6668,
+    "ai_speeches": 231,
+    "ai_words": 220639,
+    "first_day": "2026-07-01",
+    "last_day": "2026-10-29"
+  },
+  "au-senate": {
+    "sitting_days": 21,
+    "speeches": 7476,
+    "ai_speeches": 133,
+    "ai_words": 84602,
+    "first_day": "2026-07-01",
+    "last_day": "2026-10-15"
+  }
+}
