@@ -1,0 +1,288 @@
+{
+  "generated": "2026-11-15",
+  "run": "pilot",
+  "run_label": "Pilot",
+  "codebook": "v0.1",
+  "corpus_speeches": 1182,
+  "eligible_speeches": 100,
+  "coded_speeches": 100,
+  "adjudication": {
+    "overrides": 0,
+    "claims_dropped": 0
+  },
+  "near_misses": 127,
+  "summary": {
+    "all": {
+      "speeches": 100,
+      "speeches_with_claims": 16,
+      "relevance": {
+        "passing": 63,
+        "substantive": 37
+      },
+      "claims": 27,
+      "claim_type": {
+        "capability": 10,
+        "incident": 11,
+        "trajectory": 6
+      },
+      "evidence_basis": {
+        "none": 19,
+        "vague_attribution": 2,
+        "cited_source": 5,
+        "personal_experience": 1
+      },
+      "vintage_status": {
+        "current": 11,
+        "dated_event": 11,
+        "forecast": 4,
+        "unclear": 1
+      },
+      "claims_with_dated_source": 5,
+      "cited_lag_months": {
+        "n": 5,
+        "median": 0.3,
+        "p25": 0.2,
+        "p75": 1.4,
+        "min": 0.1,
+        "max": 1.9
+      },
+      "assessable_for_vintage": 11,
+      "outdated": 0,
+      "outdated_lag_months": null,
+      "incident_lag_months": {
+        "n": 11,
+        "median": 2.0,
+        "p25": 0.8,
+        "p75": 4.8,
+        "min": 0.4,
+        "max": 22.3
+      },
+      "capability_age_months": {
+        "n": 7,
+        "median": 46.0,
+        "p25": 33.7,
+        "p75": 73.0,
+        "min": 5.1,
+        "max": 101.0
+      }
+    },
+    "UK": {
+      "speeches": 50,
+      "speeches_with_claims": 7,
+      "relevance": {
+        "substantive": 23,
+        "passing": 27
+      },
+      "claims": 10,
+      "claim_type": {
+        "capability": 4,
+        "incident": 5,
+        "trajectory": 1
+      },
+      "evidence_basis": {
+        "none": 8,
+        "vague_attribution": 1,
+        "cited_source": 1
+      },
+      "vintage_status": {
+        "current": 4,
+        "dated_event": 5,
+        "forecast": 1
+      },
+      "claims_with_dated_source": 1,
+      "cited_lag_months": {
+        "n": 1,
+        "median": 1.4,
+        "p25": 1.4,
+        "p75": 1.4,
+        "min": 1.4,
+        "max": 1.4
+      },
+      "assessable_for_vintage": 4,
+      "outdated": 0,
+      "outdated_lag_months": null,
+      "incident_lag_months": {
+        "n": 5,
+        "median": 1.2,
+        "p25": 0.4,
+        "p75": 5.7,
+        "min": 0.4,
+        "max": 12.9
+      },
+      "capability_age_months": {
+        "n": 3,
+        "median": 77.7,
+        "p25": 73.0,
+        "p75": 89.3,
+        "min": 68.2,
+        "max": 101.0
+      }
+    },
+    "AU": {
+      "speeches": 50,
+      "speeches_with_claims": 9,
+      "relevance": {
+        "passing": 36,
+        "substantive": 14
+      },
+      "claims": 17,
+      "claim_type": {
+        "trajectory": 5,
+        "capability": 6,
+        "incident": 6
+      },
+      "evidence_basis": {
+        "cited_source": 4,
+        "vague_attribution": 1,
+        "none": 11,
+        "personal_experience": 1
+      },
+      "vintage_status": {
+        "current": 7,
+        "forecast": 3,
+        "dated_event": 6,
+        "unclear": 1
+      },
+      "claims_with_dated_source": 4,
+      "cited_lag_months": {
+        "n": 4,
+        "median": 0.2,
+        "p25": 0.2,
+        "p75": 0.7,
+        "min": 0.1,
+        "max": 1.9
+      },
+      "assessable_for_vintage": 7,
+      "outdated": 0,
+      "outdated_lag_months": null,
+      "incident_lag_months": {
+        "n": 6,
+        "median": 2.0,
+        "p25": 1.5,
+        "p75": 3.4,
+        "min": 0.5,
+        "max": 22.3
+      },
+      "capability_age_months": {
+        "n": 4,
+        "median": 33.7,
+        "p25": 18.8,
+        "p75": 44.5,
+        "min": 5.1,
+        "max": 46.0
+      }
+    }
+  },
+  "yield": {
+    "by_mentions": [
+      {
+        "band": "1",
+        "speeches": 44,
+        "with_claims": 0,
+        "claims": 0
+      },
+      {
+        "band": "2",
+        "speeches": 21,
+        "with_claims": 2,
+        "claims": 2
+      },
+      {
+        "band": "3-5",
+        "speeches": 17,
+        "with_claims": 4,
+        "claims": 6
+      },
+      {
+        "band": "6-10",
+        "speeches": 6,
+        "with_claims": 3,
+        "claims": 4
+      },
+      {
+        "band": "11+",
+        "speeches": 12,
+        "with_claims": 7,
+        "claims": 15
+      }
+    ],
+    "by_heading": {
+      "ai_in_heading": {
+        "speeches": 26,
+        "with_claims": 7,
+        "claims": 12
+      },
+      "other": {
+        "speeches": 74,
+        "with_claims": 9,
+        "claims": 15
+      }
+    }
+  },
+  "reliability": {
+    "speeches": 20,
+    "any_claim_agreement": 1.0,
+    "any_claim_kappa": 1.0,
+    "relevance_agreement": 1.0,
+    "claims_first_coder": 6,
+    "claims_second_coder": 6,
+    "claims_matched": 6,
+    "claim_overlap": 1.0,
+    "matched_fields": {
+      "claim_type": {
+        "agreement": 1.0,
+        "kappa": 1.0
+      },
+      "evidence_basis": {
+        "agreement": 1.0,
+        "kappa": 1.0
+      },
+      "vintage_status": {
+        "agreement": 1.0,
+        "kappa": 1.0
+      }
+    }
+  },
+  "corpus": {
+    "uk-commons": {
+      "sitting_days": 40,
+      "speeches": 17566,
+      "ai_speeches": 247,
+      "ai_words": 90522,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "uk-westminsterhall": {
+      "sitting_days": 37,
+      "speeches": 4210,
+      "ai_speeches": 119,
+      "ai_words": 65450,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "uk-lords": {
+      "sitting_days": 49,
+      "speeches": 8244,
+      "ai_speeches": 452,
+      "ai_words": 244565,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "au-representatives": {
+      "sitting_days": 25,
+      "speeches": 6668,
+      "ai_speeches": 231,
+      "ai_words": 220639,
+      "first_day": "2026-07-01",
+      "last_day": "2026-10-29"
+    },
+    "au-senate": {
+      "sitting_days": 21,
+      "speeches": 7476,
+      "ai_speeches": 133,
+      "ai_words": 84602,
+      "first_day": "2026-07-01",
+      "last_day": "2026-10-15"
+    }
+  }
+}

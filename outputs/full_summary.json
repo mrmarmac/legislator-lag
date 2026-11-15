@@ -1,0 +1,343 @@
+{
+  "generated": "2026-11-15",
+  "run": "full",
+  "run_label": "Full run",
+  "codebook": "v0.2",
+  "corpus_speeches": 1182,
+  "eligible_speeches": 613,
+  "coded_speeches": 613,
+  "adjudication": {
+    "overrides": 9,
+    "claims_dropped": 9
+  },
+  "near_misses": 899,
+  "summary": {
+    "all": {
+      "speeches": 613,
+      "speeches_with_claims": 288,
+      "relevance": {
+        "substantive": 372,
+        "passing": 225,
+        "procedural": 16
+      },
+      "claims": 576,
+      "claim_type": {
+        "incident": 124,
+        "limitation": 34,
+        "economic": 37,
+        "other": 91,
+        "labour": 24,
+        "capability": 76,
+        "adoption": 45,
+        "opinion": 113,
+        "resource": 26,
+        "trajectory": 6
+      },
+      "evidence_basis": {
+        "none": 294,
+        "vague_attribution": 78,
+        "cited_source": 179,
+        "personal_experience": 25
+      },
+      "vintage_status": {
+        "dated_event": 124,
+        "contested": 79,
+        "current": 316,
+        "unclear": 33,
+        "forecast": 18,
+        "outdated": 4,
+        "never_accurate": 2
+      },
+      "claims_with_dated_source": 162,
+      "cited_lag_months": {
+        "n": 162,
+        "median": 0.9,
+        "p25": 0.2,
+        "p75": 4.1,
+        "min": 0.0,
+        "max": 145.1
+      },
+      "assessable_for_vintage": 320,
+      "outdated": 4,
+      "outdated_lag_months": {
+        "n": 4,
+        "median": 9.4,
+        "p25": 3.5,
+        "p75": 15.6,
+        "min": 0.7,
+        "max": 19.1
+      },
+      "incident_lag_months": {
+        "n": 113,
+        "median": 1.6,
+        "p25": 0.6,
+        "p75": 8.0,
+        "min": 0.0,
+        "max": 41.6
+      },
+      "capability_age_months": {
+        "n": 65,
+        "median": 41.6,
+        "p25": 23.2,
+        "p75": 59.8,
+        "min": 0.0,
+        "max": 115.4
+      }
+    },
+    "UK": {
+      "speeches": 417,
+      "speeches_with_claims": 188,
+      "relevance": {
+        "passing": 152,
+        "substantive": 258,
+        "procedural": 7
+      },
+      "claims": 343,
+      "claim_type": {
+        "limitation": 26,
+        "economic": 31,
+        "incident": 75,
+        "other": 59,
+        "labour": 18,
+        "capability": 41,
+        "adoption": 24,
+        "opinion": 59,
+        "resource": 5,
+        "trajectory": 5
+      },
+      "evidence_basis": {
+        "vague_attribution": 44,
+        "none": 175,
+        "cited_source": 109,
+        "personal_experience": 15
+      },
+      "vintage_status": {
+        "contested": 44,
+        "current": 190,
+        "unclear": 19,
+        "dated_event": 75,
+        "forecast": 11,
+        "outdated": 2,
+        "never_accurate": 2
+      },
+      "claims_with_dated_source": 97,
+      "cited_lag_months": {
+        "n": 97,
+        "median": 1.2,
+        "p25": 0.2,
+        "p75": 4.5,
+        "min": 0.0,
+        "max": 48.2
+      },
+      "assessable_for_vintage": 192,
+      "outdated": 2,
+      "outdated_lag_months": {
+        "n": 2,
+        "median": 9.4,
+        "p25": 7.0,
+        "p75": 11.9,
+        "min": 4.5,
+        "max": 14.4
+      },
+      "incident_lag_months": {
+        "n": 72,
+        "median": 1.4,
+        "p25": 0.4,
+        "p75": 6.4,
+        "min": 0.0,
+        "max": 41.6
+      },
+      "capability_age_months": {
+        "n": 34,
+        "median": 38.7,
+        "p25": 17.1,
+        "p75": 56.6,
+        "min": 0.0,
+        "max": 101.0
+      }
+    },
+    "AU": {
+      "speeches": 196,
+      "speeches_with_claims": 100,
+      "relevance": {
+        "substantive": 114,
+        "passing": 73,
+        "procedural": 9
+      },
+      "claims": 233,
+      "claim_type": {
+        "incident": 49,
+        "adoption": 21,
+        "capability": 35,
+        "other": 32,
+        "labour": 6,
+        "limitation": 8,
+        "opinion": 54,
+        "economic": 6,
+        "resource": 21,
+        "trajectory": 1
+      },
+      "evidence_basis": {
+        "none": 119,
+        "cited_source": 70,
+        "personal_experience": 10,
+        "vague_attribution": 34
+      },
+      "vintage_status": {
+        "dated_event": 49,
+        "contested": 35,
+        "current": 126,
+        "unclear": 14,
+        "outdated": 2,
+        "forecast": 7
+      },
+      "claims_with_dated_source": 65,
+      "cited_lag_months": {
+        "n": 65,
+        "median": 0.3,
+        "p25": 0.1,
+        "p75": 2.7,
+        "min": 0.0,
+        "max": 145.1
+      },
+      "assessable_for_vintage": 128,
+      "outdated": 2,
+      "outdated_lag_months": {
+        "n": 2,
+        "median": 9.9,
+        "p25": 5.3,
+        "p75": 14.5,
+        "min": 0.7,
+        "max": 19.1
+      },
+      "incident_lag_months": {
+        "n": 41,
+        "median": 2.7,
+        "p25": 0.7,
+        "p75": 10.3,
+        "min": 0.0,
+        "max": 41.1
+      },
+      "capability_age_months": {
+        "n": 31,
+        "median": 43.8,
+        "p25": 28.6,
+        "p75": 58.0,
+        "min": 0.3,
+        "max": 115.4
+      }
+    }
+  },
+  "yield": {
+    "by_mentions": [
+      {
+        "band": "1",
+        "speeches": 0,
+        "with_claims": 0,
+        "claims": 0
+      },
+      {
+        "band": "2",
+        "speeches": 227,
+        "with_claims": 62,
+        "claims": 68
+      },
+      {
+        "band": "3-5",
+        "speeches": 227,
+        "with_claims": 97,
+        "claims": 124
+      },
+      {
+        "band": "6-10",
+        "speeches": 76,
+        "with_claims": 57,
+        "claims": 109
+      },
+      {
+        "band": "11+",
+        "speeches": 83,
+        "with_claims": 72,
+        "claims": 275
+      }
+    ],
+    "by_heading": {
+      "ai_in_heading": {
+        "speeches": 213,
+        "with_claims": 107,
+        "claims": 236
+      },
+      "other": {
+        "speeches": 400,
+        "with_claims": 181,
+        "claims": 340
+      }
+    }
+  },
+  "reliability": {
+    "speeches": 60,
+    "any_claim_agreement": 0.95,
+    "any_claim_kappa": 0.9,
+    "relevance_agreement": 0.92,
+    "claims_first_coder": 63,
+    "claims_second_coder": 54,
+    "claims_matched": 49,
+    "claim_overlap": 0.72,
+    "matched_fields": {
+      "claim_type": {
+        "agreement": 0.98,
+        "kappa": 0.97
+      },
+      "evidence_basis": {
+        "agreement": 0.88,
+        "kappa": 0.82
+      },
+      "vintage_status": {
+        "agreement": 0.84,
+        "kappa": 0.75
+      }
+    }
+  },
+  "corpus": {
+    "uk-commons": {
+      "sitting_days": 40,
+      "speeches": 17566,
+      "ai_speeches": 247,
+      "ai_words": 90522,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "uk-westminsterhall": {
+      "sitting_days": 37,
+      "speeches": 4210,
+      "ai_speeches": 119,
+      "ai_words": 65450,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "uk-lords": {
+      "sitting_days": 49,
+      "speeches": 8244,
+      "ai_speeches": 452,
+      "ai_words": 244565,
+      "first_day": "2026-07-01",
+      "last_day": "2026-11-12"
+    },
+    "au-representatives": {
+      "sitting_days": 25,
+      "speeches": 6668,
+      "ai_speeches": 231,
+      "ai_words": 220639,
+      "first_day": "2026-07-01",
+      "last_day": "2026-10-29"
+    },
+    "au-senate": {
+      "sitting_days": 21,
+      "speeches": 7476,
+      "ai_speeches": 133,
+      "ai_words": 84602,
+      "first_day": "2026-07-01",
+      "last_day": "2026-10-15"
+    }
+  }
+}
