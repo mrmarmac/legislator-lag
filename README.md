@@ -376,11 +376,15 @@ licence allows non-commercial sharing of unmodified material. Speeches in
 `data/` are reproduced in full and unchanged. The results page quotes them in
 part, with the wording of each quote unchanged.
 
-The Australian licence version and its application to Hansard were taken from
-search results, because the Parliament of Australia site refused automated
-requests. Confirm them on its
-[copyright page](https://www.aph.gov.au/Help/Disclaimer_Privacy_Copyright)
-before relying on this notice.
+The Australian terms were confirmed on 15 November 2026 from the Parliament
+of Australia's
+[copyright page](https://www.aph.gov.au/Help/Disclaimer_Privacy_Copyright).
+It puts all material on the website under CC BY-NC-ND 4.0, "with the exception
+of the Commonwealth Coat of Arms and where otherwise noted", and asks for
+attribution as "Parliament of Australia website". It describes the freedom as
+copying and communicating material "in its current form" for non-commercial
+purposes. Whether short quotations count as the current form is not settled
+here.
 
 These licences cover the Hansard text only. The code, codebook and labels in
 this repository are not Hansard text and carry no licence yet.
