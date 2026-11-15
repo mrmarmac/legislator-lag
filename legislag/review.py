@@ -42,6 +42,7 @@ from .schema import CLAIM_TYPES, EVIDENCE_BASES, RELEVANCE, VINTAGE_STATUSES
 from .site import MARK
 
 HUMAN = "human_review"
+TAIL_CHECK = "tail_verification"     # reviewer rulings on primary documents, made after the packets
 REVIEW = DATA / "full" / "review"
 ADJUDICATION = DATA / "full" / "adjudication.jsonl"
 SEED = 20261115
@@ -123,7 +124,7 @@ def packets(seed: int = SEED) -> dict:
     speeches = load_speeches(run)
     main = load_labels(run, run.main)
     second = load_labels(run, run.second)
-    claims, _, summary = build("full", skip_by=(HUMAN,))
+    claims, _, summary = build("full", skip_by=(HUMAN, TAIL_CHECK))
     kept = defaultdict(list)                 # main coding as it stood before human review
     for c in claims:
         kept[c["speech_id"]].append(c)
