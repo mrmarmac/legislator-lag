@@ -41,15 +41,15 @@ it was still the latest fair account on the day.
 
 | Assessment | Claims |
 |---|---:|
-| Still current | 307 |
+| Still current | 308 |
 | Dated incident | 124 |
 | Contested: overstated or disputed | 74 |
 | Unclear: could not be assessed | 30 |
 | Forecast | 19 |
-| Outdated: overtaken by newer evidence | 5 |
+| Outdated: overtaken by newer evidence | 4 |
 | Never accurate | 2 |
 
-Only five claims had been overtaken by newer evidence. Seventy-four were
+Only four claims had been overtaken by newer evidence. Seventy-four were
 overstated or disputed, which is the larger quality problem.
 
 **Incidents.** 124 claims described a specific incident, and 112 could be
@@ -83,7 +83,7 @@ evidence offered.
 | Evidence offered | 39 agreed, 1 unsure |
 | Source and date (25 with a source) | 22 right, 3 could not be verified |
 | Date an incident became public (9 incidents) | 2 right, 7 could not be verified |
-| Currency on the day | 24 agreed, 3 disagreed, 13 unsure |
+| Currency on the day | 24 agreed, 2 disagreed, 13 unsure, 1 ruling withdrawn |
 
 Weighted to the corpus, 14% of coded claims were ruled not to be claims. With
 40 claims, that estimate is rough. The reviewer read the whole speech in 3 of
@@ -108,7 +108,7 @@ outdated or never-accurate claims, 2 of which are in both groups.
   record shows the reviewer's verdict only.
 
 **What the review changed.** 16 claims dropped, 1 added from the second
-coding, 16 relabelled, and 1 speech's relevance changed. Every change is a
+coding, 15 relabelled, and 1 speech's relevance changed. Every change is a
 line in `data/full/adjudication.jsonl` marked `"by": "human_review"`.
 
 **What it implies.** Both checks point the same way: the coders included
@@ -143,10 +143,11 @@ high. Lags are measured on named, dated sources and are less affected.
   dropped 9 claims from the first 14 batches so they match three rulings made
   mid-run (`CODEBOOK.md` section 7). Those drops are also logged in
   `data/full/adjudication.jsonl`.
-- **Open items from the review.** One claim was ruled outdated without a
-  last-fair month, so it has no measured lag
-  (`uk-lords:2026-11-12a.411.0#1`). One missed claim the reviewer noted has
-  not been coded (`au-representatives:2026-10-27.113.1`).
+- **Left as they are.** One missed claim the reviewer noted was not coded
+  (`au-representatives:2026-10-27.113.1`). One currency ruling was withdrawn
+  by the reviewer and the coder's label stands
+  (`uk-lords:2026-11-12a.411.0#1`). The full run was not recoded under
+  codebook v0.3.
 - **Frame.** Speeches with a single AI term were not coded.
 
 ## The pilot (100 speeches, codebook v0.1)
@@ -295,7 +296,7 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
-| `data/full/adjudication.jsonl` | Every change made on review, with reasons: 9 earlier drops and 34 lines from the human review. |
+| `data/full/adjudication.jsonl` | Every change made on review, with reasons: 9 earlier drops and 33 lines from the human review. |
 | `site/review.html`, `outputs/full_review.json` | Human review page and its packets: the 40-claim spot-check sample, the double-coded speeches that disagree, and the tail. |
 | `data/full/review/` | The reviewer's verdicts and a summary of them. |
 | `site/pilot.html`, `outputs/pilot_*`, `data/pilot/` | The same outputs for the pilot. |

@@ -11,7 +11,6 @@
 {"by": "human_review", "reason": "Human spot-check: not a checkable factual claim about AI.", "claim_id": "au-representatives:2026-09-17.112.1#6", "drop": true}
 {"by": "human_review", "reason": "Human spot-check: vintage_status changed from contested.", "claim_id": "au-senate:2026-09-15.196.2#1", "set": {"vintage_status": "current", "vintage_date": null}}
 {"by": "human_review", "reason": "Human spot-check: not a checkable factual claim about AI.", "claim_id": "uk-lords:2026-07-03a.1271.0#1", "drop": true}
-{"by": "human_review", "reason": "Human spot-check: vintage_status changed from current.", "claim_id": "uk-lords:2026-11-12a.411.0#1", "set": {"vintage_status": "outdated", "vintage_date": null}}
 {"by": "human_review", "reason": "Human spot-check: not a checkable factual claim about AI.", "claim_id": "uk-westminsterhall:2026-07-08a.163.3#1", "drop": true}
 {"by": "human_review", "reason": "Human spot-check: not a checkable factual claim about AI.", "claim_id": "uk-lords:2026-10-13a.218.0#1", "drop": true}
 {"by": "human_review", "reason": "Human spot-check: not a checkable factual claim about AI.", "claim_id": "uk-lords:2026-07-01a.1037.2#2", "drop": true}

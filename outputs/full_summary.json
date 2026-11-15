@@ -7,11 +7,11 @@
   "eligible_speeches": 613,
   "coded_speeches": 613,
   "adjudication": {
-    "overrides": 43,
+    "overrides": 42,
     "claims_dropped": 25,
     "claims_added": 1,
-    "labels_changed": 16,
-    "by_human": 34
+    "labels_changed": 15,
+    "by_human": 33
   },
   "human_review": {
     "verdicts": 94,
@@ -21,7 +21,7 @@
       "is_claim_unsure": 4,
       "claim_type_agree": 38,
       "evidence_basis_agree": 39,
-      "vintage_status_disagree": 3,
+      "vintage_status_disagree": 2,
       "source_right": 22,
       "missed_no": 2,
       "is_claim_yes": 29,
@@ -33,6 +33,7 @@
       "vintage_status_unsure": 13,
       "event_date_cannot_verify": 7,
       "claim_type_unsure": 2,
+      "vintage_status_withdrawn": 1,
       "source_cannot_verify": 3,
       "evidence_basis_unsure": 1
     },
@@ -61,7 +62,7 @@
     "applied": {
       "claims_dropped": 16,
       "claims_added": 1,
-      "claims_relabelled": 16,
+      "claims_relabelled": 15,
       "speeches_relabelled": 1
     }
   },
@@ -97,10 +98,10 @@
       "vintage_status": {
         "dated_event": 124,
         "contested": 74,
-        "current": 307,
+        "current": 308,
         "unclear": 30,
         "forecast": 19,
-        "outdated": 5,
+        "outdated": 4,
         "never_accurate": 2
       },
       "claims_with_dated_source": 161,
@@ -113,7 +114,7 @@
         "max": 145.1
       },
       "assessable_for_vintage": 312,
-      "outdated": 5,
+      "outdated": 4,
       "outdated_lag_months": {
         "n": 4,
         "median": 9.4,
@@ -168,11 +169,11 @@
       },
       "vintage_status": {
         "contested": 43,
-        "current": 183,
+        "current": 184,
         "unclear": 17,
         "dated_event": 75,
         "forecast": 12,
-        "outdated": 3,
+        "outdated": 2,
         "never_accurate": 2
       },
       "claims_with_dated_source": 98,
@@ -185,7 +186,7 @@
         "max": 48.2
       },
       "assessable_for_vintage": 186,
-      "outdated": 3,
+      "outdated": 2,
       "outdated_lag_months": {
         "n": 2,
         "median": 9.4,

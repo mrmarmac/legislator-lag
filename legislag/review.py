@@ -252,7 +252,9 @@ def import_verdicts(folder: str, seed: int = SEED) -> int:
             it = items[path.stem]
             have[path.stem] = {"id": path.stem, "kind": it["kind"], "ref": it["ref"],
                                "answers": doc.get("answers") or {}, "note": doc.get("note") or "",
-                               "done": doc.get("done"), "updated": doc.get("updated")}
+                               "done": doc.get("done"), "updated": doc.get("updated"),
+                               **{k: have[path.stem][k] for k in ("withdrawn", "withdrawn_note")
+                                  if k in have.get(path.stem, {})}}
     REVIEW.mkdir(parents=True, exist_ok=True)
     order = [i for i in items if i in have]
     (REVIEW / "verdicts.jsonl").write_text(
@@ -293,6 +295,11 @@ def apply(seed: int = SEED) -> dict:
         st[f"is_claim_{a['is_claim']}"] += 1
         weighted["all"] += it["weight"]
         weighted["not_claim"] += it["weight"] * (a["is_claim"] == "no")
+        # A verdict the reviewer later withdrew stays on file but is not applied.
+        withdrawn = set(v.get("withdrawn") or [])
+        a = {k: x for k, x in a.items() if k not in withdrawn}
+        for q in withdrawn:
+            st[f"{q}_withdrawn"] += 1
         for q in ("claim_type", "evidence_basis", "vintage_status", "source", "event_date", "missed"):
             if q in a:
                 st[f"{q}_{a[q]}"] += 1
