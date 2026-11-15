@@ -3,8 +3,9 @@
 **Question.** How stale is the AI evidence that UK and Australian
 parliamentarians cite?
 
-**Status.** Full run complete: 613 speeches coded under codebook v0.2. An
-earlier 100-speech pilot under v0.1 is kept for reference.
+**Status.** Full run complete: 613 speeches coded under codebook v0.2, then
+reviewed in part by a human. The numbers below include the reviewer's
+rulings. An earlier 100-speech pilot under v0.1 is kept for reference.
 
 **Short answer.** Rarely stale. More often, missing. When a parliamentarian
 names a source for a claim about AI, it is usually weeks old. But half of all
@@ -15,49 +16,49 @@ claims come with no evidence at all.
 The corpus is 1,182 speeches that mention AI, from 1 July 2026 to the latest
 sitting day available (12 November for the UK; 29 October for the Australian
 House; 15 October for the Senate). The 613 speeches with two or more AI terms
-were coded. 288 of them contain at least one factual claim about AI.
+were coded. 282 of them contain at least one factual claim about AI.
 
 | | UK | Australia | Both |
 |---|---:|---:|---:|
 | Speeches coded | 417 | 196 | 613 |
-| Speeches with a claim | 188 | 100 | 288 |
-| Claims | 343 | 233 | 576 |
-| No evidence offered | 175 | 119 | 294 |
-| Vague attribution ("experts say") | 44 | 34 | 78 |
-| Personal experience | 15 | 10 | 25 |
-| Named source | 109 | 70 | 179 |
-| Named source that could be dated | 97 | 65 | 162 |
-| Median age of a dated named source | 1.2 months | 8 days | 29 days |
+| Speeches with a claim | 184 | 98 | 282 |
+| Claims | 335 | 226 | 561 |
+| No evidence offered | 170 | 114 | 284 |
+| Vague attribution ("experts say") | 42 | 34 | 76 |
+| Personal experience | 13 | 9 | 22 |
+| Named source | 110 | 69 | 179 |
+| Named source that could be dated | 98 | 63 | 161 |
+| Median age of a dated named source | 1.2 months | 8 days | 30 days |
 
-**How old are named sources?** Of the 162 that could be dated:
+**How old are named sources?** Of the 161 that could be dated:
 
-- 81 (50%) were under a month old, and 56 of those were under a week old.
-- 21 (13%) were more than a year old, and 12 were more than two years old.
+- 79 (49%) were under a month old, and 54 of those were a week old or less.
+- 21 (13%) were more than a year old, and 12 were two years old or more.
 - The oldest was a 2014 post, quoted in September 2026 without its date.
 
-**Old is not the same as out of date.** Coders also judged whether each claim
-was still the latest fair account on the day.
+**Old is not the same as out of date.** Each claim was also judged on whether
+it was still the latest fair account on the day.
 
 | Assessment | Claims |
 |---|---:|
-| Still current | 316 |
+| Still current | 308 |
 | Dated incident | 124 |
-| Contested: overstated or disputed | 79 |
-| Unclear: could not be assessed | 33 |
-| Forecast | 18 |
+| Contested: overstated or disputed | 74 |
+| Unclear: could not be assessed | 30 |
+| Forecast | 19 |
 | Outdated: overtaken by newer evidence | 4 |
 | Never accurate | 2 |
 
-Only four claims had been overtaken by newer evidence. Seventy-nine were
+Only four claims had been overtaken by newer evidence. Seventy-four were
 overstated or disputed, which is the larger quality problem.
 
-**Incidents.** 124 claims described a specific incident, and 113 could be
-dated. The median incident had been public for 1.6 months. In 50 cases the
+**Incidents.** 124 claims described a specific incident, and 112 could be
+dated. The median incident had been public for 1.8 months. In 53 cases the
 speaker's account went beyond what reporting supports, or the incident could
 not be verified.
 
 **By kind of claim.** Median age of dated named sources: labour 7.2 months,
-limitations 4.0, economic 2.6, adoption 2.0, capability 0.8, incidents 0.6,
+limitations 4.0, economic 2.6, adoption 2.0, capability 1.0, incidents 0.6,
 opinion and risk estimates 0.3. Most kinds have fewer than 20 dated sources,
 so treat these as rough.
 
@@ -65,30 +66,88 @@ so treat these as rough.
 Australian sample is smaller and ends in October. The gap may reflect which
 debates fell in the window, not a lasting difference.
 
+### Human review
+
+One person reviewed three samples on 15 November 2026, using the review page
+(`site/review.html`). The packets showed the coders' labels and the speech
+text, with no proposed rulings. The verdicts are in
+`data/full/review/verdicts.jsonl`.
+
+**Spot-check: 40 claims.** A seeded random draw, stratified by country and
+evidence offered.
+
+| Question | Result |
+|---|---|
+| Is it a claim? | 29 yes, 7 no, 4 unsure |
+| Kind of claim | 38 agreed, 2 unsure |
+| Evidence offered | 39 agreed, 1 unsure |
+| Source and date (25 with a source) | 22 right, 3 could not be verified |
+| Date an incident became public (9 incidents) | 2 right, 7 could not be verified |
+| Currency on the day | 24 agreed, 2 disagreed, 13 unsure, 1 ruling withdrawn |
+
+Weighted to the corpus, 14% of coded claims were ruled not to be claims. With
+40 claims, that estimate is rough. The reviewer read the whole speech in 3 of
+40 cases and found one missed claim, so missed claims remain largely
+unchecked.
+
+**Adjudication: 60 double-coded speeches.** 31 matched on every field that
+changes a reported number. The reviewer ruled on the other 29.
+
+- 16 claims were found by one coder only. 13 were ruled not claims.
+- 51 labels differed on matched claims. The reviewer chose the first coder 17
+  times, the second 20 times, neither once, and was unsure 13 times.
+- 5 speeches differed on relevance. One was ruled on. Four were left unsure.
+
+**The tail: 25 claims.** The 21 named sources over a year old and the 6
+outdated or never-accurate claims, 2 of which are in both groups.
+
+- All 6 outdated or never-accurate rulings were confirmed.
+- Of the 21 old sources, 18 were confirmed as the right source with the right
+  date. Three could not be verified.
+- A primary document link is on record for one source. For the rest, the
+  record shows the reviewer's verdict only.
+
+**What the review changed.** 16 claims dropped, 1 added from the second
+coding, 15 relabelled, and 1 speech's relevance changed. Every change is a
+line in `data/full/adjudication.jsonl` marked `"by": "human_review"`.
+
+**What it implies.** Both checks point the same way: the coders included
+remarks that are not claims. Only sampled claims were corrected. The other
+500 or so were not reviewed, so the claim counts above are probably still too
+high. Lags are measured on named, dated sources and are less affected.
+
 ### How far to trust this
 
-- **No human has checked the labels.** All coding was done by AI coders
-  (Claude Opus 5.5) working from `CODEBOOK.md` and `docs/coder_brief.md`.
+- **A human checked samples, not every label.** One reviewer, working alone.
+  Coding was done by AI coders (Claude Opus 5.5) working from `CODEBOOK.md`
+  and `docs/coder_brief.md`.
 - **Second coding.** Sixty speeches were coded twice by coders who could not
   see the first coding. They agreed on whether a speech holds any claim in 95%
   of speeches. They found 63 and 54 claims, of which 49 were the same claim.
   On those, they agreed on the kind of claim 98% of the time, on the evidence
   offered 88%, and on currency 84%. Both coders were the same model, so this
-  measures consistency, not correctness.
+  measures consistency, not correctness. These figures describe the coders
+  before any review.
 - **Which claims get found is the weak point.** A quarter of claims found by
-  one coder were not found by the other. Counts of claims are softer than
-  the lags measured on them.
-- **Source dates.** 140 of 162 were confirmed on a page found by web search,
+  one coder were not found by the other, and the reviewer ruled most of those
+  out. Counts of claims are softer than the lags measured on them.
+- **Currency is hard to judge.** The reviewer was unsure on currency for 13 of
+  40 spot-checked claims.
+- **Source dates.** 139 of 161 were confirmed on a page found by web search,
   usually news coverage or a listing and not the primary document. 17 rest on
   a date stated in the speech, and 5 on coder recall.
 - **Knowledge horizon.** The coders' own knowledge ends before most of these
   debates. "Still current" means current as far as the coder could establish.
   Some of those claims may already have been stale.
-- **Review.** The session that ran the coders read the outdated and
-  never-accurate claims and the oldest sources, and re-ran the search behind
-  one outdated claim. It dropped 9 claims from the first 14 batches so they
-  match three rulings made mid-run (`CODEBOOK.md` section 7). It changed no
-  other label. The drops are logged in `data/full/adjudication.jsonl`.
+- **Earlier review.** Before the human review, the session that ran the coders
+  dropped 9 claims from the first 14 batches so they match three rulings made
+  mid-run (`CODEBOOK.md` section 7). Those drops are also logged in
+  `data/full/adjudication.jsonl`.
+- **Left as they are.** One missed claim the reviewer noted was not coded
+  (`au-representatives:2026-10-27.113.1`). One currency ruling was withdrawn
+  by the reviewer and the coder's label stands
+  (`uk-lords:2026-11-12a.411.0#1`). The full run was not recoded under
+  codebook v0.3.
 - **Frame.** Speeches with a single AI term were not coded.
 
 ## The pilot (100 speeches, codebook v0.1)
@@ -155,6 +214,7 @@ cannot support rates, medians, or a comparison between the two parliaments.
 | Unit | Any checkable factual claim about AI, not only capability claims. |
 | Incident dating | The date an incident became public is the evidence date. The occurrence date is kept as a second field. |
 | Twelve codebook gaps | Ruled as listed in `CODEBOOK.md` section 6. |
+| After the human review | Codebook v0.3 adds worked examples of remarks that are not claims (section 8). No rule changed, and no speech was recoded. |
 
 The pilot labels stay as coded under v0.1. The full run recoded every speech
 in the frame under v0.2, including pilot speeches.
@@ -166,6 +226,23 @@ The 613 speeches were split into 49 batches of about 7,900 words
 subagent in a Claude Code session, following `docs/coder_brief.md`. A random
 60 speeches were coded a second time in 6 further batches. Labels are in
 `data/full/labels/`.
+
+## Rerunning the human review
+
+```bash
+python -m legislag.review                # build the packets and site/review.html
+```
+
+```bash
+python -m legislag.review --import DIR   # merge verdict documents saved from the page
+```
+
+```bash
+python -m legislag.review --apply        # write the rulings into adjudication.jsonl
+```
+
+Then rebuild the outputs. The packets are always built from the labels as
+they stood before the human review, so the sample does not move.
 
 ## Rerunning without a Claude Code session
 
@@ -219,7 +296,9 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
-| `data/full/adjudication.jsonl` | The nine claims dropped on review, with reasons. |
+| `data/full/adjudication.jsonl` | Every change made on review, with reasons: 9 earlier drops and 33 lines from the human review. |
+| `site/review.html`, `outputs/full_review.json` | Human review page and its packets: the 40-claim spot-check sample, the double-coded speeches that disagree, and the tail. |
+| `data/full/review/` | The reviewer's verdicts and a summary of them. |
 | `site/pilot.html`, `outputs/pilot_*`, `data/pilot/` | The same outputs for the pilot. |
 | `data/speeches_ai.jsonl` | The corpus: every AI-mentioning speech. |
 

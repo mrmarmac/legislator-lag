@@ -7,57 +7,113 @@
   "eligible_speeches": 613,
   "coded_speeches": 613,
   "adjudication": {
-    "overrides": 9,
-    "claims_dropped": 9
+    "overrides": 42,
+    "claims_dropped": 25,
+    "claims_added": 1,
+    "labels_changed": 15,
+    "by_human": 33
+  },
+  "human_review": {
+    "verdicts": 94,
+    "spot": {
+      "sampled": 40,
+      "answered": 40,
+      "is_claim_unsure": 4,
+      "claim_type_agree": 38,
+      "evidence_basis_agree": 39,
+      "vintage_status_disagree": 2,
+      "source_right": 22,
+      "missed_no": 2,
+      "is_claim_yes": 29,
+      "vintage_status_agree": 24,
+      "missed_not_read": 37,
+      "missed_yes": 1,
+      "event_date_right": 2,
+      "is_claim_no": 7,
+      "vintage_status_unsure": 13,
+      "event_date_cannot_verify": 7,
+      "claim_type_unsure": 2,
+      "vintage_status_withdrawn": 1,
+      "source_cannot_verify": 3,
+      "evidence_basis_unsure": 1
+    },
+    "adj": {
+      "speeches": 29,
+      "field_main": 17,
+      "field_second": 20,
+      "rules_noted": 3,
+      "one_coder_drop": 13,
+      "relevance_ruled": 1,
+      "field_unsure": 13,
+      "relevance_unsure": 4,
+      "field_neither": 1,
+      "one_coder_keep": 3
+    },
+    "tail": {
+      "reviewed": 25,
+      "source_right_yes": 18,
+      "date_ok_right": 18,
+      "status_ok_agree": 6,
+      "primary_link_recorded": 1,
+      "source_right_unsure": 3,
+      "date_ok_cannot_verify": 3
+    },
+    "spot_not_claim_weighted": 0.141,
+    "applied": {
+      "claims_dropped": 16,
+      "claims_added": 1,
+      "claims_relabelled": 15,
+      "speeches_relabelled": 1
+    }
   },
   "near_misses": 899,
   "summary": {
     "all": {
       "speeches": 613,
-      "speeches_with_claims": 288,
+      "speeches_with_claims": 282,
       "relevance": {
         "substantive": 372,
         "passing": 225,
         "procedural": 16
       },
-      "claims": 576,
+      "claims": 561,
       "claim_type": {
         "incident": 124,
         "limitation": 34,
         "economic": 37,
-        "other": 91,
+        "other": 87,
         "labour": 24,
-        "capability": 76,
         "adoption": 45,
-        "opinion": 113,
+        "capability": 71,
+        "opinion": 108,
         "resource": 26,
-        "trajectory": 6
+        "trajectory": 5
       },
       "evidence_basis": {
-        "none": 294,
-        "vague_attribution": 78,
+        "none": 284,
+        "vague_attribution": 76,
         "cited_source": 179,
-        "personal_experience": 25
+        "personal_experience": 22
       },
       "vintage_status": {
         "dated_event": 124,
-        "contested": 79,
-        "current": 316,
-        "unclear": 33,
-        "forecast": 18,
+        "contested": 74,
+        "current": 308,
+        "unclear": 30,
+        "forecast": 19,
         "outdated": 4,
         "never_accurate": 2
       },
-      "claims_with_dated_source": 162,
+      "claims_with_dated_source": 161,
       "cited_lag_months": {
-        "n": 162,
-        "median": 0.9,
+        "n": 161,
+        "median": 1.0,
         "p25": 0.2,
         "p75": 4.1,
         "min": 0.0,
         "max": 145.1
       },
-      "assessable_for_vintage": 320,
+      "assessable_for_vintage": 312,
       "outdated": 4,
       "outdated_lag_months": {
         "n": 4,
@@ -68,68 +124,68 @@
         "max": 19.1
       },
       "incident_lag_months": {
-        "n": 113,
-        "median": 1.6,
+        "n": 112,
+        "median": 1.8,
         "p25": 0.6,
-        "p75": 8.0,
+        "p75": 8.1,
         "min": 0.0,
         "max": 41.6
       },
       "capability_age_months": {
-        "n": 65,
-        "median": 41.6,
-        "p25": 23.2,
-        "p75": 59.8,
+        "n": 63,
+        "median": 40.9,
+        "p25": 20.7,
+        "p75": 63.9,
         "min": 0.0,
         "max": 115.4
       }
     },
     "UK": {
       "speeches": 417,
-      "speeches_with_claims": 188,
+      "speeches_with_claims": 184,
       "relevance": {
         "passing": 152,
         "substantive": 258,
         "procedural": 7
       },
-      "claims": 343,
+      "claims": 335,
       "claim_type": {
         "limitation": 26,
         "economic": 31,
         "incident": 75,
-        "other": 59,
+        "other": 56,
         "labour": 18,
-        "capability": 41,
+        "capability": 38,
         "adoption": 24,
-        "opinion": 59,
+        "opinion": 58,
         "resource": 5,
-        "trajectory": 5
+        "trajectory": 4
       },
       "evidence_basis": {
-        "vague_attribution": 44,
-        "none": 175,
-        "cited_source": 109,
-        "personal_experience": 15
+        "vague_attribution": 42,
+        "none": 170,
+        "cited_source": 110,
+        "personal_experience": 13
       },
       "vintage_status": {
-        "contested": 44,
-        "current": 190,
-        "unclear": 19,
+        "contested": 43,
+        "current": 184,
+        "unclear": 17,
         "dated_event": 75,
-        "forecast": 11,
+        "forecast": 12,
         "outdated": 2,
         "never_accurate": 2
       },
-      "claims_with_dated_source": 97,
+      "claims_with_dated_source": 98,
       "cited_lag_months": {
-        "n": 97,
+        "n": 98,
         "median": 1.2,
         "p25": 0.2,
-        "p75": 4.5,
+        "p75": 4.4,
         "min": 0.0,
         "max": 48.2
       },
-      "assessable_for_vintage": 192,
+      "assessable_for_vintage": 186,
       "outdated": 2,
       "outdated_lag_months": {
         "n": 2,
@@ -140,67 +196,67 @@
         "max": 14.4
       },
       "incident_lag_months": {
-        "n": 72,
-        "median": 1.4,
-        "p25": 0.4,
-        "p75": 6.4,
+        "n": 71,
+        "median": 1.5,
+        "p25": 0.6,
+        "p75": 6.6,
         "min": 0.0,
         "max": 41.6
       },
       "capability_age_months": {
-        "n": 34,
-        "median": 38.7,
-        "p25": 17.1,
-        "p75": 56.6,
+        "n": 33,
+        "median": 37.7,
+        "p25": 16.7,
+        "p75": 59.8,
         "min": 0.0,
         "max": 101.0
       }
     },
     "AU": {
       "speeches": 196,
-      "speeches_with_claims": 100,
+      "speeches_with_claims": 98,
       "relevance": {
         "substantive": 114,
         "passing": 73,
         "procedural": 9
       },
-      "claims": 233,
+      "claims": 226,
       "claim_type": {
         "incident": 49,
         "adoption": 21,
-        "capability": 35,
-        "other": 32,
+        "capability": 33,
+        "other": 31,
         "labour": 6,
         "limitation": 8,
-        "opinion": 54,
+        "opinion": 50,
         "economic": 6,
         "resource": 21,
         "trajectory": 1
       },
       "evidence_basis": {
-        "none": 119,
-        "cited_source": 70,
-        "personal_experience": 10,
+        "none": 114,
+        "cited_source": 69,
+        "personal_experience": 9,
         "vague_attribution": 34
       },
       "vintage_status": {
         "dated_event": 49,
-        "contested": 35,
-        "current": 126,
-        "unclear": 14,
+        "contested": 31,
+        "current": 124,
+        "unclear": 13,
         "outdated": 2,
         "forecast": 7
       },
-      "claims_with_dated_source": 65,
+      "claims_with_dated_source": 63,
       "cited_lag_months": {
-        "n": 65,
+        "n": 63,
         "median": 0.3,
         "p25": 0.1,
-        "p75": 2.7,
+        "p75": 3.1,
         "min": 0.0,
         "max": 145.1
       },
-      "assessable_for_vintage": 128,
+      "assessable_for_vintage": 126,
       "outdated": 2,
       "outdated_lag_months": {
         "n": 2,
@@ -219,10 +275,10 @@
         "max": 41.1
       },
       "capability_age_months": {
-        "n": 31,
-        "median": 43.8,
-        "p25": 28.6,
-        "p75": 58.0,
+        "n": 30,
+        "median": 43.0,
+        "p25": 28.3,
+        "p75": 63.5,
         "min": 0.3,
         "max": 115.4
       }
@@ -239,38 +295,38 @@
       {
         "band": "2",
         "speeches": 227,
-        "with_claims": 62,
-        "claims": 68
+        "with_claims": 59,
+        "claims": 64
       },
       {
         "band": "3-5",
         "speeches": 227,
-        "with_claims": 97,
-        "claims": 124
+        "with_claims": 96,
+        "claims": 122
       },
       {
         "band": "6-10",
         "speeches": 76,
-        "with_claims": 57,
-        "claims": 109
+        "with_claims": 55,
+        "claims": 102
       },
       {
         "band": "11+",
         "speeches": 83,
         "with_claims": 72,
-        "claims": 275
+        "claims": 273
       }
     ],
     "by_heading": {
       "ai_in_heading": {
         "speeches": 213,
-        "with_claims": 107,
-        "claims": 236
+        "with_claims": 105,
+        "claims": 228
       },
       "other": {
         "speeches": 400,
-        "with_claims": 181,
-        "claims": 340
+        "with_claims": 177,
+        "claims": 333
       }
     }
   },
