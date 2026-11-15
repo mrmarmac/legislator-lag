@@ -3,7 +3,8 @@
 **Question.** How stale is the AI evidence that UK and Australian
 parliamentarians cite?
 
-**Status.** Pilot complete: 100 speeches coded. The full run has not started.
+**Status.** Pilot complete: 100 speeches coded under codebook v0.1. The full
+run is set up under codebook v0.2 and has not been run.
 
 ## What the pilot found
 
@@ -61,23 +62,65 @@ cannot support rates, medians, or a comparison between the two parliaments.
   so the Australian speech URLs follow its URL pattern but were not opened.
 - **The API fetcher is untested.** See below.
 
-## Decisions needed before the full run
+## Decisions taken after the pilot
 
-1. **Sampling frame.** A random draw wastes most of its reading on passing
-   mentions. Options: code only speeches with three or more AI terms (386 of
-   1,182), or only debates with AI in the title (315), or everything.
-2. **Scope of the unit.** Keep "capability claims", or widen to any empirical
-   AI claim that rests on a source. The widening is where older evidence
-   appeared in the pilot.
-3. **Incident dating.** Date an incident by when it happened or when it became
-   public.
-4. **The remaining codebook questions.** Listed in `CODEBOOK.md` section 6.
+| Decision | Ruling |
+|---|---|
+| Sampling frame | Speeches with two or more AI terms: 613 of 1,182. |
+| Unit | Any checkable factual claim about AI, not only capability claims. |
+| Incident dating | The date an incident became public is the evidence date. The occurrence date is kept as a second field. |
+| Twelve codebook gaps | Ruled as listed in `CODEBOOK.md` section 6. |
+
+The pilot labels stay as coded under v0.1. The full run recodes every speech
+in the frame under v0.2, including pilot speeches.
+
+## The full run
+
+`legislag/code_api.py` codes the frame with the Claude API. It sends one
+request per speech. Claude reads the speech, searches the web to date sources
+and incidents, and hands in a coding that is checked by the same rules as
+`legislag.validate`. Failed checks go back to Claude to fix.
+
+```bash
+export ANTHROPIC_API_KEY=...
+```
+
+```bash
+python -m legislag.code_api --dry-run     # frame size and cost range, no API calls
+```
+
+```bash
+python -m legislag.code_api --limit 5     # smoke test
+```
+
+```bash
+python -m legislag.code_api               # the full run; rerun to resume or retry failures
+```
+
+```bash
+python -m legislag.code_api --reliability 60   # independent second coding of 60 speeches
+```
+
+```bash
+python -m legislag.build --run full && python -m legislag.xlsx --run full
+```
+
+- **Model.** `claude-opus-5-5` at high effort by default. Change with `--model`
+  and `--effort`.
+- **Cost.** The dry run prints a rough range. For 613 speeches it is about
+  $50 to $190 on the default model. The range is an estimate from token
+  counts and an assumed web-search price, not a measurement.
+- **Fallbacks.** If the model declines a speech on safety grounds, the API
+  reruns it on a fallback model. `--no-fallbacks` turns this off. The model
+  that coded each speech is recorded in `coder`.
+- **Status.** The request loop has been tested against a stub client only. It
+  has not yet been run against the live API.
 
 ## Outputs
 
 | File | What it is |
 |---|---|
-| `site/index.html` | Results page: charts and a browser of every claim. |
+| `site/pilot.html` | Pilot results page: charts and a browser of every claim. |
 | `outputs/pilot_claims.xlsx` | Workbook: summary, claims, speeches. Lags are formulas. |
 | `outputs/pilot_claims.csv`, `outputs/pilot_speeches.csv` | The same tables as CSV. |
 | `outputs/pilot_summary.json` | Headline numbers, claim yield, reliability. |
@@ -111,8 +154,7 @@ python -m legislag.build && python -m legislag.xlsx && python -m legislag.site
 ```
 
 Coding sits between `sample` and `validate`. In the pilot it was done by AI
-coders in a Claude session. A standalone script for the full run is the next
-step.
+coders in a Claude session. The full run uses `legislag.code_api`, above.
 
 ### Data source: bulk XML now, APIs when keys exist
 

@@ -250,13 +250,13 @@ footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--ru
   // One evidence age per claim: the named source if dated, else the incident or vintage date.
   function evidence(c) {
     if (c.cited_lag_months != null) return { m: c.cited_lag_months, kind: 'source', date: c.source_date, what: c.source_name };
-    if ((c.vintage_status === 'dated_event' || c.vintage_status === 'outdated') && c.implied_lag_months != null)
-      return { m: c.implied_lag_months, kind: c.vintage_status === 'outdated' ? 'vintage' : 'event', date: c.vintage_date, what: c.vintage_status === 'outdated' ? 'Last current' : 'Incident' };
+    if (c.incident_lag_months != null) return { m: c.incident_lag_months, kind: 'event', date: c.event_date_used, what: 'Incident' };
+    if (c.vintage_status === 'outdated' && c.implied_lag_months != null) return { m: c.implied_lag_months, kind: 'vintage', date: c.vintage_date, what: 'Last current' };
     return null;
   }
 
   // ---- header ----
-  const corpus = S.corpus, totalAI = Object.values(corpus).reduce((a, v) => a + v.ai_speeches, 0);
+  const corpus = S.corpus, totalAI = S.corpus_speeches;
   const lastDay = Object.values(corpus).map(v => v.last_day).sort().pop();
   $('pilot-badge').textContent = 'Pilot: ' + S.coded_speeches + ' of ' + totalAI.toLocaleString('en-GB') + ' speeches · 1 July to ' + fmtDate(lastDay);
   const withEv = claims.filter(evidence), named = claims.filter(c => c.cited_lag_months != null);
@@ -401,8 +401,9 @@ footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--ru
       if (c.cited_lag_months != null) ev.append(el('p', 'big', fmtLag(c.cited_lag_months) + ' old when cited'));
     }
     const vi = fact('Is it still current?');
-    vi.append(el('div', 'big', lab(c.vintage_status) + (c.vintage_date ? ' · ' + fmtDate(c.vintage_date) : '')));
-    if (c.implied_lag_months != null && c.vintage_status !== 'current') vi.append(el('p', 'big', fmtLag(c.implied_lag_months) + ' before the debate'));
+    const when = c.event_date_used || c.vintage_date, gap = c.incident_lag_months != null ? c.incident_lag_months : (c.vintage_status === 'outdated' ? c.implied_lag_months : null);
+    vi.append(el('div', 'big', lab(c.vintage_status) + (when ? ' · ' + fmtDate(when) : '')));
+    if (gap != null) vi.append(el('p', 'big', fmtLag(gap) + ' before the debate'));
     if (c.vintage_rationale) vi.append(el('p', null, c.vintage_rationale));
     vi.append(el('p', 'note', 'Coder confidence: ' + c.vintage_confidence + (c.adjudicated ? '. Changed on review: ' + c.adjudication_reason : '')));
     facts.append(ev, vi);

@@ -1,7 +1,10 @@
 {
-  "generated": "2026-11-14",
+  "generated": "2026-11-15",
+  "run": "pilot",
+  "run_label": "Pilot",
   "codebook": "v0.1",
-  "sample_speeches": 100,
+  "corpus_speeches": 1182,
+  "eligible_speeches": 100,
   "coded_speeches": 100,
   "adjudication": {
     "overrides": 0,

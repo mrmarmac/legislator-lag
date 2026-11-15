@@ -1,14 +1,15 @@
 """Write the claims workbook.
 
-    python -m legislag.xlsx
+    python -m legislag.xlsx [--run pilot|full]
 
-Reads the tables produced by legislag.build and writes
-outputs/pilot_claims.xlsx with four sheets: Read me, Summary, Claims, Speeches.
+Builds the tables with legislag.build and writes
+outputs/<run>_claims.xlsx with four sheets: Read me, Summary, Claims, Speeches.
 Lags and summary figures are live formulas over the Claims sheet, so edits to
 a date or a code flow through.
 """
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import sys
 
@@ -19,8 +20,8 @@ from openpyxl.worksheet.formula import ArrayFormula
 
 from .build import build
 from .config import ROOT
-
-OUT = ROOT / "outputs" / "pilot_claims.xlsx"
+from .runs import RUNS
+from .schema import CLAIM_TYPES
 FONT = "Arial"
 HEAD_FILL = PatternFill("solid", start_color="1F2A37")
 HEAD_FONT = Font(name=FONT, bold=True, color="FFFFFF", size=10)
@@ -42,6 +43,7 @@ CLAIMS = [
     ("Debate", "heading", 30, "wrap"),
     ("Claim (paraphrase)", "claim", 48, "wrap"),
     ("Quote (verbatim)", "quote", 60, "wrap"),
+    ("Supporting quote", "supporting_quote", 40, "wrap"),
     ("Claim type", "claim_type", 12, "text"),
     ("Domain", "domain", 16, "text"),
     ("Named system", "named_system", 16, "text"),
@@ -57,6 +59,14 @@ CLAIMS = [
     ("Cited lag (months)", None, 12, "formula"),
     ("Source URL", "source_url", 36, "text"),
     ("Source notes", "source_notes", 36, "wrap"),
+    ("Other sources", "other_sources_json", 30, "wrap"),
+    ("Incident date used", "event_date_used", 14, "text"),
+    ("Incident occurred", "event_occurred_date", 14, "text"),
+    ("Incident date (resolved)", "event_date_resolved", 14, "date"),
+    ("Incident lag (days)", None, 12, "formula"),
+    ("Incident lag (months)", None, 12, "formula"),
+    ("Loosely described", "incident_loosely_described", 11, "text"),
+    ("Incident accuracy note", "incident_accuracy_note", 36, "wrap"),
     ("Vintage status", "vintage_status", 15, "text"),
     ("Vintage date (as coded)", "vintage_date", 14, "text"),
     ("Vintage date (resolved)", "vintage_date_resolved", 14, "date"),
@@ -125,7 +135,12 @@ def write_table(ws, spec, rows, formulas=None):
 
 
 def main() -> int:
-    claims, speeches, summary = build()
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--run", choices=sorted(RUNS), default="pilot")
+    args = ap.parse_args()
+    out = ROOT / "outputs" / f"{args.run}_claims.xlsx"
+    claims, speeches, summary = build(args.run)
+    label = summary["run_label"]
     wb = Workbook()
 
     # ---- Claims ----
@@ -135,10 +150,14 @@ def main() -> int:
         "Debate date", "Source date (resolved)", "Vintage date (resolved)", "Vintage status"))
     cited_d, implied_d = col(CLAIMS, "Cited lag (days)"), col(CLAIMS, "Implied lag (days)")
     ident = col(CLAIMS, "Source identified by")
+    event = col(CLAIMS, "Incident date (resolved)")
+    incident_d = col(CLAIMS, "Incident lag (days)")
     formulas = {
         "Cited lag (days)": lambda r: (
             f'=IF(OR({src}{r}="",{ident}{r}<>"named_in_speech"),"",{debate}{r}-{src}{r})'),
         "Cited lag (months)": lambda r: f'=IF({cited_d}{r}="","",{cited_d}{r}/30.4375)',
+        "Incident lag (days)": lambda r: f'=IF({event}{r}="","",{debate}{r}-{event}{r})',
+        "Incident lag (months)": lambda r: f'=IF({incident_d}{r}="","",{incident_d}{r}/30.4375)',
         "Implied lag (days)": lambda r: (
             f'=IF({status}{r}="current",0,IF({vin}{r}="","",{debate}{r}-{vin}{r}))'),
         "Implied lag (months)": lambda r: f'=IF({implied_d}{r}="","",{implied_d}{r}/30.4375)',
@@ -160,13 +179,14 @@ def main() -> int:
 
     country, basis, vstat = rng("Country"), rng("Evidence basis"), rng("Vintage status")
     cited_m, implied_m = rng("Cited lag (months)"), rng("Implied lag (months)")
+    incident_m, ctype = rng("Incident lag (months)"), rng("Claim type")
     s_country = rng("Country", SPEECHES, "Speeches", slast)
     s_claims = rng("Claims", SPEECHES, "Speeches", slast)
 
-    sm["A1"] = "Evidence lag in parliament: pilot summary"
+    sm["A1"] = f"Evidence lag in parliament: {label.lower()} summary"
     sm["A1"].font = TITLE
     sm["A2"] = ("Every figure below is a formula over the Claims and Speeches sheets. "
-                "Pilot sample, not the full corpus.")
+                + ("Pilot sample, not the full corpus." if args.run == "pilot" else ""))
     sm["A2"].font = NOTE
     for j, h in enumerate(["Measure", "UK", "AU", "Both"], 1):
         c = sm.cell(row=4, column=j, value=h)
@@ -208,70 +228,82 @@ def main() -> int:
         sm.cell(row=r, column=j, value=f).font = BODY
     r += 1
     count_row(r, "Capability claims", cif()); sm.cell(row=r, column=1).font = BOLD
+    present = [t for t in CLAIM_TYPES if any(c["claim_type"] == t for c in claims)]
+    for t in present:
+        r += 1
+        count_row(r, "  " + t.capitalize(), cif((ctype, t)))
     r += 2
     sm.cell(row=r, column=1, value="Evidence offered").font = BOLD
-    for label, val in [("Named source", "cited_source"), ("Vague attribution", "vague_attribution"),
-                       ("Personal experience", "personal_experience"), ("None", "none")]:
+    for name, val in [("Named source", "cited_source"), ("Vague attribution", "vague_attribution"),
+                      ("Personal experience", "personal_experience"), ("None", "none")]:
         r += 1
-        count_row(r, "  " + label, cif((basis, val)))
+        count_row(r, "  " + name, cif((basis, val)))
     r += 2
-    sm.cell(row=r, column=1, value="Cited evidence (claims with a dated source)").font = BOLD
+    sm.cell(row=r, column=1, value="Cited evidence (sources the speaker named)").font = BOLD
     r += 1
-    count_row(r, "  Claims with a dated source",
+    count_row(r, "  Claims with a dated named source",
               lambda cc: f'=COUNTIFS({country},"{cc}",{cited_m},">=0")' if cc
               else f'=COUNTIF({cited_m},">=0")')
     r += 1
     count_row(r, "  Median cited lag (months)", median(cited_m), "0.0")
     r += 2
     sm.cell(row=r, column=1, value="Implied vintage").font = BOLD
-    for label, val in [("Current", "current"), ("Outdated", "outdated"),
-                       ("Dated event (incident)", "dated_event"), ("Forecast", "forecast"),
-                       ("Never accurate", "never_accurate"), ("Unclear", "unclear")]:
+    for name, val in [("Current", "current"), ("Outdated", "outdated"),
+                      ("Contested", "contested"), ("Dated event (incident)", "dated_event"),
+                      ("Forecast", "forecast"), ("Never accurate", "never_accurate"),
+                      ("Unclear", "unclear")]:
         r += 1
-        count_row(r, "  " + label, cif((vstat, val)))
+        count_row(r, "  " + name, cif((vstat, val)))
     r += 1
     count_row(r, "  Median lag of outdated claims (months)",
               median(implied_m, (vstat, "outdated")), "0.0")
     r += 1
-    count_row(r, "  Median age of cited incidents (months)",
-              median(implied_m, (vstat, "dated_event")), "0.0")
+    count_row(r, "  Median age of incidents (months)", median(incident_m), "0.0")
     sm.column_dimensions["A"].width = 46
     for c in "BCD":
         sm.column_dimensions[c].width = 10
 
     # ---- Read me ----
     rm = wb.create_sheet("Read me", 0)
-    corpus = summary["corpus"]
-    total_ai = sum(v["ai_speeches"] for v in corpus.values())
+    pilot = args.run == "pilot"
+    incident_rule = ("Incident lag = debate date minus the date the incident happened."
+                     if pilot else
+                     "Incident lag = debate date minus the date the incident became public.")
     lines = [
-        ("Evidence lag in parliament: pilot claims workbook", TITLE),
+        (f"Evidence lag in parliament: {label.lower()} claims workbook", TITLE),
         (f"Generated {summary['generated']}. Codebook {summary['codebook']}.", NOTE),
         ("", BODY),
         ("What this is", BOLD),
-        (f"A pilot coding of {summary['coded_speeches']} speeches sampled from {total_ai} "
-         "speeches that mention AI in the UK and Australian parliaments since 1 July 2026.", BODY),
-        ("Each row of Claims is one capability claim: a statement about what AI can or "
-         "cannot do, how it behaves, or how fast it is changing.", BODY),
+        ((f"A pilot coding of {summary['coded_speeches']} speeches sampled from "
+          f"{summary['corpus_speeches']} speeches that mention AI in the UK and Australian "
+          "parliaments since 1 July 2026.") if pilot else
+         (f"{summary['coded_speeches']} of the {summary['eligible_speeches']} speeches with two or "
+          "more AI terms, from the UK and Australian parliaments since 1 July 2026."), BODY),
+        (("Each row of Claims is one capability claim: a statement about what AI can or "
+          "cannot do, how it behaves, or how fast it is changing.") if pilot else
+         "Each row of Claims is one checkable factual claim about AI.", BODY),
         ("", BODY),
         ("Sheets", BOLD),
         ("Summary: headline counts and medians, all formulas.", BODY),
         ("Claims: one row per claim, with its source, dates and lags.", BODY),
-        ("Speeches: one row per sampled speech, including speeches with no claims.", BODY),
+        ("Speeches: one row per coded speech, including speeches with no claims.", BODY),
         ("", BODY),
         ("How the lags are defined", BOLD),
         ("Cited lag = debate date minus the publication date of the source the speaker named. "
          "Sources the coder identified for an unsourced claim are listed but get no cited lag.", BODY),
-        ("Implied lag = debate date minus the last month the claim was still a fair "
-         "description of AI. Zero when the claim is still current.", BODY),
+        (incident_rule, BODY),
+        ("Implied lag = debate date minus the last month an outdated claim was still fair. "
+         "Zero when the claim is still current.", BODY),
         ("Partial dates (a month or a year) are placed at the middle of the period. "
-         "See 'Source date (resolved)'.", BODY),
+         "See the 'resolved' date columns.", BODY),
         ("", BODY),
         ("Read these limits before quoting a number", BOLD),
-        ("Pilot sample: 50 speeches per country. Estimates are indicative only.", BODY),
-        ("Coding was done by AI coders against CODEBOOK.md, then reviewed. "
+        ("Pilot sample: 50 speeches per country. Estimates are indicative only." if pilot else
+         "Speeches with a single AI term were not coded.", BODY),
+        ("Coding was done by AI coders against CODEBOOK.md. "
          "It has not been checked by a human coder.", BODY),
-        ("Coders' own knowledge ends around mid-2026. 'Current' means current at that "
-         "horizon, so implied lag is a floor.", BODY),
+        ("The coders' own knowledge ends before most of these debates. 'Current' means current "
+         "as far as the coder could establish, so implied lag is a floor.", BODY),
         ("'Source date basis' shows whether a date was confirmed on the web or recalled.", BODY),
         ("", BODY),
         ("Editing", BOLD),
@@ -284,9 +316,9 @@ def main() -> int:
     rm.column_dimensions["A"].width = 110
 
     wb.move_sheet("Read me", offset=-wb.index(rm))
-    OUT.parent.mkdir(exist_ok=True)
-    wb.save(OUT)
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(claims)} claims, {len(speeches)} speeches")
+    out.parent.mkdir(exist_ok=True)
+    wb.save(out)
+    print(f"wrote {out.relative_to(ROOT)}: {len(claims)} claims, {len(speeches)} speeches")
     return 0
 
 

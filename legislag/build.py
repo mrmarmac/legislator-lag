@@ -1,18 +1,16 @@
 """Turn coder labels into analysis tables.
 
-    python -m legislag.build
+    python -m legislag.build [--run pilot|full]
 
-Inputs
-    data/pilot/sample.jsonl                 sampled speeches
-    data/pilot/labels/batch_*.jsonl         coder output, one file per batch
-    data/pilot/labels/batch_reliability.jsonl   independent second coding
-    data/pilot/adjudication.jsonl           reviewer overrides (optional)
+Inputs (see legislag/runs.py for each run's paths)
+    speeches, coder labels, the independent second coding, and an optional
+    adjudication.jsonl of reviewer overrides beside the labels directory
 
 Outputs
-    outputs/pilot_claims.csv        one row per claim, with derived lags
-    outputs/pilot_speeches.csv      one row per sampled speech
-    outputs/pilot_summary.json      headline numbers and reliability
-    outputs/pilot_site_data.json    compact payload for the browser page
+    outputs/<run>_claims.csv        one row per claim, with derived lags
+    outputs/<run>_speeches.csv      one row per coded speech
+    outputs/<run>_summary.json      headline numbers and reliability
+    outputs/<run>_site_data.json    compact payload for the browser page
 
 Adjudication lines look like
     {"claim_id": "...#2", "set": {"vintage_status": "current"}, "reason": "..."}
@@ -21,6 +19,7 @@ Coder files are never edited; every reviewer change is recorded there.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import datetime as dt
 import json
@@ -30,28 +29,10 @@ import sys
 from collections import Counter, defaultdict
 
 from .config import AI_PATTERN, DATA, ROOT
+from .runs import RUNS, Run, ai_mentions, load_labels, load_speeches, read_jsonl
 
-PILOT = DATA / "pilot"
 OUT = ROOT / "outputs"
-MAIN_BATCHES = [f"batch_{i}" for i in range(1, 6)]
 WORD = re.compile(r"[a-z0-9]+")
-
-
-# ---------- loading ----------
-
-def read_jsonl(path):
-    if not path.exists():
-        return []
-    return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
-
-
-def load_labels(names):
-    rows = {}
-    for name in names:
-        for row in read_jsonl(PILOT / "labels" / f"{name}.jsonl"):
-            row["coder"] = name
-            rows[row["speech_id"]] = row
-    return rows
 
 
 # ---------- dates and lags ----------
@@ -93,10 +74,17 @@ def derive(claim: dict, debate: dt.date) -> dict:
     cited = (debate - src).days if src and named else None
 
     status = claim.get("vintage_status")
-    vin, vin_prec = (None, None)
+    # Incidents: v0.2 dates them by when they became public. v0.1 labels have
+    # only the occurrence date, stored in vintage_date.
+    event_raw = claim.get("event_public_date") or (
+        claim.get("vintage_date") if status == "dated_event" else None)
+    event, _ = resolve(event_raw, debate) if status == "dated_event" else (None, None)
+    incident = (debate - event).days if event else None
+
+    vin = None
     implied = None
-    if status in ("outdated", "dated_event"):
-        vin, vin_prec = resolve(claim.get("vintage_date"), debate)
+    if status == "outdated":
+        vin, _ = resolve(claim.get("vintage_date"), debate)
         implied = (debate - vin).days if vin else None
     elif status == "current":
         implied = 0
@@ -107,10 +95,16 @@ def derive(claim: dict, debate: dt.date) -> dict:
         "source_date_precision": src_prec,
         "cited_lag_days": cited,
         "cited_lag_months": months(cited),
+        "event_date_used": event_raw if status == "dated_event" else None,
+        "event_date_resolved": event.isoformat() if event else None,
+        "incident_lag_days": incident,
+        "incident_lag_months": months(incident),
         "vintage_date_resolved": vin.isoformat() if vin else None,
         "implied_lag_days": implied,
         "implied_lag_months": months(implied),
         "capability_age_months": months((debate - since).days) if since else None,
+        "other_sources_json": json.dumps(claim.get("other_sources") or [], ensure_ascii=False)
+        if claim.get("other_sources") else None,
     }
 
 
@@ -209,9 +203,8 @@ def summarise(claims: list[dict], speeches: list[dict]) -> dict:
             "assessable_for_vintage": len(implied),
             "outdated": len(outdated),
             "outdated_lag_months": quantiles([c["implied_lag_months"] for c in outdated]),
-            "incident_lag_months": quantiles([c["implied_lag_months"] for c in cs
-                                              if c["vintage_status"] == "dated_event"
-                                              and c["implied_lag_months"] is not None]),
+            "incident_lag_months": quantiles([c["incident_lag_months"] for c in cs
+                                              if c["incident_lag_months"] is not None]),
             "capability_age_months": quantiles([c["capability_age_months"] for c in cs
                                                 if c["capability_age_months"] is not None]),
         }
@@ -251,11 +244,14 @@ CLAIM_COLUMNS = [
     "url", "claim", "quote", "claim_type", "domain", "named_system", "evidence_basis",
     "source_name", "source_org", "source_type", "source_identified_by", "source_date",
     "source_date_basis", "source_date_resolved", "source_date_precision",
-    "cited_lag_days", "cited_lag_months", "source_url", "source_notes",
+    "cited_lag_days", "cited_lag_months", "source_url", "source_notes", "other_sources_json",
+    "event_public_date", "event_occurred_date", "event_date_used", "event_date_resolved",
+    "incident_lag_days", "incident_lag_months", "incident_loosely_described",
+    "incident_accuracy_note",
     "vintage_status", "vintage_date", "vintage_date_resolved", "implied_lag_days",
     "implied_lag_months", "vintage_rationale", "vintage_confidence",
-    "capability_since", "capability_age_months", "adjudicated", "adjudication_reason",
-    "coder", "speech_id", "weight",
+    "capability_since", "capability_age_months", "supporting_quote",
+    "adjudicated", "adjudication_reason", "coder", "speech_id", "weight",
 ]
 SPEECH_COLUMNS = [
     "speech_id", "country", "chamber_label", "date", "speaker", "heading", "subheading",
@@ -271,16 +267,21 @@ def write_csv(path, rows, columns):
         w.writerows(rows)
 
 
-def build() -> tuple[list[dict], list[dict], dict]:
-    sample = {r["speech_id"]: r for r in read_jsonl(PILOT / "sample.jsonl")}
-    main = load_labels(MAIN_BATCHES)
-    second = load_labels(["batch_reliability"])
-    overrides = {a["claim_id"]: a for a in read_jsonl(PILOT / "adjudication.jsonl")}
+def build(run_name: str = "pilot") -> tuple[list[dict], list[dict], dict]:
+    run: Run = RUNS[run_name]
+    sample = load_speeches(run)
+    main = load_labels(run, run.main)
+    second = load_labels(run, run.second)
+    overrides = {a["claim_id"]: a for a in read_jsonl(run.labels_dir.parent / "adjudication.jsonl")}
+    versions = sorted({row.get("codebook", "v0.1") for row in main.values()})
 
     claims, speeches, near_misses = [], [], []
     dropped = 0
     for sid in sorted(main, key=lambda s: (sample[s]["date"], s)):
         sp, row = sample[sid], main[sid]
+        meta = {**{k: sp[k] for k in ("country", "chamber_label", "date", "speaker",
+                                       "heading", "subheading", "url")},
+                "weight": sp.get("weight", 1)}
         debate = dt.date.fromisoformat(sp["date"])
         kept = 0
         for i, c in enumerate(row.get("claims") or [], 1):
@@ -294,52 +295,57 @@ def build() -> tuple[list[dict], list[dict], dict]:
                 c.update(ov.get("set") or {})
             kept += 1
             claims.append({
-                **{k: sp[k] for k in ("country", "chamber_label", "date", "speaker",
-                                       "heading", "subheading", "url", "weight")},
-                **c, **derive(c, debate),
+                **meta, **c, **derive(c, debate),
                 "claim_id": cid, "speech_id": sid, "coder": row["coder"],
                 "adjudicated": bool(ov), "adjudication_reason": ov.get("reason") if ov else None,
             })
         for nm in row.get("near_misses") or []:
             near_misses.append({"speech_id": sid, **nm})
         speeches.append({
-            **{k: sp[k] for k in ("speech_id", "country", "chamber_label", "date", "speaker",
-                                   "heading", "subheading", "url", "word_count", "weight")},
+            **meta, "speech_id": sid, "word_count": sp["word_count"],
             "ai_relevance": row["ai_relevance"], "n_claims": kept,
             "n_near_misses": len(row.get("near_misses") or []),
             "coder_notes": row.get("coder_notes") or "", "coder": row["coder"],
-            "ai_mentions": len(AI_PATTERN.findall(sp["text"])),
+            "ai_mentions": ai_mentions(sp),
             "ai_in_heading": bool(AI_PATTERN.search(sp["heading"] + " " + sp["subheading"])),
         })
 
+    corpus = json.loads((DATA / "corpus_stats.json").read_text())
     summary = {
         "generated": dt.date.today().isoformat(),
-        "codebook": "v0.1",
-        "sample_speeches": len(sample),
+        "run": run.name,
+        "run_label": run.label,
+        "codebook": " and ".join(versions) if versions else None,
+        "corpus_speeches": sum(v["ai_speeches"] for v in corpus.values()),
+        "eligible_speeches": len(sample) if run.name == "pilot" else sum(
+            1 for s in sample.values() if ai_mentions(s) >= 2),
         "coded_speeches": len(speeches),
         "adjudication": {"overrides": len(overrides), "claims_dropped": dropped},
         "near_misses": len(near_misses),
         "summary": summarise(claims, speeches),
         "yield": claim_yield(speeches),
         "reliability": reliability(main, second),
-        "corpus": json.loads((DATA / "corpus_stats.json").read_text()),
+        "corpus": corpus,
     }
     return claims, speeches, summary
 
 
 def main() -> int:
-    claims, speeches, summary = build()
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--run", choices=sorted(RUNS), default="pilot")
+    args = ap.parse_args()
+    claims, speeches, summary = build(args.run)
     OUT.mkdir(exist_ok=True)
-    write_csv(OUT / "pilot_claims.csv", claims, CLAIM_COLUMNS)
-    write_csv(OUT / "pilot_speeches.csv", speeches, SPEECH_COLUMNS)
-    (OUT / "pilot_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    write_csv(OUT / f"{args.run}_claims.csv", claims, CLAIM_COLUMNS)
+    write_csv(OUT / f"{args.run}_speeches.csv", speeches, SPEECH_COLUMNS)
+    (OUT / f"{args.run}_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     site = {"summary": summary,
             "claims": [{k: c.get(k) for k in CLAIM_COLUMNS if k not in ("weight", "coder")}
                        for c in claims]}
-    (OUT / "pilot_site_data.json").write_text(json.dumps(site, ensure_ascii=False) + "\n")
+    (OUT / f"{args.run}_site_data.json").write_text(json.dumps(site, ensure_ascii=False) + "\n")
     s = summary["summary"]["all"]
-    print(f"{summary['coded_speeches']} speeches, {s['claims']} claims, "
-          f"{s['claims_with_dated_source']} with a dated source, {s['outdated']} outdated")
+    print(f"{args.run}: {summary['coded_speeches']} speeches, {s['claims']} claims, "
+          f"{s['claims_with_dated_source']} with a dated named source, {s['outdated']} outdated")
     return 0
 
 
