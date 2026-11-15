@@ -386,5 +386,10 @@ copying and communicating material "in its current form" for non-commercial
 purposes. Whether short quotations count as the current form is not settled
 here.
 
-These licences cover the Hansard text only. The code, codebook and labels in
-this repository are not Hansard text and carry no licence yet.
+These licences cover the Hansard text only.
+
+## Licence for this project's own work
+
+- **Code:** MIT. See `LICENSE`.
+- **Codebook, labels, verdicts and figures:** CC BY 4.0. See `LICENSE-DATA.md`,
+  which also lists what is excluded.
