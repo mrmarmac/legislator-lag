@@ -1,0 +1,470 @@
+<title>Evidence Lag in Parliament</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: one reading column. Sans carries our coding; serif carries the words of the record. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #141a22; --ink-2: #48525f; --muted: #6f7986;
+  --rule: #dde2e8; --axis: #b9c1cb; --accent: #1c5cab; --wash: #eaf0f7;
+  --uk: #2a78d6; --au: #eb6834;
+  --o1: #0d366b; --o2: #1c5cab; --o3: #3987e5; --o4: #86b6ef; --o1-ink: #ffffff; --o4-ink: #0b0b0b;
+  --bar: #2a78d6; --track: #dbe7f6;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+    --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --wash: #1d2631;
+    --uk: #3987e5; --au: #d95926;
+    --o1: #b7d3f6; --o2: #6da7ec; --o3: #2a78d6; --o4: #184f95; --o1-ink: #0b0b0b; --o4-ink: #ffffff;
+    --bar: #3987e5; --track: #1c3350;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+  --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --wash: #1d2631;
+  --uk: #3987e5; --au: #d95926;
+  --o1: #b7d3f6; --o2: #6da7ec; --o3: #2a78d6; --o4: #184f95; --o1-ink: #0b0b0b; --o4-ink: #ffffff;
+  --bar: #3987e5; --track: #1c3350;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--sans); }
+.page { max-width: 62rem; margin: 0 auto; padding-block: 2rem 4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 2.75rem; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+h1, h2, h3, p { margin: 0; }
+h1 { font: 600 clamp(1.9rem, 5vw, 2.7rem)/1.12 var(--serif); text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font: 600 1.3rem/1.25 var(--serif); text-wrap: balance; }
+h3 { font: 600 0.95rem/1.3 var(--sans); }
+.eyebrow { font: 500 0.78rem/1.3 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.lead { font-size: 1.1rem; color: var(--ink-2); max-width: 44rem; }
+.lead strong { color: var(--ink); font-weight: 600; }
+header { display: flex; flex-direction: column; gap: 0.9rem; }
+.pilot { align-self: flex-start; font: 500 0.8rem/1 var(--sans); padding: 0.4rem 0.6rem; border: 1px solid var(--axis); border-radius: 999px; color: var(--ink-2); }
+section { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.sub { color: var(--ink-2); max-width: 44rem; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 44rem; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.tile { background: var(--surface); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.tile .v { font: 600 2rem/1.1 var(--sans); }
+.tile .l { font-size: 0.9rem; color: var(--ink-2); }
+.tile .d { font-size: 0.8rem; color: var(--muted); }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
+
+/* meter list */
+.meters { display: grid; grid-template-columns: max-content 1fr max-content; gap: 0.55rem 0.8rem; align-items: center; font-size: 0.9rem; }
+.meters .name { color: var(--ink-2); }
+.meters .track { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; min-width: 3rem; }
+.meters .fill { height: 100%; background: var(--bar); border-radius: 5px; }
+.meters .fig { font-variant-numeric: tabular-nums; color: var(--ink); text-align: right; }
+.meters .fig small { color: var(--muted); font-size: 0.82rem; }
+
+/* segmented bars */
+.seg-row { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.6rem; align-items: center; font-size: 0.9rem; }
+.seg { display: flex; gap: 2px; height: 28px; }
+.seg span { display: flex; align-items: center; padding-left: 6px; border-radius: 4px; font: 500 0.8rem/1 var(--sans); min-width: 0; white-space: nowrap; }
+.seg .s1 { background: var(--o1); color: var(--o1-ink); } .seg .s2 { background: var(--o2); color: #fff; }
+.seg .s3 { background: var(--o3); color: #fff; } .seg .s4 { background: var(--o4); color: var(--o4-ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: 0.84rem; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.35rem; vertical-align: baseline; }
+.legend svg { vertical-align: -2px; margin-right: 0.3rem; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--rule); }
+th { font-weight: 500; color: var(--muted); font-size: 0.8rem; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+@media (max-width: 600px) {
+  .cases tr { display: block; padding: 0.5rem 0; border-bottom: 1px solid var(--rule); }
+  .cases tr:first-child { display: none; }
+  .cases td { display: block; border: 0; padding: 0.1rem 0; }
+  .cases td:first-child { font-weight: 500; }
+  .cases td:last-child { color: var(--muted); font-size: 0.86rem; }
+}
+
+/* dot strip */
+.strip { position: relative; }
+.strip svg { display: block; width: 100%; height: auto; overflow: visible; }
+.strip text { font: 400 12px var(--sans); fill: var(--muted); }
+.strip .lane { font-weight: 500; fill: var(--ink-2); }
+.strip .dot { stroke: var(--surface); stroke-width: 2; cursor: pointer; }
+.strip .dot.on { stroke: var(--ink); }
+.tip { position: absolute; pointer-events: none; z-index: 5; max-width: 17rem; background: var(--surface); color: var(--ink); border: 1px solid var(--axis); border-radius: 8px; padding: 0.55rem 0.7rem; font-size: 0.84rem; line-height: 1.4; box-shadow: 0 6px 20px rgba(0,0,0,0.14); }
+.tip b { display: block; font-size: 0.98rem; }
+.tip span { color: var(--ink-2); }
+
+/* browser */
+.filters { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: end; }
+.filters label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; color: var(--muted); }
+.filters select, .filters input { font: 400 0.92rem var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--axis); border-radius: 7px; padding: 0.45rem 0.55rem; min-width: 0; max-width: 100%; }
+.filters input { width: 13rem; }
+.filters button { font: 500 0.88rem var(--sans); color: var(--accent); background: none; border: 0; padding: 0.5rem 0.2rem; cursor: pointer; }
+.count { font-size: 0.86rem; color: var(--muted); }
+.claims { display: flex; flex-direction: column; gap: 0.9rem; }
+.claim { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; scroll-margin-top: 1rem; }
+.claim.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--wash); }
+.cite { font-size: 0.82rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.2rem 0.6rem; }
+.cite .cc { color: var(--ink-2); font-weight: 500; }
+.cc i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.35rem; }
+blockquote { margin: 0; font: 400 1.08rem/1.5 var(--serif); overflow-wrap: anywhere; }
+blockquote b { font-weight: 600; }
+.para { color: var(--ink-2); font-size: 0.94rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chip { font: 500 0.76rem/1 var(--sans); padding: 0.32rem 0.5rem; border-radius: 999px; background: var(--wash); color: var(--ink-2); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.8rem 1.4rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; font-size: 0.9rem; }
+.facts > div { min-width: 0; overflow-wrap: anywhere; }
+.facts h3 { font-size: 0.76rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+.facts .big { font-weight: 600; }
+.facts p { color: var(--ink-2); }
+.empty { color: var(--muted); padding: 1rem 0; }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.2rem 2rem; font-size: 0.93rem; color: var(--ink-2); }
+.method div { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.method h3 { color: var(--ink); }
+footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+@media (prefers-reduced-motion: no-preference) { .claim { transition: box-shadow 0.25s, border-color 0.25s; } }
+
+/* full-run additions */
+.bars { position: relative; }
+.bars svg { display: block; width: 100%; height: auto; overflow: visible; }
+.bars text { font: 400 12px var(--sans); fill: var(--muted); }
+.bars .val { fill: var(--ink-2); font-weight: 500; }
+.bars rect.bar { cursor: default; }
+.bars rect.bar:hover, .bars rect.bar:focus { filter: brightness(1.12); outline: none; }
+details.tv { font-size: 0.86rem; color: var(--muted); }
+details.tv summary { cursor: pointer; width: max-content; padding: 0.2rem 0; }
+.types { display: grid; grid-template-columns: max-content max-content 1fr max-content; gap: 0.5rem 0.9rem; align-items: center; font-size: 0.9rem; }
+.types .h { font-size: 0.78rem; color: var(--muted); }
+.types .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.types .track { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; min-width: 2.5rem; }
+.types .fill { height: 100%; background: var(--bar); border-radius: 5px; }
+.types .fig { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+@media (max-width: 560px) { .types { grid-template-columns: max-content 1fr max-content; } .types .opt { display: none; } }
+.old td a { cursor: pointer; }
+.more { align-self: center; font: 500 0.92rem var(--sans); color: var(--accent); background: var(--surface); border: 1px solid var(--axis); border-radius: 8px; padding: 0.6rem 1.1rem; cursor: pointer; }
+.flag { font: 500 0.76rem/1 var(--sans); padding: 0.32rem 0.5rem; border-radius: 999px; border: 1px solid var(--axis); color: var(--ink-2); }
+blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
+@media (max-width: 600px) {
+  .old tr { display: block; padding: 0.5rem 0; border-bottom: 1px solid var(--rule); }
+  .old tr:first-child { display: none; }
+  .old td { display: block; border: 0; padding: 0.1rem 0; text-align: left; }
+  .old td:first-child { font-weight: 600; }
+}
+</style>
+
+<div class="page">
+  <header>
+    <span class="pilot" id="badge"></span>
+    <h1>How stale is the AI evidence parliamentarians cite?</h1>
+    <p class="lead" id="lead"></p>
+  </header>
+
+  <section aria-label="Headline figures">
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section>
+    <h2 id="h-sources">How old are the sources speakers name?</h2>
+    <p class="sub" id="sources-sub"></p>
+    <div class="panel">
+      <h3>Named sources by age on the day they were cited, as a share of each country's dated sources</h3>
+      <div class="legend" id="sources-legend"></div>
+      <div class="bars" id="sources-chart"></div>
+      <details class="tv"><summary>Show as a table</summary><div class="scroll"><table id="sources-table"></table></div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2>Age of evidence by kind of claim</h2>
+    <p class="sub">Bars show the median age of the named sources behind each kind of claim. Kinds with fewer than five dated sources show no bar.</p>
+    <div class="panel"><div class="types" id="types"></div></div>
+  </section>
+
+  <section>
+    <h2 id="h-incidents">Incidents are cited while they are news</h2>
+    <p class="sub" id="incidents-sub"></p>
+    <div class="panel">
+      <h3>Incidents by time since they became public, as a share of each country's dated incidents</h3>
+      <div class="legend" id="incidents-legend"></div>
+      <div class="bars" id="incidents-chart"></div>
+      <details class="tv"><summary>Show as a table</summary><div class="scroll"><table id="incidents-table"></table></div></details>
+    </div>
+  </section>
+
+  <section>
+    <h2>What the claims rest on</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Evidence offered for each claim</h3>
+        <div id="basis"></div>
+        <div class="legend" id="basis-legend"></div>
+        <div class="scroll"><table id="basis-table"></table></div>
+      </div>
+      <div class="panel">
+        <h3>Was the claim still current on the day?</h3>
+        <div class="scroll"><table id="vintage-table"></table></div>
+        <p class="note" id="vintage-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The oldest evidence cited</h2>
+    <p class="sub">The named sources with the longest gap between publication and the debate. Select a row to read the claim.</p>
+    <div class="panel"><div class="scroll"><table class="old" id="oldest"></table></div></div>
+  </section>
+
+  <section id="browser">
+    <h2>Every coded claim</h2>
+    <div class="filters">
+      <label>Country<select id="f-country"><option value="">All</option></select></label>
+      <label>Kind<select id="f-type"><option value="">All</option></select></label>
+      <label>Evidence<select id="f-basis"><option value="">All</option></select></label>
+      <label>Currency<select id="f-vintage"><option value="">All</option></select></label>
+      <label>Sort<select id="f-sort"><option value="date">Debate date</option><option value="lag">Oldest evidence first</option></select></label>
+      <label>Search<input id="f-q" type="search" placeholder="Speaker, source, words"></label>
+      <button id="f-reset" type="button">Clear filters</button>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="claims" id="claims"></div>
+    <button class="more" id="more" type="button" hidden>Show more</button>
+  </section>
+
+  <section>
+    <h2>Method and limits</h2>
+    <div class="method" id="method"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</div>
+
+<script type="application/json" id="data">/*__DATA__*/</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById('data').textContent);
+  const S = D.summary, ALL = S.summary.all, claims = D.claims;
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const svgEl = (tag, attrs) => { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const LABEL = {
+    cited_source: 'Named source', vague_attribution: 'Vague attribution', personal_experience: 'Personal experience', none: 'None',
+    current: 'Still current', outdated: 'Outdated', contested: 'Contested', dated_event: 'Dated incident', forecast: 'Forecast', never_accurate: 'Never accurate', unclear: 'Unclear',
+    capability: 'Capability', limitation: 'Limitation', trajectory: 'Trajectory', incident: 'Incident', adoption: 'Adoption', economic: 'Economic', labour: 'Labour', resource: 'Energy and resources', opinion: 'Opinion and risk estimates', other: 'Other',
+    stated_in_speech: 'stated in the speech', web_verified: 'confirmed on the web', coder_recall: 'coder recall, unverified', unknown: 'unknown',
+    UK: 'United Kingdom', AU: 'Australia',
+  };
+  const lab = (k) => LABEL[k] || (k || '').replace(/_/g, ' ');
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const fmtDate = (iso) => { if (!iso) return ''; const p = String(iso).split('-').map(Number); return (p[2] ? p[2] + ' ' : '') + (p[1] ? MONTHS[p[1] - 1] + ' ' : '') + p[0]; };
+  const fmtLag = (m) => { if (m == null) return ''; if (m < 1) { const d = Math.round(m * 30.4375); return d + (d === 1 ? ' day' : ' days'); } if (m < 24) return (Math.round(m * 10) / 10) + ' months'; return (Math.round(m / 12 * 10) / 10) + ' years'; };
+  const plural = (n, w) => n.toLocaleString('en-GB') + ' ' + w + (n === 1 ? '' : 's');
+  const pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '–';
+  const median = (xs) => { if (!xs.length) return null; const v = xs.slice().sort((a, b) => a - b), h = Math.floor(v.length / 2); return v.length % 2 ? v[h] : (v[h - 1] + v[h]) / 2; };
+  const cid = (id) => 'c-' + id.replace(/[^a-z0-9]/gi, '-');
+
+  function citation(c) {
+    const gid = c.speech_id.split(':')[1], col = gid.split('.')[1], d = fmtDate(c.date);
+    if (c.speech_id.startsWith('uk-commons')) return 'HC Deb ' + d + ', col ' + col;
+    if (c.speech_id.startsWith('uk-westminsterhall')) return 'HC Deb ' + d + ', col ' + col + 'WH';
+    if (c.speech_id.startsWith('uk-lords')) return 'HL Deb ' + d + ', col ' + col;
+    return c.chamber_label + ' Hansard, ' + d;
+  }
+  // The age of whatever dates a claim: its named source, else its incident, else its expiry.
+  const evAge = (c) => c.cited_lag_months != null ? c.cited_lag_months : c.incident_lag_months != null ? c.incident_lag_months : (c.vintage_status === 'outdated' ? c.implied_lag_months : null);
+
+  const cited = claims.filter(c => c.cited_lag_months != null);
+  const incidents = claims.filter(c => c.incident_lag_months != null);
+  const BUCKETS = [['Under 1 month', '<1 mo', 0, 1], ['1 to 3 months', '1–3 mo', 1, 3], ['3 to 6 months', '3–6 mo', 3, 6], ['6 to 12 months', '6–12 mo', 6, 12], ['1 to 2 years', '1–2 yr', 12, 24], ['2 to 5 years', '2–5 yr', 24, 60], ['Over 5 years', '5 yr+', 60, Infinity]];
+  const bucketOf = (m) => BUCKETS.findIndex(b => m >= b[2] && m < b[3]);
+  const share = (rows, test) => rows.length ? rows.filter(test).length / rows.length : 0;
+
+  // ---- header and tiles ----
+  const lastDay = Object.values(S.corpus).map(v => v.last_day).sort().pop();
+  $('badge').textContent = S.coded_speeches.toLocaleString('en-GB') + ' speeches · 1 July to ' + fmtDate(lastDay);
+  const medCited = median(cited.map(c => c.cited_lag_months));
+  const overYear = cited.filter(c => c.cited_lag_months >= 12).length;
+  const noEv = ALL.evidence_basis.none || 0, namedN = ALL.evidence_basis.cited_source || 0;
+  const assessable = (ALL.vintage_status.current || 0) + (ALL.vintage_status.outdated || 0), outdated = ALL.vintage_status.outdated || 0;
+  /*__LEAD__*/
+  const tile = (v, l, d) => { const t = el('div', 'tile'); t.append(el('div', 'v', v), el('div', 'l', l)); if (d) t.append(el('div', 'd', d)); return t; };
+  $('tiles').append(
+    tile(ALL.claims.toLocaleString('en-GB'), 'factual claims about AI', 'in ' + ALL.speeches_with_claims + ' of ' + S.coded_speeches + ' speeches'),
+    tile(pct(namedN, ALL.claims), 'name a source', pct(noEv, ALL.claims) + ' offer no evidence'),
+    tile(medCited == null ? '–' : fmtLag(medCited), 'median age of a named source', plural(cited.length, 'dated source')),
+    tile(pct(overYear, cited.length), 'of named sources over a year old', overYear + ' of ' + cited.length),
+    tile(pct(outdated, assessable), 'of assessable claims outdated', outdated + ' of ' + assessable),
+  );
+
+  // ---- grouped bar chart of age buckets ----
+  const tip = el('div', 'tip'); tip.hidden = true;
+  function bucketChart(box, tableEl, legendEl, rows, lagOf, noun) {
+    const by = { UK: rows.filter(c => c.country === 'UK'), AU: rows.filter(c => c.country === 'AU') };
+    const counts = {}; ['UK', 'AU'].forEach(cc => { counts[cc] = BUCKETS.map((b, i) => by[cc].filter(c => bucketOf(lagOf(c)) === i).length); });
+    legendEl.replaceChildren();
+    ['UK', 'AU'].forEach(cc => { const s = el('span'); const i = el('i'); i.style.background = 'var(--' + cc.toLowerCase() + ')'; s.append(i, lab(cc) + ' (' + plural(by[cc].length, noun) + ')'); legendEl.append(s); });
+    const head = el('tr'); ['Age', 'UK', 'UK share', 'Australia', 'Australia share'].forEach((h, i) => head.append(el('th', i ? 'n' : null, h))); tableEl.replaceChildren(head);
+    BUCKETS.forEach((b, i) => { const tr = el('tr'); tr.append(el('td', null, b[0]), el('td', 'n', String(counts.UK[i])), el('td', 'n', pct(counts.UK[i], by.UK.length)), el('td', 'n', String(counts.AU[i])), el('td', 'n', pct(counts.AU[i], by.AU.length))); tableEl.append(tr); });
+    function draw() {
+      box.querySelectorAll('svg, p').forEach(n => n.remove());
+      if (!rows.length) { box.append(el('p', 'empty', 'Nothing to show yet.')); return; }
+      const W = Math.max(280, box.clientWidth), H = 230, padL = 34, padR = 6, top = 14, base = H - 30;
+      const shares = { UK: counts.UK.map(n => by.UK.length ? n / by.UK.length : 0), AU: counts.AU.map(n => by.AU.length ? n / by.AU.length : 0) };
+      const maxS = Math.max(0.1, ...shares.UK, ...shares.AU), step = maxS > 0.5 ? 0.2 : maxS > 0.25 ? 0.1 : 0.05, hi = Math.ceil(maxS / step) * step;
+      const y = (s) => base - (s / hi) * (base - top), band = (W - padL - padR) / BUCKETS.length, bw = Math.min(24, (band - 10) / 2);
+      const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Grouped bars: share of ' + noun + 's in each age band, United Kingdom and Australia' });
+      for (let s = 0; s <= hi + 1e-9; s += step) { svg.append(svgEl('line', { x1: padL, x2: W - padR, y1: y(s), y2: y(s), stroke: css(s === 0 ? '--axis' : '--rule'), 'stroke-width': 1 })); const t = svgEl('text', { x: padL - 6, y: y(s) + 4, 'text-anchor': 'end' }); t.textContent = Math.round(s * 100) + '%'; svg.append(t); }
+      BUCKETS.forEach((b, i) => {
+        const cx = padL + band * i + band / 2;
+        const t = svgEl('text', { x: cx, y: base + 18, 'text-anchor': 'middle' }); t.textContent = b[1]; svg.append(t);
+        ['UK', 'AU'].forEach((cc, k) => {
+          const s = shares[cc][i], h = Math.max(s > 0 ? 2 : 0, base - y(s)), x = cx + (k === 0 ? -bw - 1 : 1), r = Math.min(4, h);
+          if (!h) return;
+          const bar = svgEl('path', { d: 'M' + x + ' ' + base + 'V' + (base - h + r) + 'Q' + x + ' ' + (base - h) + ' ' + (x + r) + ' ' + (base - h) + 'H' + (x + bw - r) + 'Q' + (x + bw) + ' ' + (base - h) + ' ' + (x + bw) + ' ' + (base - h + r) + 'V' + base + 'Z', fill: css(cc === 'UK' ? '--uk' : '--au'), tabindex: 0, role: 'img', class: 'bar' });
+          const text = lab(cc) + ', ' + b[0].toLowerCase() + ': ' + counts[cc][i] + ' of ' + by[cc].length + ' (' + pct(counts[cc][i], by[cc].length) + ')';
+          bar.setAttribute('aria-label', text);
+          const show = () => { tip.replaceChildren(el('b', null, pct(counts[cc][i], by[cc].length)), el('span', null, counts[cc][i] + ' of ' + by[cc].length + ' ' + noun + 's'), el('div', null, lab(cc) + ' · ' + b[0].toLowerCase())); box.append(tip); tip.hidden = false; const k2 = svg.getBoundingClientRect().width / W; tip.style.left = Math.max(0, Math.min(box.clientWidth - tip.offsetWidth, (x + bw / 2) * k2 - tip.offsetWidth / 2)) + 'px'; tip.style.top = ((base - h) * k2 - tip.offsetHeight - 8) + 'px'; };
+          bar.addEventListener('pointerenter', show); bar.addEventListener('focus', show);
+          bar.addEventListener('pointerleave', () => { tip.hidden = true; }); bar.addEventListener('blur', () => { tip.hidden = true; });
+          svg.append(bar);
+        });
+      });
+      // direct label: each country's tallest bar
+      ['UK', 'AU'].forEach((cc, k) => { const i = shares[cc].indexOf(Math.max(...shares[cc])); if (shares[cc][i] <= 0) return; const cx = padL + band * i + band / 2, x = cx + (k === 0 ? -bw / 2 - 1 : bw / 2 + 1); const t = svgEl('text', { x: x, y: y(shares[cc][i]) - 5, 'text-anchor': 'middle', class: 'val' }); t.textContent = Math.round(shares[cc][i] * 100) + '%'; svg.append(t); });
+      box.append(svg);
+    }
+    return draw;
+  }
+  const drawSources = bucketChart($('sources-chart'), $('sources-table'), $('sources-legend'), cited, c => c.cited_lag_months, 'source');
+  const drawIncidents = bucketChart($('incidents-chart'), $('incidents-table'), $('incidents-legend'), incidents, c => c.incident_lag_months, 'incident');
+  const medBy = (cc) => median(cited.filter(c => c.country === cc).map(c => c.cited_lag_months));
+  $('sources-sub').textContent = 'Of ' + plural(ALL.claims, 'claim') + ', ' + namedN + ' named a source and ' + cited.length + ' of those sources could be dated. The median source was ' + fmtLag(medBy('UK')) + ' old in the UK and ' + fmtLag(medBy('AU')) + ' old in Australia.';
+  const medInc = median(incidents.map(c => c.incident_lag_months));
+  $('incidents-sub').textContent = plural(incidents.length, 'claim') + ' described a specific incident that could be dated. The median incident had been public for ' + fmtLag(medInc) + ' when it was raised.';
+
+  // ---- by claim type ----
+  const types = [...new Set(claims.map(c => c.claim_type))].map(t => { const rows = claims.filter(c => c.claim_type === t), lags = rows.filter(c => c.cited_lag_months != null).map(c => c.cited_lag_months); return { t, n: rows.length, named: rows.filter(c => c.evidence_basis === 'cited_source').length, dated: lags.length, med: lags.length >= 5 ? median(lags) : null }; }).sort((a, b) => (b.med == null ? -1 : b.med) - (a.med == null ? -1 : a.med) || b.n - a.n);
+  const maxMed = Math.max(1, ...types.map(x => x.med || 0)), T = $('types');
+  T.append(el('div', 'h', 'Kind of claim'), el('div', 'h n opt', 'Claims'), el('div', 'h', 'Median age of named sources'), el('div', 'h n', ''));
+  types.forEach(x => {
+    const track = el('div', 'track'); if (x.med != null) { const f = el('div', 'fill'); f.style.width = Math.max(2, 100 * x.med / maxMed) + '%'; track.append(f); } else track.style.background = 'none';
+    track.setAttribute('role', 'img'); track.setAttribute('aria-label', x.med != null ? fmtLag(x.med) : 'too few dated sources');
+    const fig = el('div', 'fig', x.med != null ? fmtLag(x.med) + ' ' : ''); fig.append(el('small', null, x.dated + ' dated')); fig.querySelector('small').style.color = 'var(--muted)';
+    T.append(el('div', null, lab(x.t)), el('div', 'n opt', x.n.toLocaleString('en-GB')), track, fig);
+  });
+
+  // ---- basis + vintage ----
+  const BASIS = ['cited_source', 'vague_attribution', 'personal_experience', 'none'];
+  ['UK', 'AU'].forEach(cc => {
+    const b = S.summary[cc].evidence_basis, n = S.summary[cc].claims, row = el('div', 'seg-row'); row.style.marginBottom = '0.5rem';
+    row.append(el('div', null, cc));
+    if (!n) { row.append(el('div', 'note', 'No claims')); $('basis').append(row); return; }
+    const seg = el('div', 'seg'); seg.setAttribute('role', 'img'); seg.setAttribute('aria-label', cc + ': ' + BASIS.map(k => lab(k) + ' ' + pct(b[k] || 0, n)).join(', '));
+    BASIS.forEach((k, i) => { const v = b[k] || 0; if (!v) return; const s = el('span', 's' + (i + 1), v / n >= 0.08 ? pct(v, n) : ''); s.style.flex = v + ' 0 0'; s.title = lab(k) + ': ' + v + ' of ' + n; seg.append(s); });
+    row.append(seg); $('basis').append(row);
+  });
+  BASIS.forEach((k, i) => { const s = el('span'); const sw = el('i'); sw.style.background = 'var(--o' + (i + 1) + ')'; s.append(sw, lab(k)); $('basis-legend').append(s); });
+  function countTable(table, keys, field, first) {
+    const head = el('tr'); [first, 'UK', 'Australia', 'Both'].forEach((h, i) => head.append(el('th', i ? 'n' : null, h))); table.append(head);
+    keys.forEach(k => { const u = S.summary.UK[field][k] || 0, a = S.summary.AU[field][k] || 0; if (!u && !a) return; const tr = el('tr'); tr.append(el('td', null, lab(k)), el('td', 'n', String(u)), el('td', 'n', String(a)), el('td', 'n', String(u + a))); table.append(tr); });
+  }
+  countTable($('basis-table'), BASIS, 'evidence_basis', 'Evidence');
+  countTable($('vintage-table'), ['current', 'outdated', 'contested', 'dated_event', 'forecast', 'never_accurate', 'unclear'], 'vintage_status', 'Assessment');
+  const medOut = ALL.outdated_lag_months;
+  $('vintage-note').textContent = '"Still current" means current as far as the coder could establish. The coders’ own knowledge ends before most of these debates, so some claims marked current may already have been stale.' + (medOut ? ' Outdated claims had been out of date for a median of ' + fmtLag(medOut.median) + '.' : '');
+
+  // ---- oldest ----
+  const O = $('oldest'), oh = el('tr'); ['Age when cited', 'Source', 'Cited by', 'Claim'].forEach(h => oh.append(el('th', null, h))); O.append(oh);
+  cited.slice().sort((a, b) => b.cited_lag_months - a.cited_lag_months).slice(0, 12).forEach(c => {
+    const tr = el('tr'), a = el('a', null, c.claim); a.href = '#browser'; a.addEventListener('click', (e) => { e.preventDefault(); openClaim(c.claim_id); });
+    const td = el('td'); td.append(a);
+    tr.append(el('td', null, fmtLag(c.cited_lag_months)), el('td', null, c.source_name + ' (' + fmtDate(c.source_date) + ')'), el('td', null, c.speaker + ', ' + c.country + ', ' + fmtDate(c.date)), td); O.append(tr);
+  });
+
+  // ---- claim browser ----
+  const F = { country: $('f-country'), type: $('f-type'), basis: $('f-basis'), vintage: $('f-vintage'), sort: $('f-sort'), q: $('f-q') };
+  const fill = (sel, field) => [...new Set(claims.map(c => c[field]))].sort().forEach(v => { const o = el('option', null, lab(v)); o.value = v; sel.append(o); });
+  fill(F.country, 'country'); fill(F.type, 'claim_type'); fill(F.basis, 'evidence_basis'); fill(F.vintage, 'vintage_status');
+  const fact = (title) => { const d = el('div'); d.append(el('h3', null, title)); return d; };
+  const link = (text, href) => { const a = el('a', null, text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
+  function card(c) {
+    const a = el('article', 'claim'); a.id = cid(c.claim_id);
+    const cite = el('div', 'cite'), cc = el('span', 'cc'), dot = el('i'); dot.style.background = 'var(--' + c.country.toLowerCase() + ')'; cc.append(dot, lab(c.country));
+    cite.append(cc, link(citation(c), c.url), el('span', null, [c.heading, c.subheading].filter(Boolean).join(' · ')));
+    const q = el('blockquote'); q.append(el('b', null, c.speaker + ': '), '“' + c.quote + '”');
+    a.append(cite, q);
+    if (c.supporting_quote) a.append(el('blockquote', 'sup', '“' + c.supporting_quote + '”'));
+    const chips = el('div', 'chips'); [lab(c.claim_type), (c.domain || '').replace(/_/g, ' '), c.named_system].filter(Boolean).forEach(t => chips.append(el('span', 'chip', t)));
+    if (c.incident_loosely_described) chips.append(el('span', 'flag', 'Loosely described'));
+    const facts = el('div', 'facts'), ev = fact('Evidence offered');
+    ev.append(el('div', 'big', lab(c.evidence_basis)));
+    if (c.source_name) {
+      const p = el('p'); if (c.source_url) p.append(link(c.source_name, c.source_url)); else p.append(c.source_name);
+      if (c.source_org) p.append(', ' + c.source_org); ev.append(p);
+      ev.append(el('p', null, c.source_date ? 'Dated ' + fmtDate(c.source_date) + ' (' + lab(c.source_date_basis) + ').' : 'Could not be dated.'));
+      if (c.source_identified_by === 'inferred_by_coder') ev.append(el('p', 'note', 'The speaker named no source. The coder found this reference, so it gets no cited lag.'));
+      if (c.cited_lag_months != null) ev.append(el('p', 'big', fmtLag(c.cited_lag_months) + ' old when cited'));
+      if (c.source_notes) ev.append(el('p', 'note', c.source_notes));
+    }
+    const vi = fact(c.vintage_status === 'dated_event' ? 'When did it happen?' : 'Was it still current?');
+    if (c.vintage_status === 'dated_event') {
+      vi.append(el('div', 'big', c.event_date_used ? 'Public from ' + fmtDate(c.event_date_used) : 'Could not be dated'));
+      if (c.incident_lag_months != null) vi.append(el('p', 'big', fmtLag(c.incident_lag_months) + ' before the debate'));
+      if (c.event_occurred_date && c.event_occurred_date !== c.event_date_used) vi.append(el('p', null, 'Happened ' + fmtDate(c.event_occurred_date) + '.'));
+      if (c.incident_accuracy_note) vi.append(el('p', null, c.incident_accuracy_note));
+    } else {
+      vi.append(el('div', 'big', lab(c.vintage_status) + (c.vintage_date ? ' · last fair ' + fmtDate(c.vintage_date) : '')));
+      if (c.vintage_status === 'outdated' && c.implied_lag_months != null) vi.append(el('p', 'big', fmtLag(c.implied_lag_months) + ' out of date'));
+    }
+    if (c.vintage_rationale) vi.append(el('p', null, c.vintage_rationale));
+    vi.append(el('p', 'note', 'Coder confidence: ' + c.vintage_confidence + (c.adjudicated ? '. Changed on review: ' + c.adjudication_reason : '')));
+    facts.append(ev, vi);
+    a.append(el('p', 'para', c.claim), chips, facts);
+    return a;
+  }
+  const PAGE = 25; let shown = PAGE, current = [];
+  function paint() {
+    const box = $('claims'); box.replaceChildren();
+    if (!current.length) box.append(el('p', 'empty', 'No claims match these filters. Clear a filter to see more.'));
+    current.slice(0, shown).forEach(c => box.append(card(c)));
+    $('count').textContent = 'Showing ' + Math.min(shown, current.length).toLocaleString('en-GB') + ' of ' + plural(current.length, 'matching claim') + ' (' + claims.length.toLocaleString('en-GB') + ' in all)';
+    $('more').hidden = shown >= current.length; $('more').textContent = 'Show ' + Math.min(PAGE, current.length - shown) + ' more';
+  }
+  function render() {
+    const q = F.q.value.trim().toLowerCase();
+    current = claims.filter(c => (!F.country.value || c.country === F.country.value) && (!F.type.value || c.claim_type === F.type.value) && (!F.basis.value || c.evidence_basis === F.basis.value) && (!F.vintage.value || c.vintage_status === F.vintage.value) && (!q || [c.speaker, c.quote, c.claim, c.source_name, c.source_org, c.heading, c.subheading, c.named_system, c.vintage_rationale].join(' ').toLowerCase().includes(q)));
+    if (F.sort.value === 'lag') current.sort((a, b) => (evAge(b) == null ? -1 : evAge(b)) - (evAge(a) == null ? -1 : evAge(a)));
+    shown = PAGE; paint();
+  }
+  function reset() { Object.values(F).forEach(f => { f.value = f === F.sort ? 'date' : ''; }); render(); }
+  function openClaim(id) { reset(); shown = Math.max(PAGE, current.findIndex(c => c.claim_id === id) + 1); paint(); const n = document.getElementById(cid(id)); if (!n) return; n.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); n.classList.add('flash'); setTimeout(() => n.classList.remove('flash'), 2200); }
+  Object.values(F).forEach(f => f.addEventListener('input', render));
+  $('f-reset').addEventListener('click', reset);
+  $('more').addEventListener('click', () => { shown += PAGE; paint(); });
+
+  // ---- method ----
+  const R = S.reliability, mf = (R.matched_fields || {});
+  const block = (title, paras) => { const d = el('div'); d.append(el('h3', null, title)); paras.forEach(p => d.append(el('p', null, p))); return d; };
+  $('method').append(
+    block('Corpus', ['Hansard for the Commons, Westminster Hall, Lords, House of Representatives and Senate, from the bulk XML published by TheyWorkForYou and OpenAustralia.', S.corpus_speeches.toLocaleString('en-GB') + ' speeches since 1 July 2026 contain an AI term. The ' + S.eligible_speeches + ' with two or more such terms were coded. Australian coverage ends ' + fmtDate(S.corpus['au-senate'].last_day) + ' (Senate) and ' + fmtDate(S.corpus['au-representatives'].last_day) + ' (House).']),
+    block('What counts as a claim', ['Any checkable factual statement about AI: what it can do, incidents, adoption, market and labour figures, energy use, and what experts or the public believe.', 'Policy, values and rhetoric are left out.']),
+    block('Coding', ['AI coders read each speech against a written codebook. They recorded every claim, the evidence offered, and when that evidence dates from. Sources and incidents were dated by web search.']),
+    block('Second coding', R.speeches ? [R.speeches + ' speeches were coded twice by coders who had not seen the first coding. They agreed on whether a speech contains any claim in ' + Math.round(R.any_claim_agreement * 100) + '% of them.', 'They found ' + R.claims_first_coder + ' and ' + R.claims_second_coder + ' claims; ' + R.claims_matched + ' were the same claim.' + (R.claims_matched ? ' On those, they agreed on the kind of claim ' + Math.round((mf.claim_type.agreement || 0) * 100) + '% of the time, on the evidence offered ' + Math.round((mf.evidence_basis.agreement || 0) * 100) + '%, and on currency ' + Math.round((mf.vintage_status.agreement || 0) * 100) + '%.' : ''), 'Both coders were the same AI model. This measures consistency, not correctness.'] : ['Not yet run.']),
+    block('What "age" means', ['Named source: debate date minus the source’s publication date.', 'Incident: debate date minus the date it became public.', 'Outdated claim: debate date minus the last month the claim was still fair.']),
+    block('Limits', ['No human coder has checked these labels.', 'Source dates were mostly confirmed from news coverage and listings, not the primary document.', 'The coders’ own knowledge stops before most of these debates. A claim marked current may already have been stale.', 'Speeches with a single AI term were not coded.']),
+  );
+  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + ' · Hansard text from TheyWorkForYou and OpenAustralia.';
+
+  render(); drawSources(); drawIncidents();
+  const redraw = () => { drawSources(); drawIncidents(); };
+  let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(redraw, 120); }).observe($('sources-chart'));
+  new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
+})();
+</script>
