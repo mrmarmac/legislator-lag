@@ -127,7 +127,8 @@ blockquote b { font-weight: 600; }
 .method { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.2rem 2rem; font-size: 0.93rem; color: var(--ink-2); }
 .method div { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .method h3 { color: var(--ink); }
-footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+footer p { max-width: 52rem; }
 @media (prefers-reduced-motion: no-preference) { .claim { transition: box-shadow 0.25s, border-color 0.25s; } }
 
 /* full-run additions */
@@ -242,7 +243,11 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
     <div class="method" id="method"></div>
   </section>
 
-  <footer id="footer"></footer>
+  <footer>
+    <p id="footer"></p>
+    <p>Contains Parliamentary information licensed under the <a href="https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/">Open Parliament Licence v3.0</a>. Data service provided by <a href="https://www.theyworkforyou.com/">TheyWorkForYou</a>.</p>
+    <p>Australian Hansard is © Commonwealth of Australia, from the <a href="https://www.aph.gov.au/">Parliament of Australia website</a>, under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>, obtained through <a href="https://www.openaustralia.org.au/">OpenAustralia</a>. Speeches are quoted in part; the wording of each quote is unchanged.</p>
+  </footer>
 </div>
 
 <script type="application/json" id="data">/*__DATA__*/</script>
@@ -469,7 +474,7 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
       'In all, the review dropped ' + H.applied.claims_dropped + ' claims, added ' + H.applied.claims_added + ' and changed labels on ' + H.applied.claims_relabelled + '.'] : ['Not yet done.']),
     block('Limits', [H ? 'A human checked samples, not every label. Only the sampled claims were corrected, so the remaining counts likely include some non-claims.' : 'No human coder has checked these labels.', 'Source dates were mostly confirmed from news coverage and listings, not the primary document.', 'The coders’ own knowledge stops before most of these debates. A claim marked current may already have been stale.', 'Speeches with a single AI term were not coded.']),
   );
-  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + ' · Hansard text from TheyWorkForYou and OpenAustralia.';
+  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + '.';
 
   render(); drawSources(); drawIncidents();
   const redraw = () => { drawSources(); drawIncidents(); };

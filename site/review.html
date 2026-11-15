@@ -109,6 +109,7 @@ label.field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9
 .bar button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .bar button:disabled { opacity: 0.4; cursor: default; }
 .bar .pos { text-align: center; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 0.9rem; }
+.licence { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
 .foot { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
 .foot button { border: 1px solid var(--axis); background: var(--surface); border-radius: 8px; min-height: 44px; padding: 0 0.9rem; cursor: pointer; }
 #dump { font: 0.75rem/1.4 ui-monospace, Menlo, monospace; min-height: 8rem; }
@@ -129,6 +130,10 @@ label.field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9
     <span class="small" id="copied"></span>
   </div>
   <textarea id="dump" hidden readonly aria-label="All verdicts as JSON"></textarea>
+  <footer class="licence">
+    <p>Contains Parliamentary information licensed under the <a href="https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/">Open Parliament Licence v3.0</a>. Data service provided by <a href="https://www.theyworkforyou.com/">TheyWorkForYou</a>.</p>
+    <p>Australian Hansard is © Commonwealth of Australia, from the <a href="https://www.aph.gov.au/">Parliament of Australia website</a>, under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>, obtained through <a href="https://www.openaustralia.org.au/">OpenAustralia</a>. Speeches are shown in full and unchanged.</p>
+  </footer>
 </div>
 <div class="bar"><div class="in">
   <button type="button" id="prev" aria-label="Previous item">‹ Prev</button>

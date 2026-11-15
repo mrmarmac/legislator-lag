@@ -294,6 +294,7 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `site/index.html` | Full-run results page: charts and a browser of every claim. |
 | `docs/index.html` | The same page as a standalone document, served by GitHub Pages from `main:/docs`. Rebuilt by `python -m legislag.site --run full`. |
 | `outputs/full_claims.xlsx` | Workbook: summary, claims, speeches. Lags are formulas. |
+| `outputs/figures/` | Three figures for the paper as SVG and PNG, with captions. Built by `python -m legislag.figures`, then `node legislag/figures_png.js` for the PNGs. |
 | `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
@@ -358,8 +359,28 @@ A speech is included if it contains an AI term: "artificial intelligence",
 Chambers: House of Commons, Westminster Hall, House of Lords, House of
 Representatives, Senate. Written answers and committees are not included.
 
-## Hansard text
+## Hansard text and licences
 
 Speech text comes from TheyWorkForYou (mySociety) and OpenAustralia
-(OpenAustralia Foundation), which republish the official record. Check each
-project's licence terms before redistributing the text.
+(OpenAustralia Foundation), which republish the official record.
+
+**UK.** Contains Parliamentary information licensed under the
+[Open Parliament Licence v3.0](https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/).
+Data service provided by [TheyWorkForYou](https://www.theyworkforyou.com/).
+
+**Australia.** Australian Hansard is © Commonwealth of Australia, from the
+[Parliament of Australia website](https://www.aph.gov.au/), under
+[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/),
+obtained through [OpenAustralia](https://www.openaustralia.org.au/). That
+licence allows non-commercial sharing of unmodified material. Speeches in
+`data/` are reproduced in full and unchanged. The results page quotes them in
+part, with the wording of each quote unchanged.
+
+The Australian licence version and its application to Hansard were taken from
+search results, because the Parliament of Australia site refused automated
+requests. Confirm them on its
+[copyright page](https://www.aph.gov.au/Help/Disclaimer_Privacy_Copyright)
+before relying on this notice.
+
+These licences cover the Hansard text only. The code, codebook and labels in
+this repository are not Hansard text and carry no licence yet.
