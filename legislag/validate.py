@@ -3,8 +3,8 @@
     python -m legislag.validate [--run pilot|full] FILE [FILE...]
 
 Checks that every quote is an exact substring of its speech, enumerated fields
-hold allowed values, and dates are well formed. For the pilot it also checks
-each batch file covers exactly its batch. Exits non-zero on any error.
+hold allowed values, and dates are well formed. A label file named after a
+batch file must also cover exactly that batch. Exits non-zero on any error.
 """
 from __future__ import annotations
 
@@ -13,7 +13,6 @@ import json
 import sys
 from pathlib import Path
 
-from .config import DATA
 from .runs import RUNS, load_speeches
 from .schema import check_row
 
@@ -40,8 +39,9 @@ def validate_file(path: Path, speeches: dict[str, dict]) -> tuple[int, int, list
         n_claims += len(row.get("claims") or [])
         errors += [f"{sid}: {e}" for e in check_row(row, speeches[sid]["text"])]
 
-    batch_file = DATA / "pilot" / "batches" / path.name
-    if path.parent == RUNS["pilot"].labels_dir and batch_file.exists():
+    # A label file named after a batch must cover exactly that batch.
+    batch_file = path.parent.parent / "batches" / path.name
+    if batch_file.exists():
         expected = {json.loads(l)["speech_id"]
                     for l in batch_file.read_text().splitlines() if l.strip()}
         errors += [f"{path.name}: speech not coded: {s}" for s in sorted(expected - seen)]

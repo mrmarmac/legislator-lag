@@ -20,8 +20,8 @@ class Run:
     name: str
     speeches: Path          # JSONL of speeches this run draws on
     labels_dir: Path
-    main: tuple[str, ...]   # label files (stems) holding the first coding
-    second: tuple[str, ...]  # label files holding the independent second coding
+    main: tuple[str, ...]   # glob patterns (stems) for files holding the first coding
+    second: tuple[str, ...]  # patterns for files holding the independent second coding
     label: str              # how the run is described to readers
 
 
@@ -29,7 +29,7 @@ RUNS = {
     "pilot": Run("pilot", DATA / "pilot" / "sample.jsonl", DATA / "pilot" / "labels",
                  tuple(f"batch_{i}" for i in range(1, 6)), ("batch_reliability",), "Pilot"),
     "full": Run("full", DATA / "speeches_ai.jsonl", DATA / "full" / "labels",
-                ("main",), ("reliability",), "Full run"),
+                ("main", "batch_*"), ("reliability", "rel_*"), "Full run"),
 }
 
 
@@ -56,8 +56,9 @@ def load_frame(min_terms: int = MIN_AI_TERMS) -> list[dict]:
 def load_labels(run: Run, stems: tuple[str, ...]) -> dict[str, dict]:
     """Label rows keyed by speech. A later row for the same speech wins."""
     rows: dict[str, dict] = {}
-    for stem in stems:
-        for row in read_jsonl(run.labels_dir / f"{stem}.jsonl"):
-            row["coder"] = row.get("coder") or stem
-            rows[row["speech_id"]] = row
+    for pattern in stems:
+        for path in sorted(run.labels_dir.glob(f"{pattern}.jsonl")):
+            for row in read_jsonl(path):
+                row["coder"] = row.get("coder") or path.stem
+                rows[row["speech_id"]] = row
     return rows
