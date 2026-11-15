@@ -220,6 +220,7 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
 | `data/full/adjudication.jsonl` | The nine claims dropped on review, with reasons. |
+| `site/review.html`, `outputs/full_review.json` | Human review packets: a 40-claim spot-check sample, the double-coded speeches that disagree, and the tail. Built by `python -m legislag.review`. No verdicts recorded yet. |
 | `site/pilot.html`, `outputs/pilot_*`, `data/pilot/` | The same outputs for the pilot. |
 | `data/speeches_ai.jsonl` | The corpus: every AI-mentioning speech. |
 
