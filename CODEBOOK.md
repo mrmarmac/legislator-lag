@@ -265,3 +265,15 @@ Rulings made after the pilot.
 | Incident accuracy | In free text | New flag and note |
 | Quote length | One quote, 60 words | Adds an optional `supporting_quote` |
 | Relevance | Three values | Adds `procedural` |
+
+## 7. Clarifications made during the full run
+
+Added to the coder brief after the first two batches, where coders raised the
+same questions. Batches 001 to 014 were coded before these were written.
+
+- **Data centres.** A data-centre claim is coded only where the speaker ties
+  that data centre or figure to AI.
+- **Statements read out for someone else** count as endorsed unless the
+  speaker distances themselves.
+- **General harm claims** with no figure, source or incident are rhetoric and
+  are excluded.
