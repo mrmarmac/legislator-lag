@@ -5,131 +5,131 @@
   "codebook": "v0.2",
   "corpus_speeches": 1182,
   "eligible_speeches": 613,
-  "coded_speeches": 523,
+  "coded_speeches": 613,
   "adjudication": {
-    "overrides": 0,
-    "claims_dropped": 0
+    "overrides": 9,
+    "claims_dropped": 9
   },
-  "near_misses": 761,
+  "near_misses": 899,
   "summary": {
     "all": {
-      "speeches": 523,
-      "speeches_with_claims": 252,
+      "speeches": 613,
+      "speeches_with_claims": 288,
       "relevance": {
-        "substantive": 312,
-        "passing": 197,
-        "procedural": 14
+        "substantive": 372,
+        "passing": 225,
+        "procedural": 16
       },
-      "claims": 480,
+      "claims": 576,
       "claim_type": {
-        "incident": 97,
-        "limitation": 31,
-        "economic": 32,
-        "other": 82,
-        "labour": 21,
-        "capability": 61,
-        "resource": 17,
-        "adoption": 38,
-        "opinion": 96,
-        "trajectory": 5
+        "incident": 124,
+        "limitation": 34,
+        "economic": 37,
+        "other": 91,
+        "labour": 24,
+        "capability": 76,
+        "adoption": 45,
+        "opinion": 113,
+        "resource": 26,
+        "trajectory": 6
       },
       "evidence_basis": {
-        "none": 250,
-        "vague_attribution": 63,
-        "cited_source": 145,
-        "personal_experience": 22
+        "none": 294,
+        "vague_attribution": 78,
+        "cited_source": 179,
+        "personal_experience": 25
       },
       "vintage_status": {
-        "dated_event": 97,
-        "contested": 67,
-        "current": 271,
-        "unclear": 28,
-        "forecast": 13,
-        "outdated": 3,
-        "never_accurate": 1
+        "dated_event": 124,
+        "contested": 79,
+        "current": 316,
+        "unclear": 33,
+        "forecast": 18,
+        "outdated": 4,
+        "never_accurate": 2
       },
-      "claims_with_dated_source": 131,
+      "claims_with_dated_source": 162,
       "cited_lag_months": {
-        "n": 131,
-        "median": 1.0,
-        "p25": 0.1,
-        "p75": 4.2,
+        "n": 162,
+        "median": 0.9,
+        "p25": 0.2,
+        "p75": 4.1,
         "min": 0.0,
-        "max": 48.2
+        "max": 145.1
       },
-      "assessable_for_vintage": 274,
-      "outdated": 3,
+      "assessable_for_vintage": 320,
+      "outdated": 4,
       "outdated_lag_months": {
-        "n": 3,
-        "median": 14.4,
-        "p25": 9.4,
-        "p75": 16.8,
-        "min": 4.5,
+        "n": 4,
+        "median": 9.4,
+        "p25": 3.5,
+        "p75": 15.6,
+        "min": 0.7,
         "max": 19.1
       },
       "incident_lag_months": {
-        "n": 88,
-        "median": 1.8,
+        "n": 113,
+        "median": 1.6,
         "p25": 0.6,
-        "p75": 8.6,
+        "p75": 8.0,
         "min": 0.0,
         "max": 41.6
       },
       "capability_age_months": {
-        "n": 51,
-        "median": 43.5,
-        "p25": 30.2,
-        "p75": 68.5,
+        "n": 65,
+        "median": 41.6,
+        "p25": 23.2,
+        "p75": 59.8,
         "min": 0.0,
         "max": 115.4
       }
     },
     "UK": {
-      "speeches": 357,
-      "speeches_with_claims": 170,
+      "speeches": 417,
+      "speeches_with_claims": 188,
       "relevance": {
-        "passing": 135,
-        "substantive": 217,
-        "procedural": 5
+        "passing": 152,
+        "substantive": 258,
+        "procedural": 7
       },
-      "claims": 302,
+      "claims": 343,
       "claim_type": {
-        "limitation": 25,
-        "economic": 25,
-        "incident": 64,
-        "other": 54,
-        "labour": 17,
-        "capability": 34,
-        "adoption": 21,
-        "opinion": 54,
-        "resource": 4,
-        "trajectory": 4
+        "limitation": 26,
+        "economic": 31,
+        "incident": 75,
+        "other": 59,
+        "labour": 18,
+        "capability": 41,
+        "adoption": 24,
+        "opinion": 59,
+        "resource": 5,
+        "trajectory": 5
       },
       "evidence_basis": {
-        "vague_attribution": 39,
-        "none": 154,
-        "cited_source": 95,
-        "personal_experience": 14
+        "vague_attribution": 44,
+        "none": 175,
+        "cited_source": 109,
+        "personal_experience": 15
       },
       "vintage_status": {
-        "contested": 41,
-        "current": 169,
-        "unclear": 16,
-        "dated_event": 64,
-        "forecast": 9,
+        "contested": 44,
+        "current": 190,
+        "unclear": 19,
+        "dated_event": 75,
+        "forecast": 11,
         "outdated": 2,
-        "never_accurate": 1
+        "never_accurate": 2
       },
-      "claims_with_dated_source": 86,
+      "claims_with_dated_source": 97,
       "cited_lag_months": {
-        "n": 86,
-        "median": 1.1,
+        "n": 97,
+        "median": 1.2,
         "p25": 0.2,
-        "p75": 4.4,
+        "p75": 4.5,
         "min": 0.0,
         "max": 48.2
       },
-      "assessable_for_vintage": 171,
+      "assessable_for_vintage": 192,
       "outdated": 2,
       "outdated_lag_months": {
         "n": 2,
@@ -140,90 +140,90 @@
         "max": 14.4
       },
       "incident_lag_months": {
-        "n": 61,
-        "median": 1.5,
-        "p25": 0.5,
-        "p75": 6.9,
+        "n": 72,
+        "median": 1.4,
+        "p25": 0.4,
+        "p75": 6.4,
         "min": 0.0,
         "max": 41.6
       },
       "capability_age_months": {
-        "n": 27,
-        "median": 39.8,
-        "p25": 26.6,
-        "p75": 53.5,
+        "n": 34,
+        "median": 38.7,
+        "p25": 17.1,
+        "p75": 56.6,
         "min": 0.0,
         "max": 101.0
       }
     },
     "AU": {
-      "speeches": 166,
-      "speeches_with_claims": 82,
+      "speeches": 196,
+      "speeches_with_claims": 100,
       "relevance": {
-        "substantive": 95,
-        "passing": 62,
+        "substantive": 114,
+        "passing": 73,
         "procedural": 9
       },
-      "claims": 178,
+      "claims": 233,
       "claim_type": {
-        "incident": 33,
-        "resource": 13,
-        "adoption": 17,
-        "other": 28,
-        "capability": 27,
-        "labour": 4,
-        "economic": 7,
-        "limitation": 6,
-        "opinion": 42,
+        "incident": 49,
+        "adoption": 21,
+        "capability": 35,
+        "other": 32,
+        "labour": 6,
+        "limitation": 8,
+        "opinion": 54,
+        "economic": 6,
+        "resource": 21,
         "trajectory": 1
       },
       "evidence_basis": {
-        "none": 96,
-        "cited_source": 50,
-        "personal_experience": 8,
-        "vague_attribution": 24
+        "none": 119,
+        "cited_source": 70,
+        "personal_experience": 10,
+        "vague_attribution": 34
       },
       "vintage_status": {
-        "dated_event": 33,
-        "contested": 26,
-        "current": 102,
-        "unclear": 12,
-        "outdated": 1,
-        "forecast": 4
+        "dated_event": 49,
+        "contested": 35,
+        "current": 126,
+        "unclear": 14,
+        "outdated": 2,
+        "forecast": 7
       },
-      "claims_with_dated_source": 45,
+      "claims_with_dated_source": 65,
       "cited_lag_months": {
-        "n": 45,
+        "n": 65,
         "median": 0.3,
         "p25": 0.1,
-        "p75": 4.0,
+        "p75": 2.7,
         "min": 0.0,
-        "max": 27.5
+        "max": 145.1
       },
-      "assessable_for_vintage": 103,
-      "outdated": 1,
+      "assessable_for_vintage": 128,
+      "outdated": 2,
       "outdated_lag_months": {
-        "n": 1,
-        "median": 19.1,
-        "p25": 19.1,
-        "p75": 19.1,
-        "min": 19.1,
+        "n": 2,
+        "median": 9.9,
+        "p25": 5.3,
+        "p75": 14.5,
+        "min": 0.7,
         "max": 19.1
       },
       "incident_lag_months": {
-        "n": 27,
+        "n": 41,
         "median": 2.7,
-        "p25": 0.6,
-        "p75": 13.4,
-        "min": 0.2,
+        "p25": 0.7,
+        "p75": 10.3,
+        "min": 0.0,
         "max": 41.1
       },
       "capability_age_months": {
-        "n": 24,
-        "median": 44.9,
-        "p25": 40.2,
-        "p75": 81.8,
-        "min": 5.1,
+        "n": 31,
+        "median": 43.8,
+        "p25": 28.6,
+        "p75": 58.0,
+        "min": 0.3,
         "max": 115.4
       }
     }
@@ -238,63 +238,63 @@
       },
       {
         "band": "2",
-        "speeches": 193,
-        "with_claims": 55,
-        "claims": 62
+        "speeches": 227,
+        "with_claims": 62,
+        "claims": 68
       },
       {
         "band": "3-5",
-        "speeches": 198,
-        "with_claims": 88,
-        "claims": 114
+        "speeches": 227,
+        "with_claims": 97,
+        "claims": 124
       },
       {
         "band": "6-10",
-        "speeches": 67,
-        "with_claims": 51,
-        "claims": 102
+        "speeches": 76,
+        "with_claims": 57,
+        "claims": 109
       },
       {
         "band": "11+",
-        "speeches": 65,
-        "with_claims": 58,
-        "claims": 202
+        "speeches": 83,
+        "with_claims": 72,
+        "claims": 275
       }
     ],
     "by_heading": {
       "ai_in_heading": {
-        "speeches": 175,
-        "with_claims": 91,
-        "claims": 178
+        "speeches": 213,
+        "with_claims": 107,
+        "claims": 236
       },
       "other": {
-        "speeches": 348,
-        "with_claims": 161,
-        "claims": 302
+        "speeches": 400,
+        "with_claims": 181,
+        "claims": 340
       }
     }
   },
   "reliability": {
-    "speeches": 9,
-    "any_claim_agreement": 1.0,
-    "any_claim_kappa": 1.0,
-    "relevance_agreement": 1.0,
-    "claims_first_coder": 6,
-    "claims_second_coder": 4,
-    "claims_matched": 3,
-    "claim_overlap": 0.43,
+    "speeches": 38,
+    "any_claim_agreement": 0.97,
+    "any_claim_kappa": 0.95,
+    "relevance_agreement": 0.92,
+    "claims_first_coder": 36,
+    "claims_second_coder": 33,
+    "claims_matched": 28,
+    "claim_overlap": 0.68,
     "matched_fields": {
       "claim_type": {
-        "agreement": 1.0,
-        "kappa": 1.0
+        "agreement": 0.96,
+        "kappa": 0.95
       },
       "evidence_basis": {
-        "agreement": 1.0,
-        "kappa": null
+        "agreement": 0.96,
+        "kappa": 0.95
       },
       "vintage_status": {
-        "agreement": 0.67,
-        "kappa": 0.0
+        "agreement": 0.82,
+        "kappa": 0.69
       }
     }
   },
