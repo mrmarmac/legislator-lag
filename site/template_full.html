@@ -145,7 +145,7 @@ details.tv summary { cursor: pointer; width: max-content; padding: 0.2rem 0; }
 .types .track { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; min-width: 2.5rem; }
 .types .fill { height: 100%; background: var(--bar); border-radius: 5px; }
 .types .fig { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
-@media (max-width: 560px) { .types { grid-template-columns: max-content 1fr max-content; } .types .opt { display: none; } }
+@media (max-width: 560px) { .types { grid-template-columns: 1fr max-content; row-gap: 0.2rem; } .types .opt, .types .h { display: none; } .types .nm { grid-column: 1 / -1; margin-top: 0.55rem; } }
 .old td a { cursor: pointer; }
 .more { align-self: center; font: 500 0.92rem var(--sans); color: var(--accent); background: var(--surface); border: 1px solid var(--axis); border-radius: 8px; padding: 0.6rem 1.1rem; cursor: pointer; }
 .flag { font: 500 0.76rem/1 var(--sans); padding: 0.32rem 0.5rem; border-radius: 999px; border: 1px solid var(--axis); color: var(--ink-2); }
@@ -292,7 +292,8 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
   const overYear = cited.filter(c => c.cited_lag_months >= 12).length;
   const noEv = ALL.evidence_basis.none || 0, namedN = ALL.evidence_basis.cited_source || 0;
   const assessable = (ALL.vintage_status.current || 0) + (ALL.vintage_status.outdated || 0), outdated = ALL.vintage_status.outdated || 0;
-  /*__LEAD__*/
+  const lead = $('lead');
+  lead.append(el('strong', null, 'Rarely stale. More often, missing.'), ' Half of the sources speakers named were under ' + fmtLag(medCited) + ' old, and ' + pct(overYear, cited.length) + ' were more than a year old. But only ' + pct(namedN, ALL.claims) + ' of ' + ALL.claims.toLocaleString('en-GB') + ' claims named a source at all, and ' + pct(noEv, ALL.claims) + ' came with no evidence.');
   const tile = (v, l, d) => { const t = el('div', 'tile'); t.append(el('div', 'v', v), el('div', 'l', l)); if (d) t.append(el('div', 'd', d)); return t; };
   $('tiles').append(
     tile(ALL.claims.toLocaleString('en-GB'), 'factual claims about AI', 'in ' + ALL.speeches_with_claims + ' of ' + S.coded_speeches + ' speeches'),
@@ -356,7 +357,7 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
     const track = el('div', 'track'); if (x.med != null) { const f = el('div', 'fill'); f.style.width = Math.max(2, 100 * x.med / maxMed) + '%'; track.append(f); } else track.style.background = 'none';
     track.setAttribute('role', 'img'); track.setAttribute('aria-label', x.med != null ? fmtLag(x.med) : 'too few dated sources');
     const fig = el('div', 'fig', x.med != null ? fmtLag(x.med) + ' ' : ''); fig.append(el('small', null, x.dated + ' dated')); fig.querySelector('small').style.color = 'var(--muted)';
-    T.append(el('div', null, lab(x.t)), el('div', 'n opt', x.n.toLocaleString('en-GB')), track, fig);
+    T.append(el('div', 'nm', lab(x.t) + ' (' + x.n.toLocaleString('en-GB') + ')'), el('div', 'n opt', x.n.toLocaleString('en-GB')), track, fig);
   });
 
   // ---- basis + vintage ----
