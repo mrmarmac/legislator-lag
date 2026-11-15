@@ -7,10 +7,10 @@
   "eligible_speeches": 613,
   "coded_speeches": 613,
   "adjudication": {
-    "overrides": 42,
+    "overrides": 46,
     "claims_dropped": 25,
     "claims_added": 1,
-    "labels_changed": 15,
+    "labels_changed": 19,
     "by_human": 33
   },
   "human_review": {
@@ -98,28 +98,28 @@
       "vintage_status": {
         "dated_event": 124,
         "contested": 74,
-        "current": 308,
+        "current": 309,
         "unclear": 30,
         "forecast": 19,
-        "outdated": 4,
+        "outdated": 3,
         "never_accurate": 2
       },
       "claims_with_dated_source": 161,
       "cited_lag_months": {
         "n": 161,
-        "median": 1.0,
+        "median": 0.9,
         "p25": 0.2,
-        "p75": 4.1,
+        "p75": 3.7,
         "min": 0.0,
         "max": 145.1
       },
       "assessable_for_vintage": 312,
-      "outdated": 4,
+      "outdated": 3,
       "outdated_lag_months": {
-        "n": 4,
-        "median": 9.4,
-        "p25": 3.5,
-        "p75": 15.6,
+        "n": 3,
+        "median": 4.5,
+        "p25": 2.6,
+        "p75": 11.8,
         "min": 0.7,
         "max": 19.1
       },
@@ -169,31 +169,31 @@
       },
       "vintage_status": {
         "contested": 43,
-        "current": 184,
+        "current": 185,
         "unclear": 17,
         "dated_event": 75,
         "forecast": 12,
-        "outdated": 2,
+        "outdated": 1,
         "never_accurate": 2
       },
       "claims_with_dated_source": 98,
       "cited_lag_months": {
         "n": 98,
-        "median": 1.2,
+        "median": 1.1,
         "p25": 0.2,
-        "p75": 4.4,
+        "p75": 4.0,
         "min": 0.0,
         "max": 48.2
       },
       "assessable_for_vintage": 186,
-      "outdated": 2,
+      "outdated": 1,
       "outdated_lag_months": {
-        "n": 2,
-        "median": 9.4,
-        "p25": 7.0,
-        "p75": 11.9,
+        "n": 1,
+        "median": 4.5,
+        "p25": 4.5,
+        "p75": 4.5,
         "min": 4.5,
-        "max": 14.4
+        "max": 4.5
       },
       "incident_lag_months": {
         "n": 71,

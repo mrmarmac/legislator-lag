@@ -113,3 +113,11 @@ Notes: The 2025 edition (published 29 Oct 2026) does not appear to contain this 
 Date evidence: The release returned 503. An eSafety document set (esafety.gov.au/sites/default/files/2026-04/LOG_187_Document_Set.pdf, seen in search) gives the formal warning as issued 2 September 2025, about 100,000 monthly Australian visits; this is the date of the action, not confirmed as the release date.  
 Notes: A follow-up eSafety release (November 2025) says the provider then withdrew from Australia; 'took action in 2025' fits either release.
 
+## Reviewer rulings, 15 November 2026
+
+- Row 2 (`uk-lords:2026-10-29c.1239.4#1`): re-dated to the AI sector study 2025, published 29 October 2026. Claim now current.
+- Row 7 (`uk-westminsterhall:2026-07-08a.176.1#2`): re-dated to DSIT's assessment of AI capabilities and the UK labour market, published 28 January 2026. The IMF note is kept as a second source.
+- Row 10 (`au-representatives:2026-08-18.155.3#9`): date corrected to 20 May 2024.
+- Row 16 (`uk-westminsterhall:2026-11-04a.387.1#1`): re-dated to Meta's UK supplemental privacy policy, effective 12 October 2026.
+
+The other 17 rows are not yet confirmed.

@@ -1,6 +1,6 @@
 # Figure captions
 
-**Figure 1.** Age of every dated source that a speaker named, on the day it was cited. Each dot is one source (UK n = 98, Australia n = 63). The horizontal axis is logarithmic. Vertical bars mark medians: 37 days for the UK and 8 days for Australia.
+**Figure 1.** Age of every dated source that a speaker named, on the day it was cited. Each dot is one source (UK n = 98, Australia n = 63). The horizontal axis is logarithmic. Vertical bars mark medians: 35 days for the UK and 8 days for Australia.
 
 Files: `fig1_source_age.svg`, `fig1_source_age.png`
 
