@@ -294,6 +294,7 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `site/index.html` | Full-run results page: charts and a browser of every claim. |
 | `docs/index.html` | The same page as a standalone document, served by GitHub Pages from `main:/docs`. Rebuilt by `python -m legislag.site --run full`. |
 | `outputs/full_claims.xlsx` | Workbook: summary, claims, speeches. Lags are formulas. |
+| `outputs/figures/` | Three figures for the paper as SVG and PNG, with captions. Built by `python -m legislag.figures`, then `node legislag/figures_png.js` for the PNGs. |
 | `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
