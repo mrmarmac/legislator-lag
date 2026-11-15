@@ -1,6 +1,8 @@
 """Build the human review packets and the review page.
 
-    python -m legislag.review [--seed N]
+    python -m legislag.review [--seed N]     build the packets and the page
+    python -m legislag.review --import DIR   merge verdict documents saved from the page
+    python -m legislag.review --apply        turn recorded verdicts into adjudications
 
 Three packets, all drawn from the full run:
 
@@ -16,7 +18,13 @@ Outputs
     site/review.html            the review page, with the packets inlined
 
 The page stores each verdict in the artifact's own database, one document
-per item under `verdicts/`, keyed by the item's `id`.
+per item under `verdicts/`, keyed by the item's `id`. Verdicts read back
+from it are kept in data/full/review/verdicts.jsonl.
+
+`--apply` rewrites the human-review lines of data/full/adjudication.jsonl
+from those verdicts and writes data/full/review/summary.json. Packets are
+always built from the labels as they stood before the human review, so the
+sample and the item ids do not move once verdicts are applied.
 """
 from __future__ import annotations
 
@@ -28,11 +36,14 @@ import sys
 from collections import Counter, defaultdict
 
 from .build import build, match_claims
-from .config import ROOT
+from .config import DATA, ROOT
 from .runs import RUNS, load_labels, load_speeches
 from .schema import CLAIM_TYPES, EVIDENCE_BASES, RELEVANCE, VINTAGE_STATUSES
 from .site import MARK
 
+HUMAN = "human_review"
+REVIEW = DATA / "full" / "review"
+ADJUDICATION = DATA / "full" / "adjudication.jsonl"
 SEED = 20261115
 SPOT_N = 40
 SPOT_MIN_PER_STRATUM = 2
@@ -112,8 +123,8 @@ def packets(seed: int = SEED) -> dict:
     speeches = load_speeches(run)
     main = load_labels(run, run.main)
     second = load_labels(run, run.second)
-    claims, _, summary = build("full")
-    kept = defaultdict(list)                 # main coding after adjudication drops
+    claims, _, summary = build("full", skip_by=(HUMAN,))
+    kept = defaultdict(list)                 # main coding as it stood before human review
     for c in claims:
         kept[c["speech_id"]].append(c)
 
@@ -210,10 +221,190 @@ def packets(seed: int = SEED) -> dict:
     }
 
 
+# ---------- applying verdicts ----------
+
+# When a reviewer picks one coder's value for a field, these travel with it.
+COMPANIONS = {
+    "source_date": ["source_name", "source_org", "source_type", "source_date_basis",
+                    "source_url", "source_notes"],
+    "vintage_status": ["vintage_date", "vintage_rationale", "vintage_confidence"],
+    "event_public_date": ["event_occurred_date"],
+    "incident_loosely_described": ["incident_accuracy_note"],
+}
+
+
+def read_verdicts() -> dict[str, dict]:
+    path = REVIEW / "verdicts.jsonl"
+    if not path.exists():
+        return {}
+    return {r["id"]: r for r in map(json.loads, path.read_text(encoding="utf-8").splitlines())}
+
+
+def import_verdicts(folder: str, seed: int = SEED) -> int:
+    """Merge verdict documents saved from the review page (one JSON file each)."""
+    from pathlib import Path
+    data = packets(seed)
+    items = {it["id"]: it for k in ("spot", "adj", "tail") for it in data[k]}
+    have = read_verdicts()
+    for path in sorted(Path(folder).glob("*.json")):
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        if path.stem in items:
+            it = items[path.stem]
+            have[path.stem] = {"id": path.stem, "kind": it["kind"], "ref": it["ref"],
+                               "answers": doc.get("answers") or {}, "note": doc.get("note") or "",
+                               "done": doc.get("done"), "updated": doc.get("updated")}
+    REVIEW.mkdir(parents=True, exist_ok=True)
+    order = [i for i in items if i in have]
+    (REVIEW / "verdicts.jsonl").write_text(
+        "".join(json.dumps(have[i], ensure_ascii=False) + "\n" for i in order), encoding="utf-8")
+    return len(order)
+
+
+def apply(seed: int = SEED) -> dict:
+    """Turn verdicts into adjudication lines and a summary of the review."""
+    data = packets(seed)
+    verdicts = read_verdicts()
+    lines: dict[str, dict] = {}          # one line per claim or speech; later rulings merge in
+
+    def line(key: str, **fields) -> dict:
+        row = lines.setdefault(key, {"by": HUMAN, "reason": []})
+        reason = fields.pop("reason")
+        if reason not in row["reason"]:
+            row["reason"].append(reason)
+        for k, v in fields.items():
+            if k == "set":
+                row.setdefault("set", {}).update(v)
+            else:
+                row[k] = v
+        return row
+
+    stats = {"spot": Counter(), "adj": Counter(), "tail": Counter()}
+    weighted = Counter()
+
+    # Spot-check
+    for it in data["spot"]:
+        v = verdicts.get(it["id"])
+        st = stats["spot"]
+        st["sampled"] += 1
+        if not v or "is_claim" not in v["answers"]:
+            continue
+        a = v["answers"]
+        st["answered"] += 1
+        st[f"is_claim_{a['is_claim']}"] += 1
+        weighted["all"] += it["weight"]
+        weighted["not_claim"] += it["weight"] * (a["is_claim"] == "no")
+        for q in ("claim_type", "evidence_basis", "vintage_status", "source", "event_date", "missed"):
+            if q in a:
+                st[f"{q}_{a[q]}"] += 1
+        if a["is_claim"] == "no":
+            line(it["ref"], claim_id=it["ref"], drop=True,
+                 reason="Human spot-check: not a checkable factual claim about AI.")
+            continue
+        for q in ("claim_type", "evidence_basis", "vintage_status"):
+            if a.get(q) == "disagree" and a.get(q + "_fix"):
+                change = {q: a[q + "_fix"]}
+                if q == "vintage_status":
+                    change["vintage_date"] = None
+                line(it["ref"], claim_id=it["ref"], set=change,
+                     reason=f"Human spot-check: {q} changed from {it['claim'][q]}.")
+
+    # Adjudication
+    for it in data["adj"]:
+        v = verdicts.get(it["id"])
+        if not v:
+            continue
+        a, sid, st = v["answers"], it["ref"], stats["adj"]
+        st["speeches"] += 1
+        rel = a.get("ai_relevance")
+        if rel:
+            st[f"relevance_{'unsure' if rel == 'unsure' else 'ruled'}"] += 1
+            rel = a.get("ai_relevance_fix") if rel == "neither" else rel
+            if rel in RELEVANCE:
+                line("speech:" + sid, speech_id=sid, set_speech={"ai_relevance": rel},
+                     reason="Human adjudication of the double-coded speech.")
+        for s in it["solo"]:
+            origin, n = s["claim"]["key"].split("#")
+            ruling = a.get("solo:" + s["claim"]["key"])
+            st[f"one_coder_{ruling}"] += 1
+            if origin == "main" and ruling == "drop":
+                line(f"{sid}#{n}", claim_id=f"{sid}#{n}", drop=True,
+                     reason="Human adjudication: found by one coder only, ruled not a claim.")
+            elif origin == "second" and ruling == "keep":
+                line(f"{sid}#s{n}", claim_id=f"{sid}#s{n}", speech_id=sid, add_from_second=int(n),
+                     reason="Human adjudication: found by the second coder only, ruled a claim.")
+        for p in it["pairs"]:
+            by = {p[k]["key"].split("#")[0]: p[k] for k in ("A", "B")}
+            cid = f"{sid}#{by['main']['key'].split('#')[1]}"
+            for f in p["diff"]:
+                key = f"pair:{p['A']['key']}:{f}"
+                pick = a.get(key)
+                st[f"field_{pick if pick in ('main', 'second', 'neither', 'unsure') else 'unanswered'}"] += 1
+                if pick == "second" and f == "source_date" and by["second"].get(f) is None:
+                    # The reviewer ruled the source undated. Keep its name as a reference.
+                    change = {"source_date": None, "source_date_basis": "unknown"}
+                elif pick == "second":
+                    change = {k: by["second"].get(k) for k in [f] + COMPANIONS.get(f, [])}
+                elif pick == "neither" and a.get(key + "_fix"):
+                    change = {f: a[key + "_fix"]}
+                    if f == "vintage_status":
+                        change["vintage_date"] = None
+                else:
+                    continue
+                line(cid, claim_id=cid, set=change,
+                     reason=f"Human adjudication: {f} " + ("taken from the second coding." if pick == "second" else "set by the reviewer."))
+        if a.get("rule"):
+            st["rules_noted"] += 1
+
+    # Tail
+    for it in data["tail"]:
+        v = verdicts.get(it["id"])
+        if not v:
+            continue
+        a, st = v["answers"], stats["tail"]
+        st["reviewed"] += 1
+        for q in ("source_right", "date_ok", "status_ok"):
+            if q in a:
+                st[f"{q}_{a[q]}"] += 1
+        if a.get("primary_url"):
+            st["primary_link_recorded"] += 1
+
+    # A dropped claim needs no label changes.
+    out = []
+    for row in lines.values():
+        if row.get("drop"):
+            row.pop("set", None)
+        row["reason"] = " ".join(row["reason"])
+        out.append(row)
+    earlier = [json.loads(l) for l in ADJUDICATION.read_text(encoding="utf-8").splitlines()
+               if l.strip() and json.loads(l).get("by") != HUMAN]
+    ADJUDICATION.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in earlier + out),
+                            encoding="utf-8")
+    summary = {
+        "verdicts": len(verdicts),
+        "spot": dict(stats["spot"]), "adj": dict(stats["adj"]), "tail": dict(stats["tail"]),
+        "spot_not_claim_weighted": round(weighted["not_claim"] / weighted["all"], 3) if weighted["all"] else None,
+        "applied": {"claims_dropped": sum(1 for r in out if r.get("drop")),
+                    "claims_added": sum(1 for r in out if r.get("add_from_second")),
+                    "claims_relabelled": sum(1 for r in out if "set" in r),
+                    "speeches_relabelled": sum(1 for r in out if "set_speech" in r)},
+    }
+    REVIEW.mkdir(parents=True, exist_ok=True)
+    (REVIEW / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    return summary
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--import", dest="folder", help="folder of verdict documents saved from the page")
     args = ap.parse_args()
+    if args.folder:
+        print(f"{import_verdicts(args.folder, args.seed)} verdicts on file")
+        return 0
+    if args.apply:
+        print(json.dumps(apply(args.seed), indent=2))
+        return 0
     data = packets(args.seed)
     payload = json.dumps(data, ensure_ascii=False)
     (ROOT / "outputs" / "full_review.json").write_text(payload + "\n", encoding="utf-8")

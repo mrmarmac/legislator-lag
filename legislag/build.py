@@ -15,6 +15,10 @@ Outputs
 Adjudication lines look like
     {"claim_id": "...#2", "set": {"vintage_status": "current"}, "reason": "..."}
     {"claim_id": "...#3", "drop": true, "reason": "..."}
+    {"claim_id": "<speech>#s6", "speech_id": "...", "add_from_second": 6, "reason": "..."}
+    {"speech_id": "...", "set_speech": {"ai_relevance": "passing"}, "reason": "..."}
+`add_from_second` brings in claim 6 of the second coding of that speech.
+Lines written from the human review carry "by": "human_review".
 Coder files are never edited; every reviewer change is recorded there.
 """
 from __future__ import annotations
@@ -202,7 +206,8 @@ def summarise(claims: list[dict], speeches: list[dict]) -> dict:
             "cited_lag_months": quantiles([c["cited_lag_months"] for c in dated]),
             "assessable_for_vintage": len(implied),
             "outdated": len(outdated),
-            "outdated_lag_months": quantiles([c["implied_lag_months"] for c in outdated]),
+            "outdated_lag_months": quantiles([c["implied_lag_months"] for c in outdated
+                                              if c["implied_lag_months"] is not None]),
             "incident_lag_months": quantiles([c["incident_lag_months"] for c in cs
                                               if c["incident_lag_months"] is not None]),
             "capability_age_months": quantiles([c["capability_age_months"] for c in cs
@@ -267,16 +272,24 @@ def write_csv(path, rows, columns):
         w.writerows(rows)
 
 
-def build(run_name: str = "pilot") -> tuple[list[dict], list[dict], dict]:
+def build(run_name: str = "pilot", skip_by: tuple[str, ...] = ()) -> tuple[list[dict], list[dict], dict]:
+    """Build the tables. `skip_by` leaves out adjudication lines from those reviewers."""
     run: Run = RUNS[run_name]
     sample = load_speeches(run)
     main = load_labels(run, run.main)
     second = load_labels(run, run.second)
-    overrides = {a["claim_id"]: a for a in read_jsonl(run.labels_dir.parent / "adjudication.jsonl")}
+    lines = [a for a in read_jsonl(run.labels_dir.parent / "adjudication.jsonl")
+             if a.get("by") not in skip_by]
+    overrides = {a["claim_id"]: a for a in lines if "set" in a or a.get("drop")}
+    adds = defaultdict(list)
+    for a in lines:
+        if a.get("add_from_second"):
+            adds[a["speech_id"]].append(a)
+    speech_sets = {a["speech_id"]: a for a in lines if a.get("set_speech")}
     versions = sorted({row.get("codebook", "v0.1") for row in main.values()})
 
     claims, speeches, near_misses = [], [], []
-    dropped = 0
+    dropped = added = 0
     for sid in sorted(main, key=lambda s: (sample[s]["date"], s)):
         sp, row = sample[sid], main[sid]
         meta = {**{k: sp[k] for k in ("country", "chamber_label", "date", "speaker",
@@ -299,11 +312,23 @@ def build(run_name: str = "pilot") -> tuple[list[dict], list[dict], dict]:
                 "claim_id": cid, "speech_id": sid, "coder": row["coder"],
                 "adjudicated": bool(ov), "adjudication_reason": ov.get("reason") if ov else None,
             })
+        for a in adds.get(sid, ()):
+            c = dict(second[sid]["claims"][a["add_from_second"] - 1])
+            c.update(a.get("set") or {})
+            kept += 1
+            added += 1
+            claims.append({
+                **meta, **c, **derive(c, debate),
+                "claim_id": a["claim_id"], "speech_id": sid, "coder": second[sid]["coder"],
+                "adjudicated": True, "adjudication_reason": a.get("reason"),
+            })
         for nm in row.get("near_misses") or []:
             near_misses.append({"speech_id": sid, **nm})
+        relevance = (speech_sets.get(sid, {}).get("set_speech") or {}).get(
+            "ai_relevance", row["ai_relevance"])
         speeches.append({
             **meta, "speech_id": sid, "word_count": sp["word_count"],
-            "ai_relevance": row["ai_relevance"], "n_claims": kept,
+            "ai_relevance": relevance, "n_claims": kept,
             "n_near_misses": len(row.get("near_misses") or []),
             "coder_notes": row.get("coder_notes") or "", "coder": row["coder"],
             "ai_mentions": ai_mentions(sp),
@@ -311,6 +336,9 @@ def build(run_name: str = "pilot") -> tuple[list[dict], list[dict], dict]:
         })
 
     corpus = json.loads((DATA / "corpus_stats.json").read_text())
+    review_path = run.labels_dir.parent / "review" / "summary.json"
+    if skip_by:
+        review_path = review_path.with_name("none")
     summary = {
         "generated": dt.date.today().isoformat(),
         "run": run.name,
@@ -320,7 +348,11 @@ def build(run_name: str = "pilot") -> tuple[list[dict], list[dict], dict]:
         "eligible_speeches": len(sample) if run.name == "pilot" else sum(
             1 for s in sample.values() if ai_mentions(s) >= 2),
         "coded_speeches": len(speeches),
-        "adjudication": {"overrides": len(overrides), "claims_dropped": dropped},
+        "adjudication": {"overrides": len(lines), "claims_dropped": dropped,
+                         "claims_added": added,
+                         "labels_changed": sum(1 for a in lines if "set" in a and not a.get("add_from_second")),
+                         "by_human": sum(1 for a in lines if a.get("by") == "human_review")},
+        "human_review": json.loads(review_path.read_text()) if review_path.exists() else None,
         "near_misses": len(near_misses),
         "summary": summarise(claims, speeches),
         "yield": claim_yield(speeches),

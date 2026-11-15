@@ -1,0 +1,52 @@
+{
+  "verdicts": 94,
+  "spot": {
+    "sampled": 40,
+    "answered": 40,
+    "is_claim_unsure": 4,
+    "claim_type_agree": 38,
+    "evidence_basis_agree": 39,
+    "vintage_status_disagree": 3,
+    "source_right": 22,
+    "missed_no": 2,
+    "is_claim_yes": 29,
+    "vintage_status_agree": 24,
+    "missed_not_read": 37,
+    "missed_yes": 1,
+    "event_date_right": 2,
+    "is_claim_no": 7,
+    "vintage_status_unsure": 13,
+    "event_date_cannot_verify": 7,
+    "claim_type_unsure": 2,
+    "source_cannot_verify": 3,
+    "evidence_basis_unsure": 1
+  },
+  "adj": {
+    "speeches": 29,
+    "field_main": 17,
+    "field_second": 20,
+    "rules_noted": 3,
+    "one_coder_drop": 13,
+    "relevance_ruled": 1,
+    "field_unsure": 13,
+    "relevance_unsure": 4,
+    "field_neither": 1,
+    "one_coder_keep": 3
+  },
+  "tail": {
+    "reviewed": 25,
+    "source_right_yes": 18,
+    "date_ok_right": 18,
+    "status_ok_agree": 6,
+    "primary_link_recorded": 1,
+    "source_right_unsure": 3,
+    "date_ok_cannot_verify": 3
+  },
+  "spot_not_claim_weighted": 0.141,
+  "applied": {
+    "claims_dropped": 16,
+    "claims_added": 1,
+    "claims_relabelled": 16,
+    "speeches_relabelled": 1
+  }
+}
