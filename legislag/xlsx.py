@@ -227,7 +227,8 @@ def main() -> int:
              else f'=COUNTIF({s_claims},">0")')
         sm.cell(row=r, column=j, value=f).font = BODY
     r += 1
-    count_row(r, "Capability claims", cif()); sm.cell(row=r, column=1).font = BOLD
+    count_row(r, "Capability claims" if args.run == "pilot" else "Claims", cif())
+    sm.cell(row=r, column=1).font = BOLD
     present = [t for t in CLAIM_TYPES if any(c["claim_type"] == t for c in claims)]
     for t in present:
         r += 1

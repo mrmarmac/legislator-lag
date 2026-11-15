@@ -3,10 +3,95 @@
 **Question.** How stale is the AI evidence that UK and Australian
 parliamentarians cite?
 
-**Status.** Pilot complete: 100 speeches coded under codebook v0.1. The full
-run is set up under codebook v0.2 and has not been run.
+**Status.** Full run complete: 613 speeches coded under codebook v0.2. An
+earlier 100-speech pilot under v0.1 is kept for reference.
 
-## What the pilot found
+**Short answer.** Rarely stale. More often, missing. When a parliamentarian
+names a source for a claim about AI, it is usually weeks old. But half of all
+claims come with no evidence at all.
+
+## What the full run found
+
+The corpus is 1,182 speeches that mention AI, from 1 July 2026 to the latest
+sitting day available (12 November for the UK; 29 October for the Australian
+House; 15 October for the Senate). The 613 speeches with two or more AI terms
+were coded. 288 of them contain at least one factual claim about AI.
+
+| | UK | Australia | Both |
+|---|---:|---:|---:|
+| Speeches coded | 417 | 196 | 613 |
+| Speeches with a claim | 188 | 100 | 288 |
+| Claims | 343 | 233 | 576 |
+| No evidence offered | 175 | 119 | 294 |
+| Vague attribution ("experts say") | 44 | 34 | 78 |
+| Personal experience | 15 | 10 | 25 |
+| Named source | 109 | 70 | 179 |
+| Named source that could be dated | 97 | 65 | 162 |
+| Median age of a dated named source | 1.2 months | 8 days | 29 days |
+
+**How old are named sources?** Of the 162 that could be dated:
+
+- 81 (50%) were under a month old, and 56 of those were under a week old.
+- 21 (13%) were more than a year old, and 12 were more than two years old.
+- The oldest was a 2014 post, quoted in September 2026 without its date.
+
+**Old is not the same as out of date.** Coders also judged whether each claim
+was still the latest fair account on the day.
+
+| Assessment | Claims |
+|---|---:|
+| Still current | 316 |
+| Dated incident | 124 |
+| Contested: overstated or disputed | 79 |
+| Unclear: could not be assessed | 33 |
+| Forecast | 18 |
+| Outdated: overtaken by newer evidence | 4 |
+| Never accurate | 2 |
+
+Only four claims had been overtaken by newer evidence. Seventy-nine were
+overstated or disputed, which is the larger quality problem.
+
+**Incidents.** 124 claims described a specific incident, and 113 could be
+dated. The median incident had been public for 1.6 months. In 50 cases the
+speaker's account went beyond what reporting supports, or the incident could
+not be verified.
+
+**By kind of claim.** Median age of dated named sources: labour 7.2 months,
+limitations 4.0, economic 2.6, adoption 2.0, capability 0.8, incidents 0.6,
+opinion and risk estimates 0.3. Most kinds have fewer than 20 dated sources,
+so treat these as rough.
+
+**UK and Australia.** Australian sources were fresher at the median. The
+Australian sample is smaller and ends in October. The gap may reflect which
+debates fell in the window, not a lasting difference.
+
+### How far to trust this
+
+- **No human has checked the labels.** All coding was done by AI coders
+  (Claude Opus 5.5) working from `CODEBOOK.md` and `docs/coder_brief.md`.
+- **Second coding.** Sixty speeches were coded twice by coders who could not
+  see the first coding. They agreed on whether a speech holds any claim in 95%
+  of speeches. They found 63 and 54 claims, of which 49 were the same claim.
+  On those, they agreed on the kind of claim 98% of the time, on the evidence
+  offered 88%, and on currency 84%. Both coders were the same model, so this
+  measures consistency, not correctness.
+- **Which claims get found is the weak point.** A quarter of claims found by
+  one coder were not found by the other. Counts of claims are softer than
+  the lags measured on them.
+- **Source dates.** 140 of 162 were confirmed on a page found by web search,
+  usually news coverage or a listing and not the primary document. 17 rest on
+  a date stated in the speech, and 5 on coder recall.
+- **Knowledge horizon.** The coders' own knowledge ends before most of these
+  debates. "Still current" means current as far as the coder could establish.
+  Some of those claims may already have been stale.
+- **Review.** The session that ran the coders read the outdated and
+  never-accurate claims and the oldest sources, and re-ran the search behind
+  one outdated claim. It dropped 9 claims from the first 14 batches so they
+  match three rulings made mid-run (`CODEBOOK.md` section 7). It changed no
+  other label. The drops are logged in `data/full/adjudication.jsonl`.
+- **Frame.** Speeches with a single AI term were not coded.
+
+## The pilot (100 speeches, codebook v0.1)
 
 The corpus is 1,182 speeches that mention AI, from 1 July 2026 to the latest
 sitting day available (12 November for the UK; 29 October for the Australian
@@ -41,7 +126,7 @@ per country.
 Read this as a signal about method, not as an answer. Twenty-seven claims
 cannot support rates, medians, or a comparison between the two parliaments.
 
-## Limits
+### Limits of the pilot
 
 - **No human has checked the labels.** Coding was done by AI coders working
   from `CODEBOOK.md`. The session that ran them read every claim and re-ran
@@ -71,10 +156,18 @@ cannot support rates, medians, or a comparison between the two parliaments.
 | Incident dating | The date an incident became public is the evidence date. The occurrence date is kept as a second field. |
 | Twelve codebook gaps | Ruled as listed in `CODEBOOK.md` section 6. |
 
-The pilot labels stay as coded under v0.1. The full run recodes every speech
+The pilot labels stay as coded under v0.1. The full run recoded every speech
 in the frame under v0.2, including pilot speeches.
 
-## The full run
+## How the full run was coded
+
+The 613 speeches were split into 49 batches of about 7,900 words
+(`python -m legislag.batches`). Each batch was coded by a Claude Opus 5.5
+subagent in a Claude Code session, following `docs/coder_brief.md`. A random
+60 speeches were coded a second time in 6 further batches. Labels are in
+`data/full/labels/`.
+
+## Rerunning without a Claude Code session
 
 `legislag/code_api.py` codes the frame with the Claude API. It sends one
 request per speech. Claude reads the speech, searches the web to date sources
@@ -113,18 +206,21 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 - **Fallbacks.** If the model declines a speech on safety grounds, the API
   reruns it on a fallback model. `--no-fallbacks` turns this off. The model
   that coded each speech is recorded in `coder`.
-- **Status.** The request loop has been tested against a stub client only. It
-  has not yet been run against the live API.
+- **Status.** This script was not used for the published results. Its request
+  loop has been tested against a stub client only. It has never been run
+  against the live API.
 
 ## Outputs
 
 | File | What it is |
 |---|---|
-| `site/pilot.html` | Pilot results page: charts and a browser of every claim. |
-| `outputs/pilot_claims.xlsx` | Workbook: summary, claims, speeches. Lags are formulas. |
-| `outputs/pilot_claims.csv`, `outputs/pilot_speeches.csv` | The same tables as CSV. |
-| `outputs/pilot_summary.json` | Headline numbers, claim yield, reliability. |
-| `data/pilot/labels/` | Raw coder output, one file per batch. |
+| `site/index.html` | Full-run results page: charts and a browser of every claim. |
+| `outputs/full_claims.xlsx` | Workbook: summary, claims, speeches. Lags are formulas. |
+| `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
+| `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
+| `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
+| `data/full/adjudication.jsonl` | The nine claims dropped on review, with reasons. |
+| `site/pilot.html`, `outputs/pilot_*`, `data/pilot/` | The same outputs for the pilot. |
 | `data/speeches_ai.jsonl` | The corpus: every AI-mentioning speech. |
 
 ## Run it
@@ -150,11 +246,11 @@ python -m legislag.validate data/pilot/labels/batch_*.jsonl
 ```
 
 ```bash
-python -m legislag.build && python -m legislag.xlsx && python -m legislag.site
+python -m legislag.build --run full && python -m legislag.xlsx --run full && python -m legislag.site --run full
 ```
 
-Coding sits between `sample` and `validate`. In the pilot it was done by AI
-coders in a Claude session. The full run uses `legislag.code_api`, above.
+Drop `--run full` from each command to rebuild the pilot outputs. Coding sits
+between batching and `build`: see the two sections above.
 
 ### Data source: bulk XML now, APIs when keys exist
 

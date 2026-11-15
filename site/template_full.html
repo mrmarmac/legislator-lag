@@ -139,7 +139,7 @@ footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--ru
 .bars rect.bar:hover, .bars rect.bar:focus { filter: brightness(1.12); outline: none; }
 details.tv { font-size: 0.86rem; color: var(--muted); }
 details.tv summary { cursor: pointer; width: max-content; padding: 0.2rem 0; }
-.types { display: grid; grid-template-columns: max-content max-content 1fr max-content; gap: 0.5rem 0.9rem; align-items: center; font-size: 0.9rem; }
+.types { display: grid; grid-template-columns: max-content 1fr max-content; gap: 0.5rem 0.9rem; align-items: center; font-size: 0.9rem; }
 .types .h { font-size: 0.78rem; color: var(--muted); }
 .types .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
 .types .track { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; min-width: 2.5rem; }
@@ -147,6 +147,7 @@ details.tv summary { cursor: pointer; width: max-content; padding: 0.2rem 0; }
 .types .fig { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 @media (max-width: 560px) { .types { grid-template-columns: 1fr max-content; row-gap: 0.2rem; } .types .opt, .types .h { display: none; } .types .nm { grid-column: 1 / -1; margin-top: 0.55rem; } }
 .old td a { cursor: pointer; }
+@media (max-width: 560px) { .tiles .tile:last-child:nth-child(odd) { grid-column: 1 / -1; } }
 .more { align-self: center; font: 500 0.92rem var(--sans); color: var(--accent); background: var(--surface); border: 1px solid var(--axis); border-radius: 8px; padding: 0.6rem 1.1rem; cursor: pointer; }
 .flag { font: 500 0.76rem/1 var(--sans); padding: 0.32rem 0.5rem; border-radius: 999px; border: 1px solid var(--axis); color: var(--ink-2); }
 blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
@@ -293,14 +294,15 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
   const noEv = ALL.evidence_basis.none || 0, namedN = ALL.evidence_basis.cited_source || 0;
   const assessable = (ALL.vintage_status.current || 0) + (ALL.vintage_status.outdated || 0), outdated = ALL.vintage_status.outdated || 0;
   const lead = $('lead');
-  lead.append(el('strong', null, 'Rarely stale. More often, missing.'), ' Half of the sources speakers named were under ' + fmtLag(medCited) + ' old, and ' + pct(overYear, cited.length) + ' were more than a year old. But only ' + pct(namedN, ALL.claims) + ' of ' + ALL.claims.toLocaleString('en-GB') + ' claims named a source at all, and ' + pct(noEv, ALL.claims) + ' came with no evidence.');
+  const underMonth = cited.filter(c => c.cited_lag_months < 1).length;
+  lead.append(el('strong', null, 'Rarely stale. More often, missing.'), ' ' + pct(underMonth, cited.length) + ' of the sources speakers named were under a month old, and ' + pct(overYear, cited.length) + ' were more than a year old. Only ' + outdated + ' of ' + ALL.claims.toLocaleString('en-GB') + ' claims had been overtaken by newer evidence. But ' + pct(noEv, ALL.claims) + ' of claims came with no evidence at all, and only ' + pct(namedN, ALL.claims) + ' named a source.');
   const tile = (v, l, d) => { const t = el('div', 'tile'); t.append(el('div', 'v', v), el('div', 'l', l)); if (d) t.append(el('div', 'd', d)); return t; };
   $('tiles').append(
     tile(ALL.claims.toLocaleString('en-GB'), 'factual claims about AI', 'in ' + ALL.speeches_with_claims + ' of ' + S.coded_speeches + ' speeches'),
     tile(pct(namedN, ALL.claims), 'name a source', pct(noEv, ALL.claims) + ' offer no evidence'),
     tile(medCited == null ? '–' : fmtLag(medCited), 'median age of a named source', plural(cited.length, 'dated source')),
     tile(pct(overYear, cited.length), 'of named sources over a year old', overYear + ' of ' + cited.length),
-    tile(pct(outdated, assessable), 'of assessable claims outdated', outdated + ' of ' + assessable),
+    tile(String(outdated), 'claims overtaken by newer evidence', 'of ' + assessable + ' that could be assessed'),
   );
 
   // ---- grouped bar chart of age buckets ----
@@ -323,7 +325,7 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
       for (let s = 0; s <= hi + 1e-9; s += step) { svg.append(svgEl('line', { x1: padL, x2: W - padR, y1: y(s), y2: y(s), stroke: css(s === 0 ? '--axis' : '--rule'), 'stroke-width': 1 })); const t = svgEl('text', { x: padL - 6, y: y(s) + 4, 'text-anchor': 'end' }); t.textContent = Math.round(s * 100) + '%'; svg.append(t); }
       BUCKETS.forEach((b, i) => {
         const cx = padL + band * i + band / 2;
-        const t = svgEl('text', { x: cx, y: base + 18, 'text-anchor': 'middle' }); t.textContent = b[1]; svg.append(t);
+        const t = svgEl('text', { x: cx, y: base + 18, 'text-anchor': 'middle' }); t.textContent = W < 480 ? b[1].replace(' mo', 'm').replace(' yr', 'y') : b[1]; if (W < 480) t.setAttribute('font-size', '10.5'); svg.append(t);
         ['UK', 'AU'].forEach((cc, k) => {
           const s = shares[cc][i], h = Math.max(s > 0 ? 2 : 0, base - y(s)), x = cx + (k === 0 ? -bw - 1 : 1), r = Math.min(4, h);
           if (!h) return;
@@ -347,17 +349,18 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
   const medBy = (cc) => median(cited.filter(c => c.country === cc).map(c => c.cited_lag_months));
   $('sources-sub').textContent = 'Of ' + plural(ALL.claims, 'claim') + ', ' + namedN + ' named a source and ' + cited.length + ' of those sources could be dated. The median source was ' + fmtLag(medBy('UK')) + ' old in the UK and ' + fmtLag(medBy('AU')) + ' old in Australia.';
   const medInc = median(incidents.map(c => c.incident_lag_months));
-  $('incidents-sub').textContent = plural(incidents.length, 'claim') + ' described a specific incident that could be dated. The median incident had been public for ' + fmtLag(medInc) + ' when it was raised.';
+  const allInc = claims.filter(c => c.claim_type === 'incident'), loose = allInc.filter(c => c.incident_loosely_described).length;
+  $('incidents-sub').textContent = plural(allInc.length, 'claim') + ' described a specific incident, and ' + incidents.length + ' of those could be dated. The median incident had been public for ' + fmtLag(medInc) + ' when it was raised. In ' + loose + ' cases the speaker’s account went beyond what reporting supports, or the incident could not be verified.';
 
   // ---- by claim type ----
   const types = [...new Set(claims.map(c => c.claim_type))].map(t => { const rows = claims.filter(c => c.claim_type === t), lags = rows.filter(c => c.cited_lag_months != null).map(c => c.cited_lag_months); return { t, n: rows.length, named: rows.filter(c => c.evidence_basis === 'cited_source').length, dated: lags.length, med: lags.length >= 5 ? median(lags) : null }; }).sort((a, b) => (b.med == null ? -1 : b.med) - (a.med == null ? -1 : a.med) || b.n - a.n);
   const maxMed = Math.max(1, ...types.map(x => x.med || 0)), T = $('types');
-  T.append(el('div', 'h', 'Kind of claim'), el('div', 'h n opt', 'Claims'), el('div', 'h', 'Median age of named sources'), el('div', 'h n', ''));
+  T.append(el('div', 'h', 'Kind of claim (number of claims)'), el('div', 'h', 'Median age of named sources'), el('div', 'h n', ''));
   types.forEach(x => {
     const track = el('div', 'track'); if (x.med != null) { const f = el('div', 'fill'); f.style.width = Math.max(2, 100 * x.med / maxMed) + '%'; track.append(f); } else track.style.background = 'none';
     track.setAttribute('role', 'img'); track.setAttribute('aria-label', x.med != null ? fmtLag(x.med) : 'too few dated sources');
     const fig = el('div', 'fig', x.med != null ? fmtLag(x.med) + ' ' : ''); fig.append(el('small', null, x.dated + ' dated')); fig.querySelector('small').style.color = 'var(--muted)';
-    T.append(el('div', 'nm', lab(x.t) + ' (' + x.n.toLocaleString('en-GB') + ')'), el('div', 'n opt', x.n.toLocaleString('en-GB')), track, fig);
+    T.append(el('div', 'nm', lab(x.t) + ' (' + x.n.toLocaleString('en-GB') + ')'), track, fig);
   });
 
   // ---- basis + vintage ----
@@ -378,7 +381,7 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
   countTable($('basis-table'), BASIS, 'evidence_basis', 'Evidence');
   countTable($('vintage-table'), ['current', 'outdated', 'contested', 'dated_event', 'forecast', 'never_accurate', 'unclear'], 'vintage_status', 'Assessment');
   const medOut = ALL.outdated_lag_months;
-  $('vintage-note').textContent = '"Still current" means current as far as the coder could establish. The coders’ own knowledge ends before most of these debates, so some claims marked current may already have been stale.' + (medOut ? ' Outdated claims had been out of date for a median of ' + fmtLag(medOut.median) + '.' : '');
+  $('vintage-note').textContent = 'Old is not the same as out of date. A two-year-old law or survey can still be the latest word. "Contested" means broadly true but overstated, or disputed. "Still current" means current as far as the coder could establish. The coders’ own knowledge ends before most of these debates, so some claims marked current may already have been stale.' + (medOut ? ' Outdated claims had been out of date for a median of ' + fmtLag(medOut.median) + '.' : '');
 
   // ---- oldest ----
   const O = $('oldest'), oh = el('tr'); ['Age when cited', 'Source', 'Cited by', 'Claim'].forEach(h => oh.append(el('th', null, h))); O.append(oh);

@@ -275,26 +275,26 @@
     }
   },
   "reliability": {
-    "speeches": 38,
-    "any_claim_agreement": 0.97,
-    "any_claim_kappa": 0.95,
+    "speeches": 60,
+    "any_claim_agreement": 0.95,
+    "any_claim_kappa": 0.9,
     "relevance_agreement": 0.92,
-    "claims_first_coder": 36,
-    "claims_second_coder": 33,
-    "claims_matched": 28,
-    "claim_overlap": 0.68,
+    "claims_first_coder": 63,
+    "claims_second_coder": 54,
+    "claims_matched": 49,
+    "claim_overlap": 0.72,
     "matched_fields": {
       "claim_type": {
-        "agreement": 0.96,
-        "kappa": 0.95
+        "agreement": 0.98,
+        "kappa": 0.97
       },
       "evidence_basis": {
-        "agreement": 0.96,
-        "kappa": 0.95
+        "agreement": 0.88,
+        "kappa": 0.82
       },
       "vintage_status": {
-        "agreement": 0.82,
-        "kappa": 0.69
+        "agreement": 0.84,
+        "kappa": 0.75
       }
     }
   },
