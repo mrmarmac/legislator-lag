@@ -28,12 +28,12 @@ were coded. 282 of them contain at least one factual claim about AI.
 | Personal experience | 13 | 9 | 22 |
 | Named source | 110 | 69 | 179 |
 | Named source that could be dated | 98 | 63 | 161 |
-| Median age of a dated named source | 1.2 months | 8 days | 30 days |
+| Median age of a dated named source | 1.1 months | 8 days | 28 days |
 
 **How old are named sources?** Of the 161 that could be dated:
 
-- 79 (49%) were under a month old, and 54 of those were a week old or less.
-- 21 (13%) were more than a year old, and 12 were two years old or more.
+- 81 (50%) were under a month old, and 55 of those were a week old or less.
+- 18 (11%) were more than a year old, and 11 were two years old or more.
 - The oldest was a 2014 post, quoted in September 2026 without its date.
 
 **Old is not the same as out of date.** Each claim was also judged on whether
@@ -41,15 +41,15 @@ it was still the latest fair account on the day.
 
 | Assessment | Claims |
 |---|---:|
-| Still current | 308 |
+| Still current | 309 |
 | Dated incident | 124 |
 | Contested: overstated or disputed | 74 |
 | Unclear: could not be assessed | 30 |
 | Forecast | 19 |
-| Outdated: overtaken by newer evidence | 4 |
+| Outdated: overtaken by newer evidence | 3 |
 | Never accurate | 2 |
 
-Only four claims had been overtaken by newer evidence. Seventy-four were
+Only three claims had been overtaken by newer evidence. Seventy-four were
 overstated or disputed, which is the larger quality problem.
 
 **Incidents.** 124 claims described a specific incident, and 112 could be
@@ -57,8 +57,8 @@ dated. The median incident had been public for 1.8 months. In 53 cases the
 speaker's account went beyond what reporting supports, or the incident could
 not be verified.
 
-**By kind of claim.** Median age of dated named sources: labour 7.2 months,
-limitations 4.0, economic 2.6, adoption 2.0, capability 1.0, incidents 0.6,
+**By kind of claim.** Median age of dated named sources: labour 6.2 months,
+limitations 4.0, adoption 2.0, economic 1.6, capability 1.0, incidents 0.6,
 opinion and risk estimates 0.3. Most kinds have fewer than 20 dated sources,
 so treat these as rough.
 
@@ -107,6 +107,25 @@ outdated or never-accurate claims, 2 of which are in both groups.
 - A primary document link is on record for one source. For the rest, the
   record shows the reviewer's verdict only.
 
+**Primary-document check of the old sources.** After the review above, an AI
+subagent (Claude Opus 5.5) looked for the primary document behind each of the
+21 old sources. It found one for 16, a partial one for 4, and none for 1. It
+opened 13 of the links; 7 come from search results because the site refused
+the request. The list is in `data/full/review/tail_primary.md`. The reviewer
+then ruled on the four cases it flagged:
+
+- One source was the wrong edition. The figure quoted came from an edition
+  published on the day of the debate, so the claim is current, not outdated.
+- One figure was credited to a 2024 note but worded as in a 2026 report that
+  relays it. It is now dated to the 2026 report.
+- One company policy had a newer version in force on the debate day.
+- One date was a day out, because the coder had used the news report's date.
+
+Three of the 21 sources are therefore no longer over a year old. These four
+rulings are lines in `data/full/adjudication.jsonl` marked
+`"by": "tail_verification"`. The reviewer has not yet confirmed the other 17
+entries in the list.
+
 **What the review changed.** 16 claims dropped, 1 added from the second
 coding, 15 relabelled, and 1 speech's relevance changed. Every change is a
 line in `data/full/adjudication.jsonl` marked `"by": "human_review"`.
@@ -134,7 +153,9 @@ high. Lags are measured on named, dated sources and are less affected.
 - **Currency is hard to judge.** The reviewer was unsure on currency for 13 of
   40 spot-checked claims.
 - **Source dates.** 139 of 161 were confirmed on a page found by web search,
-  usually news coverage or a listing and not the primary document. 17 rest on
+  usually news coverage or a listing and not the primary document. The check
+  of the 21 oldest found 3 that were wrongly old, which suggests other dates
+  may also err towards older. 17 rest on
   a date stated in the speech, and 5 on coder recall.
 - **Knowledge horizon.** The coders' own knowledge ends before most of these
   debates. "Still current" means current as far as the coder could establish.
@@ -298,7 +319,7 @@ python -m legislag.build --run full && python -m legislag.xlsx --run full
 | `outputs/full_claims.csv`, `outputs/full_speeches.csv` | The same tables as CSV. |
 | `outputs/full_summary.json` | Headline numbers, claim yield, reliability. |
 | `data/full/labels/` | Raw coder output, one file per batch. `rel_*` files are the second coding. |
-| `data/full/adjudication.jsonl` | Every change made on review, with reasons: 9 earlier drops and 33 lines from the human review. |
+| `data/full/adjudication.jsonl` | Every change made on review, with reasons: 9 earlier drops, 33 lines from the human review and 4 from the primary-document check. |
 | `site/review.html`, `outputs/full_review.json` | Human review page and its packets: the 40-claim spot-check sample, the double-coded speeches that disagree, and the tail. |
 | `data/full/review/` | The reviewer's verdicts and a summary of them. |
 | `site/pilot.html`, `outputs/pilot_*`, `data/pilot/` | The same outputs for the pilot. |
@@ -386,5 +407,10 @@ copying and communicating material "in its current form" for non-commercial
 purposes. Whether short quotations count as the current form is not settled
 here.
 
-These licences cover the Hansard text only. The code, codebook and labels in
-this repository are not Hansard text and carry no licence yet.
+These licences cover the Hansard text only.
+
+## Licence for this project's own work
+
+- **Code:** MIT. See `LICENSE`.
+- **Codebook, labels, verdicts and figures:** CC BY 4.0. See `LICENSE-DATA.md`,
+  which also lists what is excluded.
