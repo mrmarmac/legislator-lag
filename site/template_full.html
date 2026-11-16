@@ -127,7 +127,8 @@ blockquote b { font-weight: 600; }
 .method { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.2rem 2rem; font-size: 0.93rem; color: var(--ink-2); }
 .method div { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
 .method h3 { color: var(--ink); }
-footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+footer { font-size: 0.84rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+footer p { max-width: 52rem; }
 @media (prefers-reduced-motion: no-preference) { .claim { transition: box-shadow 0.25s, border-color 0.25s; } }
 
 /* full-run additions */
@@ -242,7 +243,11 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
     <div class="method" id="method"></div>
   </section>
 
-  <footer id="footer"></footer>
+  <footer>
+    <p id="footer"></p>
+    <p>Contains Parliamentary information licensed under the <a href="https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/">Open Parliament Licence v3.0</a>. Data service provided by <a href="https://www.theyworkforyou.com/">TheyWorkForYou</a>.</p>
+    <p>Australian Hansard is © Commonwealth of Australia, from the <a href="https://www.aph.gov.au/">Parliament of Australia website</a>, under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>, obtained through <a href="https://www.openaustralia.org.au/">OpenAustralia</a>. Speeches are quoted in part; the wording of each quote is unchanged.</p>
+  </footer>
 </div>
 
 <script type="application/json" id="data">/*__DATA__*/</script>
@@ -454,6 +459,7 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
 
   // ---- method ----
   const R = S.reliability, mf = (R.matched_fields || {});
+  const H = S.human_review;
   const block = (title, paras) => { const d = el('div'); d.append(el('h3', null, title)); paras.forEach(p => d.append(el('p', null, p))); return d; };
   $('method').append(
     block('Corpus', ['Hansard for the Commons, Westminster Hall, Lords, House of Representatives and Senate, from the bulk XML published by TheyWorkForYou and OpenAustralia.', S.corpus_speeches.toLocaleString('en-GB') + ' speeches since 1 July 2026 contain an AI term. The ' + S.eligible_speeches + ' with two or more such terms were coded. Australian coverage ends ' + fmtDate(S.corpus['au-senate'].last_day) + ' (Senate) and ' + fmtDate(S.corpus['au-representatives'].last_day) + ' (House).']),
@@ -461,9 +467,14 @@ blockquote.sup { font-size: 0.95rem; color: var(--ink-2); }
     block('Coding', ['AI coders read each speech against a written codebook. They recorded every claim, the evidence offered, and when that evidence dates from. Sources and incidents were dated by web search.']),
     block('Second coding', R.speeches ? [R.speeches + ' speeches were coded twice by coders who had not seen the first coding. They agreed on whether a speech contains any claim in ' + Math.round(R.any_claim_agreement * 100) + '% of them.', 'They found ' + R.claims_first_coder + ' and ' + R.claims_second_coder + ' claims; ' + R.claims_matched + ' were the same claim.' + (R.claims_matched ? ' On those, they agreed on the kind of claim ' + Math.round((mf.claim_type.agreement || 0) * 100) + '% of the time, on the evidence offered ' + Math.round((mf.evidence_basis.agreement || 0) * 100) + '%, and on currency ' + Math.round((mf.vintage_status.agreement || 0) * 100) + '%.' : ''), 'Both coders were the same AI model. This measures consistency, not correctness.'] : ['Not yet run.']),
     block('What "age" means', ['Named source: debate date minus the source’s publication date.', 'Incident: debate date minus the date it became public.', 'Outdated claim: debate date minus the last month the claim was still fair.']),
-    block('Limits', ['No human coder has checked these labels.', 'Source dates were mostly confirmed from news coverage and listings, not the primary document.', 'The coders’ own knowledge stops before most of these debates. A claim marked current may already have been stale.', 'Speeches with a single AI term were not coded.']),
+    block('Human review', H ? ['One person reviewed three samples after coding. Their rulings are applied to the data shown here.',
+      'Spot-check: of ' + H.spot.answered + ' randomly drawn claims, ' + (H.spot.is_claim_no || 0) + ' were ruled not a claim and ' + (H.spot.is_claim_unsure || 0) + ' were left unsure. Weighted to the corpus, about ' + Math.round(H.spot_not_claim_weighted * 100) + '% of coded claims may not be claims.',
+      'Double-coded speeches: ' + H.adj.speeches + ' disagreed and were ruled on. Of ' + ((H.adj.one_coder_drop || 0) + (H.adj.one_coder_keep || 0)) + ' claims found by one coder only, ' + (H.adj.one_coder_drop || 0) + ' were ruled not claims.',
+      'Oldest sources and outdated claims: all ' + H.tail.reviewed + ' were reviewed. A primary document link is on record for ' + (H.tail.primary_link_recorded || 0) + '.',
+      'In all, the review dropped ' + H.applied.claims_dropped + ' claims, added ' + H.applied.claims_added + ' and changed labels on ' + H.applied.claims_relabelled + '.'] : ['Not yet done.']),
+    block('Limits', [H ? 'A human checked samples, not every label. Only the sampled claims were corrected, so the remaining counts likely include some non-claims.' : 'No human coder has checked these labels.', 'Source dates were mostly confirmed from news coverage and listings, not the primary document.', 'The coders’ own knowledge stops before most of these debates. A claim marked current may already have been stale.', 'Speeches with a single AI term were not coded.']),
   );
-  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + ' · Hansard text from TheyWorkForYou and OpenAustralia.';
+  $('footer').textContent = 'Codebook ' + S.codebook + ' · generated ' + fmtDate(S.generated) + '.';
 
   render(); drawSources(); drawIncidents();
   const redraw = () => { drawSources(); drawIncidents(); };

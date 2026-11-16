@@ -4,13 +4,14 @@ One place for what CODEBOOK.md says a label must look like. The validator and
 the API coder both read from here, so they cannot drift apart.
 
 Values are a superset across codebook versions. Fields added in v0.2 are
-required only on rows that declare `"codebook": "v0.2"`.
+required only on rows that declare `"codebook": "v0.2"` or later. v0.3 adds
+worked examples only; its fields are those of v0.2.
 """
 from __future__ import annotations
 
 import re
 
-CODEBOOK_VERSION = "v0.2"
+CODEBOOK_VERSION = "v0.3"
 
 CLAIM_TYPES = ["capability", "limitation", "trajectory", "incident", "adoption",
                "economic", "labour", "resource", "opinion", "other"]
@@ -130,7 +131,7 @@ def check_claim(c: dict, text: str, v2: bool) -> list[str]:
 def check_row(row: dict, text: str) -> list[str]:
     """Check one speech-level label row. `text` is the speech it codes."""
     errs = []
-    v2 = row.get("codebook") == "v0.2"
+    v2 = row.get("codebook") in ("v0.2", "v0.3")
     if row.get("ai_relevance") not in RELEVANCE:
         errs.append(f"ai_relevance={row.get('ai_relevance')!r} is not one of {RELEVANCE}")
     if not isinstance(row.get("claims"), list):

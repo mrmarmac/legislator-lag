@@ -1,0 +1,453 @@
+<title>Evidence Lag Review Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: one working column, one item at a time. Sans carries the coding; serif carries the words of the record. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #141a22; --ink-2: #48525f; --muted: #6f7986;
+  --rule: #dde2e8; --axis: #b9c1cb; --accent: #1c5cab; --accent-ink: #ffffff; --wash: #eaf0f7;
+  --mark: #fde9a8; --ok: #1f7a4d; --ok-wash: #e2f3ea; --warn: #9a5b00; --warn-wash: #fbefd6;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+    --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --accent-ink: #0b1420; --wash: #1d2631;
+    --mark: #5a4a12; --ok: #6fcf9c; --ok-wash: #16302a; --warn: #e6b566; --warn-wash: #33290f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1317; --surface: #181d23; --ink: #eceff2; --ink-2: #bcc4ce; --muted: #8b95a2;
+  --rule: #2a313a; --axis: #3b444f; --accent: #86b6ef; --accent-ink: #0b1420; --wash: #1d2631;
+  --mark: #5a4a12; --ok: #6fcf9c; --ok-wash: #16302a; --warn: #e6b566; --warn-wash: #33290f;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--sans); }
+.page { max-width: 46rem; margin: 0 auto; padding-block: 1.5rem 7rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 1.25rem; }
+a { color: var(--accent); text-underline-offset: 2px; overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+h1, h2, h3, p, dl, dd, blockquote, ul { margin: 0; }
+h1 { font: 600 1.6rem/1.15 var(--serif); text-wrap: balance; }
+h2 { font: 600 1.15rem/1.25 var(--serif); text-wrap: balance; }
+h3 { font: 600 0.78rem/1.3 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+button, select, input, textarea { font: inherit; color: inherit; }
+header { display: flex; flex-direction: column; gap: 0.35rem; }
+.sub { color: var(--ink-2); font-size: 0.95rem; }
+.small { color: var(--muted); font-size: 0.85rem; }
+
+.save { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; min-height: 1.4rem; }
+.save::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--axis); flex: none; }
+.save.ok::before { background: var(--ok); }
+.save.warn { color: var(--warn); } .save.warn::before { background: var(--warn); }
+
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--rule); padding: 4px; border-radius: 10px; }
+.tabs button { border: 0; background: transparent; border-radius: 7px; padding: 0.5rem 0.25rem; min-height: 44px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 0.1rem; font-weight: 500; font-size: 0.9rem; color: var(--ink-2); min-width: 0; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); }
+.tabs .n { font-size: 0.78rem; font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 400; }
+.tabs .n.done { color: var(--ok); }
+
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.intro { display: flex; flex-direction: column; gap: 0.5rem; }
+details > summary { cursor: pointer; color: var(--accent); font-size: 0.9rem; padding-block: 0.3rem; }
+details[open] > summary { margin-bottom: 0.5rem; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 0.85rem; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 0.3rem 0.6rem 0.3rem 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-weight: 500; color: var(--muted); }
+td.num, th.num { text-align: right; }
+
+.index { display: flex; flex-direction: column; }
+.index button { display: grid; grid-template-columns: 1.8rem 1fr auto; gap: 0.5rem; align-items: baseline; text-align: left;
+  border: 0; border-bottom: 1px solid var(--rule); background: transparent; padding: 0.55rem 0; cursor: pointer; font-size: 0.88rem; min-width: 0; }
+.index button[aria-current="true"] { font-weight: 600; }
+.index .i { color: var(--muted); font-variant-numeric: tabular-nums; }
+.index .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pill { font-size: 0.75rem; font-weight: 500; padding: 0.1rem 0.45rem; border-radius: 999px; background: var(--wash); color: var(--ink-2); white-space: nowrap; }
+.pill.done { background: var(--ok-wash); color: var(--ok); }
+.pill.part { background: var(--warn-wash); color: var(--warn); }
+
+.meta { display: flex; flex-direction: column; gap: 0.2rem; }
+.meta .who { font-weight: 600; }
+.meta .where { color: var(--ink-2); font-size: 0.9rem; }
+blockquote { font: 400 1.08rem/1.5 var(--serif); border-left: 3px solid var(--accent); padding-left: 0.8rem; overflow-wrap: anywhere; }
+blockquote.support { font-size: 0.95rem; color: var(--ink-2); border-left-color: var(--axis); }
+.restate { color: var(--ink-2); }
+dl.labels { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.3rem 0.8rem; font-size: 0.9rem; }
+dl.labels dt { color: var(--muted); }
+dl.labels dd { overflow-wrap: anywhere; }
+dl.labels .differs { background: var(--warn-wash); color: var(--warn); border-radius: 4px; padding: 0 0.3rem; margin-left: -0.3rem; font-weight: 500; }
+.val { font-weight: 600; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.75rem; }
+.coder { border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.coder > .tag { font: 600 0.78rem/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.block { display: flex; flex-direction: column; gap: 0.7rem; padding-top: 0.9rem; border-top: 1px solid var(--rule); }
+.speech { font: 400 1rem/1.6 var(--serif); display: flex; flex-direction: column; gap: 0.8rem; max-width: 40rem; overflow-wrap: anywhere; }
+mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1px; }
+.misses { font-size: 0.88rem; color: var(--ink-2); display: flex; flex-direction: column; gap: 0.5rem; padding-left: 1.1rem; }
+.misses q { font-family: var(--serif); }
+
+.q { display: flex; flex-direction: column; gap: 0.45rem; }
+.q .ask { font-weight: 500; }
+.q .hint { color: var(--muted); font-size: 0.85rem; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opts button { border: 1px solid var(--axis); background: var(--surface); border-radius: 8px; padding: 0.45rem 0.8rem; min-height: 44px; cursor: pointer; font-size: 0.92rem; text-align: left; overflow-wrap: anywhere; }
+.opts button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 500; }
+select, input[type="text"], textarea { border: 1px solid var(--axis); background: var(--surface); border-radius: 8px; padding: 0.55rem 0.7rem; width: 100%; box-sizing: border-box; min-height: 44px; }
+textarea { min-height: 5rem; resize: vertical; }
+label.field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; color: var(--ink-2); }
+
+.bar { position: fixed; inset: auto 0 0 0; background: var(--surface); border-top: 1px solid var(--rule); z-index: 5;
+  padding-top: 0.5rem; padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar .in { max-width: 46rem; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; }
+.bar button { border: 1px solid var(--axis); background: var(--surface); border-radius: 8px; min-height: 44px; padding: 0 0.9rem; cursor: pointer; font-weight: 500; white-space: nowrap; }
+.bar button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.bar button:disabled { opacity: 0.4; cursor: default; }
+.bar .pos { text-align: center; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 0.9rem; }
+.licence { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.foot { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.foot button { border: 1px solid var(--axis); background: var(--surface); border-radius: 8px; min-height: 44px; padding: 0 0.9rem; cursor: pointer; }
+#dump { font: 0.75rem/1.4 ui-monospace, Menlo, monospace; min-height: 8rem; }
+</style>
+
+<div class="page">
+  <header>
+    <h1>Evidence lag review desk</h1>
+    <p class="sub">Human checks on the full run: <span id="hdr"></span>. The labels shown are the AI coders' own. Nothing here is a proposed ruling.</p>
+    <div class="save" id="save" role="status">Loading saved verdicts…</div>
+  </header>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="panel intro" id="intro"></div>
+  <div class="panel" id="item"></div>
+  <details class="panel" id="indexwrap"><summary id="indexsum"></summary><div class="index" id="index"></div></details>
+  <div class="foot">
+    <button type="button" id="copy">Copy all verdicts as JSON</button>
+    <span class="small" id="copied"></span>
+  </div>
+  <textarea id="dump" hidden readonly aria-label="All verdicts as JSON"></textarea>
+  <footer class="licence">
+    <p>Contains Parliamentary information licensed under the <a href="https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/">Open Parliament Licence v3.0</a>. Data service provided by <a href="https://www.theyworkforyou.com/">TheyWorkForYou</a>.</p>
+    <p>Australian Hansard is © Commonwealth of Australia, from the <a href="https://www.aph.gov.au/">Parliament of Australia website</a>, under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>, obtained through <a href="https://www.openaustralia.org.au/">OpenAustralia</a>. Speeches are shown in full and unchanged.</p>
+  </footer>
+</div>
+<div class="bar"><div class="in">
+  <button type="button" id="prev" aria-label="Previous item">‹ Prev</button>
+  <div class="pos" id="pos"></div>
+  <button type="button" id="open">Next open</button>
+  <button type="button" id="next" class="go" aria-label="Next item">Next ›</button>
+</div></div>
+
+<script>
+const D = /*__DATA__*/;
+
+const TABS = [
+  { key: "spot", hash: "spot", name: "Spot-check", items: D.spot },
+  { key: "adj", hash: "adjudicate", name: "Adjudicate", items: D.adj },
+  { key: "tail", hash: "tail", name: "The tail", items: D.tail },
+];
+const ITEM = {};
+TABS.forEach(t => t.items.forEach(it => { ITEM[it.id] = it; }));
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const words = s => String(s).replace(/_/g, " ");
+const link = (url, text) => /^https?:\/\//.test(url || "") ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text || url)}</a>` : esc(text || url || "");
+const months = m => m == null ? "" : m >= 24 ? `${(m / 12).toFixed(1)} years` : `${m} months`;
+const day = d => { const [y, m, dd] = d.split("-").map(Number); return `${dd} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]} ${y}`; };
+const cssId = s => String(s).replace(/[^a-zA-Z0-9]+/g, "-");
+
+function markText(text, quotes) {
+  const ranges = [];
+  quotes.filter(Boolean).forEach(q => { const i = text.indexOf(q); if (i >= 0) ranges.push([i, i + q.length]); });
+  ranges.sort((a, b) => a[0] - b[0]);
+  let out = "", at = 0;
+  ranges.forEach(([a, b]) => { if (b <= at) return; a = Math.max(a, at); out += esc(text.slice(at, a)) + "<mark>" + esc(text.slice(a, b)) + "</mark>"; at = b; });
+  out += esc(text.slice(at));
+  return out.split(/\n+/).filter(p => p.trim()).map(p => `<p>${p}</p>`).join("");
+}
+
+/* ---------- questions ---------- */
+const YNU = [["yes", "Yes"], ["no", "No"], ["unsure", "Unsure"]];
+const AGREE = [["agree", "Agree"], ["disagree", "Disagree"], ["unsure", "Unsure"]];
+const VERIFY = [["right", "Right"], ["wrong", "Wrong"], ["cannot_verify", "Can't verify"]];
+
+function questions(it) {
+  const q = [];
+  const c = it.claim;
+  if (it.kind === "spot") {
+    q.push({ key: "is_claim", ask: "Is this a checkable factual claim about AI, made or endorsed by the speaker?", opts: YNU });
+    q.push({ key: "claim_type", ask: `Kind of claim: <span class="val">${esc(words(c.claim_type))}</span>`, opts: AGREE, fix: "claim_type" });
+    q.push({ key: "evidence_basis", ask: `Evidence the speaker offers: <span class="val">${esc(words(c.evidence_basis))}</span>`, opts: AGREE, fix: "evidence_basis" });
+    if (c.source_name) q.push({ key: "source", ask: `Source and date: <span class="val">${esc(c.source_name)}${c.source_date ? ", " + esc(c.source_date) : ", undated"}</span>`,
+      hint: c.source_identified_by === "inferred_by_coder" ? "The speaker did not name this source. The coder identified it." : "", opts: [["right", "Right"], ["wrong_source", "Wrong source"], ["wrong_date", "Wrong date"], ["cannot_verify", "Can't verify"]] });
+    if (c.claim_type === "incident") q.push({ key: "event_date", ask: `Incident became public: <span class="val">${esc(c.event_public_date || "undated")}</span>`, opts: VERIFY });
+    q.push({ key: "vintage_status", ask: `Currency on the day: <span class="val">${esc(words(c.vintage_status))}</span>`, opts: AGREE, fix: "vintage_status" });
+    q.push({ key: "missed", ask: "Did the coder miss a claim elsewhere in this speech?", hint: "The speech, its other coded claims and its near misses are below.", opts: [["no", "No"], ["yes", "Yes"], ["not_read", "Didn't read it"]] });
+  } else if (it.kind === "adj") {
+    if (it.relevance.A !== it.relevance.B) q.push({ key: "ai_relevance", ask: "How relevant is AI to this speech?",
+      opts: [[it.relevance.A, `A: ${words(it.relevance.A)}`], [it.relevance.B, `B: ${words(it.relevance.B)}`], ["neither", "Neither"], ["unsure", "Unsure"]], fix: "ai_relevance", fixOn: "neither" });
+    it.solo.forEach((s, i) => q.push({ key: `solo:${s.claim.key}`, group: `solo${i}`, ask: `Only coder ${s.coder} coded this. Should it count as a claim?`, opts: [["keep", "Yes, keep"], ["drop", "No, drop"], ["unsure", "Unsure"]] }));
+    it.pairs.forEach((p, i) => p.diff.forEach(f => {
+      const side = k => p[k].key.split("#")[0];
+      q.push({ key: `pair:${p.A.key}:${f}`, group: `pair${i}`, ask: `${FIELD[f] || words(f)}`,
+        opts: [[side("A"), `A: ${show(p.A[f])}`], [side("B"), `B: ${show(p.B[f])}`], ["neither", "Neither"], ["unsure", "Unsure"]],
+        fix: D.enums[f] ? f : null, fixOn: "neither", text: D.enums[f] ? null : "neither" });
+    }));
+    q.push({ key: "rule", text: "always", optional: true, ask: "What codebook rule would have settled this speech?", hint: "Optional. These feed the codebook revision." });
+  } else {
+    if (it.old_source) {
+      q.push({ key: "source_right", ask: `Is <span class="val">${esc(c.source_name)}</span> the source the speaker meant?`, opts: YNU });
+      q.push({ key: "date_ok", ask: `Coder's source date: <span class="val">${esc(c.source_date)}</span>, ${esc(words(c.source_date_basis))}`, hint: "Check against the primary document, not coverage of it.", opts: VERIFY });
+      q.push({ key: "primary_url", text: "always", optional: true, ask: "Primary document link" });
+      q.push({ key: "primary_date", text: "always", optional: true, ask: "Date on the primary document", hint: "YYYY-MM-DD, YYYY-MM or YYYY." });
+    }
+    if (it.flagged) q.push({ key: "status_ok", ask: `Coder's ruling: <span class="val">${esc(words(c.vintage_status))}</span>${c.vintage_date ? `, last fair in ${esc(c.vintage_date)}` : ""}`,
+      hint: "Check the rationale below against primary documents.", opts: [["agree", "Agree"], ["disagree", "Disagree"], ["cannot_verify", "Can't verify"]], fix: "vintage_status" });
+  }
+  return q;
+}
+const FIELD = { claim_type: "Kind of claim", evidence_basis: "Evidence offered", vintage_status: "Currency", source_identified_by: "Who identified the source",
+  source_date: "Source date", event_public_date: "Date the incident became public", incident_loosely_described: "Incident loosely described", ai_relevance: "Relevance" };
+const show = v => v === null || v === undefined ? "none" : v === true ? "yes" : v === false ? "no" : words(v);
+
+/* ---------- state and storage ---------- */
+const V = {};                       // item id -> { answers: {}, note: "" }
+const LS = "legislag-review-v1";
+let db = null, online = false;
+const dirty = new Set(), timers = {}, chain = {};
+let failed = "";
+
+const rec = id => V[id] || (V[id] = { answers: {}, note: "" });
+try { Object.assign(V, JSON.parse(localStorage.getItem(LS) || "{}")); } catch (e) {}
+function stash() { try { localStorage.setItem(LS, JSON.stringify(V)); } catch (e) {} }
+
+function status() {
+  const el = $("save");
+  el.className = "save";
+  if (failed) { el.classList.add("warn"); el.textContent = failed; }
+  else if (!online) { el.classList.add("warn"); el.textContent = db === false ? "Not connected. Verdicts are kept in this browser only." : "Loading saved verdicts…"; if (db !== false) el.className = "save"; }
+  else if (dirty.size) el.textContent = "Saving…";
+  else { el.classList.add("ok"); el.textContent = "All verdicts saved."; }
+}
+
+function save(id) {
+  stash();
+  dirty.add(id); status();
+  if (!db) return;
+  clearTimeout(timers[id]);
+  timers[id] = setTimeout(() => {
+    const it = ITEM[id], r = rec(id);
+    const body = { kind: it.kind, ref: it.ref, answers: r.answers, note: r.note || "", done: isDone(it), updated: new Date().toISOString() };
+    const sent = JSON.stringify([r.answers, r.note]);
+    chain[id] = (chain[id] || Promise.resolve()).then(() => db.collection("verdicts").doc(id).set(body)).then(() => {
+      failed = "";
+      if (JSON.stringify([rec(id).answers, rec(id).note]) === sent) dirty.delete(id);
+      status();
+    }).catch(e => {
+      failed = e && e.code === "invalid_argument" ? "You can't save here. Verdicts are kept in this browser only." : "Save failed. Your verdicts are kept in this browser and will retry on the next change.";
+      status();
+    });
+  }, 600);
+}
+
+function connect() {
+  const give = setTimeout(() => { if (!online) { db = db || false; status(); } }, 10000);
+  const use = window.claude && window.claude.use ? window.claude.use("db") : Promise.resolve(null);
+  use.then(d => {
+    if (!d) { clearTimeout(give); db = false; status(); return; }
+    db = d;
+    let first = true;
+    d.collection("verdicts").onSnapshot(snap => {
+      clearTimeout(give); online = true;
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement && document.activeElement.tagName);
+      let touched = false;
+      snap.docs.forEach(doc => {
+        const x = doc.data();
+        if (!ITEM[doc.id] || dirty.has(doc.id) || !x) return;
+        const next = { answers: x.answers || {}, note: x.note || "" };
+        if (JSON.stringify(next) !== JSON.stringify(V[doc.id])) { V[doc.id] = next; touched = true; }
+      });
+      if (first) {       // push anything this browser holds that the store lacks
+        first = false;
+        const have = new Set(snap.docs.map(x => x.id));
+        Object.keys(V).forEach(id => { if (ITEM[id] && !have.has(id) && started(ITEM[id])) save(id); });
+      }
+      stash(); status();
+      if (touched && !typing) render(); else chrome();
+    }, e => { clearTimeout(give); failed = "Could not load saved verdicts. Working from this browser's copy."; status(); });
+  }).catch(() => { db = false; status(); });
+}
+
+/* ---------- progress ---------- */
+function answered(it) {
+  const a = rec(it.id).answers;
+  const req = questions(it).filter(q => !q.optional);
+  return [req.filter(q => a[q.key] != null && a[q.key] !== "").length, req.length];
+}
+const isDone = it => { const [n, m] = answered(it); return n === m; };
+const started = it => { const r = rec(it.id); return Object.keys(r.answers).length > 0 || !!r.note; };
+
+/* ---------- rendering ---------- */
+let tab = TABS[0];
+const at = {};
+try { Object.assign(at, JSON.parse(localStorage.getItem(LS + "-pos") || "{}")); } catch (e) {}
+const idx = () => Math.min(at[tab.key] || 0, tab.items.length - 1);
+
+function labels(c, differs) {
+  const rows = [];
+  const add = (k, name, html) => { if (html) rows.push(`<dt>${name}</dt><dd><span class="${differs && differs.includes(k) ? "differs" : ""}">${html}</span></dd>`); };
+  add("claim_type", "Kind", esc(words(c.claim_type)));
+  add("domain", "Domain", esc(words(c.domain)));
+  add("named_system", "System named", esc(c.named_system));
+  add("evidence_basis", "Evidence offered", esc(words(c.evidence_basis)));
+  add("source_name", "Source", c.source_name ? esc(c.source_name) + (c.source_org ? ` <span class="small">(${esc(c.source_org)}${c.source_type ? ", " + esc(words(c.source_type)) : ""})</span>` : "") : "");
+  add("source_identified_by", "Identified by", c.source_identified_by ? (c.source_identified_by === "named_in_speech" ? "the speaker" : "the coder, not the speaker") : "");
+  add("source_date", "Source date", c.source_name ? esc(c.source_date || "undated") + (c.source_date_basis ? ` <span class="small">(${esc(words(c.source_date_basis))})</span>` : "") : "");
+  add("source_url", "Page the coder saw", c.source_url ? link(c.source_url) : "");
+  add("source_notes", "Source notes", esc(c.source_notes));
+  add("other_sources", "Other sources", (c.other_sources || []).map(o => `${link(o.url, o.name)}${o.date ? " (" + esc(o.date) + ")" : ""}`).join("; "));
+  add("event_public_date", "Became public", esc(c.event_public_date));
+  add("event_occurred_date", "Occurred", esc(c.event_occurred_date));
+  add("incident_loosely_described", "Loosely described", c.claim_type === "incident" ? (c.incident_loosely_described ? "yes" : "no") : "");
+  add("incident_accuracy_note", "Accuracy note", esc(c.incident_accuracy_note));
+  add("vintage_status", "Currency", esc(words(c.vintage_status)) + (c.vintage_confidence ? ` <span class="small">(${esc(c.vintage_confidence)} confidence)</span>` : ""));
+  add("vintage_date", "Last fair month", esc(c.vintage_date));
+  add("vintage_rationale", "Rationale", esc(c.vintage_rationale));
+  add("capability_since", "True since", esc(c.capability_since));
+  return `<dl class="labels">${rows.join("")}</dl>`;
+}
+const claimHtml = (c, differs) => `<blockquote>${esc(c.quote)}</blockquote>${c.supporting_quote ? `<blockquote class="support">${esc(c.supporting_quote)}</blockquote>` : ""}<p class="restate">${esc(c.claim)}</p>${labels(c, differs)}`;
+
+function qHtml(it, q) {
+  const r = rec(it.id), v = r.answers[q.key];
+  const id = `q-${it.id}-${cssId(q.key)}`;
+  let h = `<div class="q" data-key="${esc(q.key)}"><div class="ask" id="${id}">${q.ask}</div>${q.hint ? `<div class="hint">${esc(q.hint)}</div>` : ""}`;
+  if (q.opts) h += `<div class="opts" role="group" aria-labelledby="${id}">${q.opts.map(([val, lab]) => `<button type="button" data-val="${esc(val)}" aria-pressed="${v === val}">${esc(lab)}</button>`).join("")}</div>`;
+  const fixOn = q.fixOn || "disagree";
+  if (q.fix && v === fixOn) h += `<label class="field">It should be<select id="${id}-fix" data-text="${esc(q.key)}_fix"><option value="">Choose…</option>${D.enums[q.fix].map(o => `<option value="${esc(o)}"${r.answers[q.key + "_fix"] === o ? " selected" : ""}>${esc(words(o))}</option>`).join("")}</select></label>`;
+  if (q.text === "always") h += `<input type="text" id="${id}-t" aria-labelledby="${id}" data-text="${esc(q.key)}" value="${esc(v || "")}">`;
+  else if (q.text && v === q.text) h += `<label class="field">It should be<input type="text" id="${id}-fix" data-text="${esc(q.key)}_fix" value="${esc(r.answers[q.key + "_fix"] || "")}"></label>`;
+  return h + "</div>";
+}
+
+function speechHtml(it, quotes) {
+  const s = it.speech;
+  return `<details><summary>Read the speech (${s.word_count.toLocaleString()} words)</summary><div class="speech">${markText(D.texts[s.speech_id] || "", quotes)}</div></details>`;
+}
+const missHtml = list => list && list.length ? `<ul class="misses">${list.map(n => `<li><q>${esc(n.quote)}</q> ${esc(n.reason)}</li>`).join("")}</ul>` : `<p class="small">None logged.</p>`;
+
+function itemHtml(it) {
+  const s = it.speech, c = it.claim, qs = questions(it), r = rec(it.id);
+  let h = `<div class="meta"><div class="who">${esc(s.speaker)}</div><div class="where">${esc(s.chamber_label)}, ${day(s.date)} · ${esc(s.subheading || s.heading)}</div><div class="small">${link(s.url, "Open on " + (s.country === "UK" ? "TheyWorkForYou" : "OpenAustralia"))}${s.country === "AU" ? " (link not verified)" : ""} · ${esc(it.ref)}</div></div>`;
+  const ungrouped = qs.filter(q => !q.group);
+  if (it.kind === "adj") {
+    h += `<p class="small">${it.agreed_pairs} claim${it.agreed_pairs === 1 ? "" : "s"} matched with no split and ${it.agreed_pairs === 1 ? "is" : "are"} not shown. Coders A and B are in a shuffled order for each speech.</p>`;
+    it.solo.forEach((sl, i) => { h += `<div class="block"><h3>Found by coder ${sl.coder} only</h3>${claimHtml(sl.claim)}${qs.filter(q => q.group === `solo${i}`).map(q => qHtml(it, q)).join("")}</div>`; });
+    it.pairs.forEach((p, i) => {
+      h += `<div class="block"><h3>Same claim, different labels</h3><div class="pair">${["A", "B"].map(k => `<div class="coder"><div class="tag">Coder ${k}</div>${claimHtml(p[k], p.diff)}</div>`).join("")}</div>${qs.filter(q => q.group === `pair${i}`).map(q => qHtml(it, q)).join("")}</div>`;
+    });
+    h += `<div class="block">${ungrouped.map(q => qHtml(it, q)).join("")}</div>`;
+    const quotes = [].concat(it.solo.map(x => x.claim.quote), it.pairs.flatMap(p => [p.A.quote, p.B.quote]));
+    h += `<div class="block">${speechHtml(it, quotes)}<details><summary>Coders' notes and near misses</summary>${["A", "B"].map(k => `<h3>Coder ${k}</h3><p class="small">${esc(it.notes[k]) || "No notes."}</p>${missHtml(it.near_misses[k])}`).join("")}</details></div>`;
+  } else {
+    h += claimHtml(c);
+    if (it.kind === "tail") {
+      const facts = [];
+      if (it.old_source) facts.push(`The named source was ${months(it.cited_lag_months)} old on the day.`);
+      if (it.implied_lag_months != null) facts.push(`Coded as out of date by ${months(it.implied_lag_months)}.`);
+      const term = [c.source_name, c.source_org].filter(Boolean).join(" ");
+      h += `<p class="sub">${facts.join(" ")}${term ? ` <a href="https://duckduckgo.com/?q=${encodeURIComponent(term)}" target="_blank" rel="noopener">Search for the primary document</a>` : ""}</p>`;
+    } else if (it.cited_lag_months != null || it.incident_lag_months != null) {
+      h += `<p class="sub">${it.cited_lag_months != null ? `Source age on the day: ${months(it.cited_lag_months)}.` : `Incident public for ${months(it.incident_lag_months)}.`}</p>`;
+    }
+    h += `<div class="block">${ungrouped.map(q => qHtml(it, q)).join("")}</div>`;
+    h += `<div class="block">${speechHtml(it, [c.quote, c.supporting_quote])}`;
+    if (it.kind === "spot") h += `<details><summary>Other coded claims in this speech (${it.other_claims.length}) and near misses (${it.near_misses.length})</summary><h3>Other claims</h3>${it.other_claims.length ? `<ul class="misses">${it.other_claims.map(o => `<li><q>${esc(o.quote)}</q></li>`).join("")}</ul>` : `<p class="small">None.</p>`}<h3>Near misses the coder left out</h3>${missHtml(it.near_misses)}</details>`;
+    if (it.coder_notes) h += `<details><summary>Coder's notes on this speech</summary><p class="small">${esc(it.coder_notes)}</p></details>`;
+    h += `</div>`;
+  }
+  h += `<div class="block"><label class="field">Your notes<textarea id="note-${it.id}" data-note="1">${esc(r.note || "")}</textarea></label></div>`;
+  return h;
+}
+
+function introHtml() {
+  if (tab.key === "spot") return `<h2>Spot-check ${D.spot.length} claims</h2><p class="sub">A seeded random draw from all ${D.claims_total} claims, spread across country, evidence offered and currency. Say whether each label holds.</p>
+    <details><summary>How the sample was drawn</summary><div class="scroll"><table><tr><th>Country</th><th>Evidence offered</th><th class="num">Claims</th><th class="num">Sampled</th><th class="num">Each stands for</th></tr>${D.spot_strata.map(s => `<tr><td>${s.country}</td><td>${esc(words(s.evidence_basis))}</td><td class="num">${s.claims}</td><td class="num">${s.sampled}</td><td class="num">${s.weight}</td></tr>`).join("")}</table></div><p class="small">Seed ${D.seed}. Small groups are oversampled, so weight each verdict by the last column for a corpus error rate.</p></details>`;
+  if (tab.key === "adj") {
+    const sp = D.adj_splits, order = ["found_by_one_coder", "source_date", "source_identified_by", "vintage_status", "event_public_date", "evidence_basis", "ai_relevance", "incident_loosely_described", "claim_type"];
+    return `<h2>Adjudicate ${D.adj.length} speeches</h2><p class="sub">${D.adj_speeches} speeches were coded twice. ${D.adj_agreed} match on every field shown here. These ${D.adj.length} do not. Pick the right label for each split, and note any rule that would have settled it.</p>
+      <details><summary>Where the coders split</summary><div class="scroll"><table><tr><th>Split on</th><th class="num">Times</th></tr>${order.filter(k => sp[k]).map(k => `<tr><td>${k === "found_by_one_coder" ? "Claim found by one coder only" : esc(FIELD[k] || words(k))}</td><td class="num">${sp[k]}</td></tr>`).join("")}</table></div><p class="small">Domain and date-basis splits are not listed. They change no reported number.</p></details>`;
+  }
+  const flagged = D.tail.filter(t => t.flagged).length, old = D.tail.filter(t => t.old_source).length;
+  return `<h2>Verify the tail: ${D.tail.length} claims</h2><p class="sub">${flagged} claims coded outdated or never accurate, then ${old} named sources over a year old. ${flagged + old - D.tail.length} are in both groups. Check each against the primary document.</p>`;
+}
+
+function chrome() {
+  $("tabs").innerHTML = TABS.map(t => { const n = t.items.filter(isDone).length; return `<button type="button" role="tab" aria-selected="${t === tab}" data-tab="${t.key}">${t.name}<span class="n${n === t.items.length ? " done" : ""}">${n} of ${t.items.length}</span></button>`; }).join("");
+  const i = idx();
+  $("pos").textContent = `${i + 1} of ${tab.items.length}`;
+  $("prev").disabled = i === 0; $("next").disabled = i === tab.items.length - 1;
+  $("open").disabled = tab.items.every(isDone);
+  $("indexsum").textContent = `All ${tab.items.length} items`;
+  $("index").innerHTML = tab.items.map((it, j) => { const [n, m] = answered(it); const cls = n === m ? "done" : n || rec(it.id).note ? "part" : "";
+    return `<button type="button" data-go="${j}" aria-current="${j === i}"><span class="i">${j + 1}</span><span class="t">${esc(it.speech.speaker)}: ${esc(it.claim ? it.claim.claim : it.speech.subheading || it.speech.heading)}</span><span class="pill ${cls}">${n === m ? "Done" : `${n} of ${m}`}</span></button>`; }).join("");
+}
+function render() {
+  $("intro").innerHTML = introHtml();
+  $("item").innerHTML = tab.items.length ? itemHtml(tab.items[idx()]) : "<p>Nothing to review.</p>";
+  chrome();
+}
+function go(j, scroll) {
+  at[tab.key] = Math.max(0, Math.min(tab.items.length - 1, j));
+  try { localStorage.setItem(LS + "-pos", JSON.stringify(at)); } catch (e) {}
+  render();
+  if (scroll !== false) $("item").scrollIntoView({ block: "start" });
+}
+function route() {
+  tab = TABS.find(t => t.hash === location.hash.slice(1)) || TABS[0];
+  render();
+}
+
+/* ---------- events ---------- */
+$("tabs").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (!b) return; const t = TABS.find(x => x.key === b.dataset.tab); if (location.hash.slice(1) === t.hash) return; location.hash = t.hash; });
+window.addEventListener("hashchange", route);
+$("prev").addEventListener("click", () => go(idx() - 1));
+$("next").addEventListener("click", () => go(idx() + 1));
+$("open").addEventListener("click", () => { const n = tab.items.length, i = idx(); for (let k = 1; k <= n; k++) { const j = (i + k) % n; if (!isDone(tab.items[j])) return go(j); } });
+$("index").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) { $("indexwrap").open = false; go(+b.dataset.go); } });
+$("item").addEventListener("click", e => {
+  const b = e.target.closest(".opts button"); if (!b) return;
+  const it = tab.items[idx()], key = b.closest(".q").dataset.key, r = rec(it.id);
+  if (r.answers[key] === b.dataset.val) delete r.answers[key]; else r.answers[key] = b.dataset.val;
+  const q = questions(it).find(x => x.key === key);
+  if (r.answers[key] !== (q.fixOn || "disagree") && r.answers[key] !== q.text) delete r.answers[key + "_fix"];
+  const node = b.closest(".q"), box = document.createElement("div");
+  box.innerHTML = qHtml(it, q);
+  node.replaceWith(box.firstChild);
+  save(it.id); chrome();
+});
+function typed(e) {
+  const it = tab.items[idx()], r = rec(it.id), el = e.target;
+  if (el.dataset.note) r.note = el.value;
+  else if (el.dataset.text) { if (el.value) r.answers[el.dataset.text] = el.value; else delete r.answers[el.dataset.text]; }
+  else return;
+  save(it.id);
+}
+$("item").addEventListener("input", typed);
+$("item").addEventListener("change", e => { typed(e); chrome(); });
+$("copy").addEventListener("click", () => {
+  const out = Object.keys(V).filter(id => ITEM[id] && started(ITEM[id])).map(id => ({ id, kind: ITEM[id].kind, ref: ITEM[id].ref, answers: V[id].answers, note: V[id].note || "" }));
+  const text = JSON.stringify(out, null, 1), box = $("dump");
+  const fallback = () => { box.hidden = false; box.value = text; box.select(); $("copied").textContent = "Select and copy the text below."; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => { $("copied").textContent = `Copied ${out.length} verdicts.`; }, fallback); else fallback();
+});
+
+$("hdr").textContent = `${D.spot.length} claims to spot-check, ${D.adj.length} speeches to adjudicate, ${D.tail.length} tail claims to verify`;
+route(); status(); connect();
+</script>

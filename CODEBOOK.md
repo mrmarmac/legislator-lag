@@ -1,12 +1,15 @@
-# Codebook v0.2
+# Codebook v0.3
 
 Research question: how stale is the AI evidence that UK and Australian
 parliamentarians cite?
 
 This codebook tells a coder how to turn one Hansard speech into zero or more
-coded **claims**. Version 0.2 applies the rulings made after the 100-speech
-pilot. Section 6 lists what changed. The pilot labels in `data/pilot/` were
-coded under v0.1 and are kept as they were.
+coded **claims**. Version 0.2 applied the rulings made after the 100-speech
+pilot. Section 6 lists what changed. Version 0.3 changes no rule. It adds
+worked examples from the human review of the full run, in section 8.
+
+The pilot labels in `data/pilot/` were coded under v0.1. The full-run labels
+in `data/full/` were coded under v0.2. Both are kept as they were.
 
 ## 1. Unit of analysis
 
@@ -65,7 +68,7 @@ Log up to three excluded borderline items per speech under `near_misses`.
 | Field | Values |
 |---|---|
 | `speech_id` | Copied from the input. |
-| `codebook` | `"v0.2"`. |
+| `codebook` | `"v0.3"`. |
 | `ai_relevance` | `substantive` (AI is a topic of the speech), `passing` (AI is mentioned in a list or aside), `procedural` (the speech only moves, schedules, or administers AI business), `false_positive` (the match is not about artificial intelligence). |
 | `claims` | List of claim objects. May be empty. |
 | `near_misses` | List of `{ "quote": ..., "reason": ... }`. May be empty. |
@@ -203,7 +206,7 @@ One JSON object per line, one line per speech, including speeches with no claims
 ```json
 {
   "speech_id": "uk-lords:2026-07-09b.373.0",
-  "codebook": "v0.2",
+  "codebook": "v0.3",
   "ai_relevance": "substantive",
   "claims": [
     {
@@ -277,3 +280,45 @@ same questions. Batches 001 to 014 were coded before these were written.
   speaker distances themselves.
 - **General harm claims** with no figure, source or incident are rhetoric and
   are excluded.
+
+## 8. Worked examples from the human review
+
+A human reviewer adjudicated the double-coded speeches and spot-checked 40
+claims. Coders split most often on whether a remark was a claim at all. Of
+16 claims that only one coder found, the reviewer ruled 13 out. Of the 40
+spot-checked claims, the reviewer ruled 7 out.
+
+The rule has not changed: a claim needs something specific that could be
+checked against evidence from a particular date. Where the reviewer gave a
+reason for ruling a remark out, it was the same each time: "General/hedged
+remark with nothing specific to check."
+
+**Ruled out.** Do not code remarks like these. Log a near miss.
+
+- "Many Australians are understandably sceptical of AI."
+- "The barriers to entry for organised crime have never been lower with AI
+  agents and other technologies making it all too easy"
+- "The AI bubble is driving inflation."
+- "The pace of advances in the past three years—the release of ChatGPT,
+  followed by its increasingly powerful successors—scares us all."
+- "AI, in automating the evaluation of which products would suit
+  individuals, is transforming most consumers’ interactions with financial
+  services."
+- "The jury is out on whether AI is an extinction-threatening phenomenon"
+- "Given that we now have AI and other methods of genealogy, we can make a
+  connection between graves and ancestors."
+- "artificial intelligence and superintelligent machines that are beginning
+  to think for themselves and have their own agenda?"
+
+**Ruled in.** These were found by one coder only, and the reviewer kept them.
+
+- "There are other cases such as Claude Opus 5.5, which was reportedly
+  withdrawn from AISI’s pre-release evaluation in September"
+- "There is concern about what is called cognitive offloading: students
+  delegating problem-solving to AI rather than nourishing their own
+  intellectual development."
+- "AI can fuel the threat of disinformation, which can inflame tension and
+  distort debate."
+
+The first two were given the stated reason. The reviewer gave no reason for
+the others. All rulings are in `data/full/review/verdicts.jsonl`.
